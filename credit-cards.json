@@ -1,0 +1,1857 @@
+[
+  {
+    "slug": "chase-sapphire-reserve",
+    "name": "Chase Sapphire Reserve",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 55000,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "travel": 3,
+      "dining": 3,
+      "streaming": 1,
+      "groceries": 1,
+      "gas": 1,
+      "online_shopping": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.5,
+    "key_perks": [
+      "$300 annual travel credit",
+      "Priority Pass lounge access",
+      "Global Entry / TSA PreCheck credit",
+      "DoorDash DashPass",
+      "Lyft Pink membership",
+      "Trip delay/cancellation insurance",
+      "10x on hotels/car rentals via Chase portal"
+    ],
+    "best_for": ["premium travelers", "dining", "flexible points"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-sapphire-reserve.png",
+    "application_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-sapphire-preferred",
+    "name": "Chase Sapphire Preferred",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "travel": 2,
+      "dining": 3,
+      "streaming": 3,
+      "groceries": 1,
+      "gas": 1,
+      "online_shopping": 3,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.25,
+    "key_perks": [
+      "$50 annual hotel credit (Chase portal)",
+      "5x on Chase travel",
+      "Trip delay/cancellation insurance",
+      "No foreign transaction fees",
+      "10% anniversary point bonus"
+    ],
+    "best_for": ["first travel card", "dining", "streaming"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-sapphire-preferred.png",
+    "application_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-freedom-unlimited",
+    "name": "Chase Freedom Unlimited",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 50000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_portal": 5,
+      "dining": 3,
+      "drugstores": 3,
+      "groceries": 1.5,
+      "gas": 1.5,
+      "online_shopping": 1,
+      "other": 1.5
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "1.5x base earning on everything",
+      "5x on Chase travel portal",
+      "3x on dining and drugstores",
+      "0% intro APR 15 months",
+      "Points transfer to Sapphire cards"
+    ],
+    "best_for": ["everyday spending", "no annual fee", "UR ecosystem starter"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-freedom-unlimited.png",
+    "application_url": "https://creditcards.chase.com/cash-back-credit-cards/freedom/unlimited",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "chase-freedom-flex",
+    "name": "Chase Freedom Flex",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 50000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_portal": 5,
+      "dining": 3,
+      "drugstores": 3,
+      "rotating_categories": 5,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "rotating_categories", "cap_cents": 150000, "period": "quarter" }
+    ],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "5x on rotating categories ($1,500/quarter cap)",
+      "5x on Chase travel portal",
+      "3x on dining and drugstores",
+      "Cell phone protection",
+      "Points transfer to Sapphire cards"
+    ],
+    "best_for": ["category bonus maximizer", "no annual fee", "UR ecosystem"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-freedom-flex.png",
+    "application_url": "https://creditcards.chase.com/cash-back-credit-cards/freedom/flex",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "chase-ink-preferred",
+    "name": "Chase Ink Business Preferred",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 100000,
+      "spend_requirement_cents": 800000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "travel": 3,
+      "shipping": 3,
+      "internet_cable_phone": 3,
+      "advertising": 3,
+      "dining": 1,
+      "groceries": 1,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "travel", "cap_cents": 15000000, "period": "year", "note": "Combined cap across travel, shipping, internet, advertising" }
+    ],
+    "portal_cpp": 1.25,
+    "key_perks": [
+      "100k signup bonus (highest Chase UR offer)",
+      "3x on travel, shipping, internet, advertising ($150k cap)",
+      "Cell phone protection",
+      "Trip cancellation insurance",
+      "Points transfer to Sapphire cards"
+    ],
+    "best_for": ["business owners", "highest UR signup bonus", "advertising spend"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-ink-preferred.png",
+    "application_url": "https://creditcards.chase.com/business-credit-cards/ink/business-preferred",
+    "is_business": true,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-platinum",
+    "name": "The Platinum Card from American Express",
+    "issuer": "amex",
+    "currency": "MR",
+    "network": "amex",
+    "annual_fee_cents": 69500,
+    "signup_bonus": {
+      "points": 80000,
+      "spend_requirement_cents": 800000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "flights": 5,
+      "brand_portal": 5,
+      "dining": 1,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "$200 airline fee credit",
+      "$200 hotel credit (FHR/THC)",
+      "$240 digital entertainment credit",
+      "$200 Uber credit ($15/mo + $20 Dec)",
+      "$189 CLEAR Plus credit",
+      "$155 Walmart+ credit",
+      "Centurion Lounge access",
+      "Priority Pass (no guests)",
+      "Global Entry / TSA PreCheck",
+      "Hilton Gold, Marriott Gold",
+      "5x on flights booked directly"
+    ],
+    "best_for": ["luxury travel", "lounge access", "premium perks"],
+    "credit_score_min": "excellent",
+    "card_art_url": "/cards/amex-platinum.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/platinum/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-gold",
+    "name": "American Express Gold Card",
+    "issuer": "amex",
+    "currency": "MR",
+    "network": "amex",
+    "annual_fee_cents": 32500,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 600000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "dining": 4,
+      "groceries": 4,
+      "flights": 3,
+      "brand_portal": 3,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "groceries", "cap_cents": 2500000, "period": "year" }
+    ],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "$120 dining credit ($10/mo at select restaurants)",
+      "$120 Uber Cash ($10/mo)",
+      "4x on dining worldwide",
+      "4x on US supermarkets ($25k cap)",
+      "3x on flights booked directly",
+      "No foreign transaction fees"
+    ],
+    "best_for": ["dining", "groceries", "everyday premium"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-gold.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-green",
+    "name": "American Express Green Card",
+    "issuer": "amex",
+    "currency": "MR",
+    "network": "amex",
+    "annual_fee_cents": 15000,
+    "signup_bonus": {
+      "points": 40000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "travel": 3,
+      "dining": 3,
+      "transit": 3,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "3x on travel, dining, transit",
+      "$189 CLEAR Plus credit",
+      "LoungeBuddy credits",
+      "No foreign transaction fees"
+    ],
+    "best_for": ["transit commuters", "entry MR card", "travel & dining"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-green.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/green-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-blue-business-plus",
+    "name": "Blue Business Plus from Amex",
+    "issuer": "amex",
+    "currency": "MR",
+    "network": "amex",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 15000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 2,
+      "travel": 2,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
+    "earning_caps": [
+      { "category": "other", "cap_cents": 5000000, "period": "year", "note": "2x on first $50k, then 1x" }
+    ],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "2x on first $50k/year in purchases",
+      "No annual fee",
+      "0% intro APR 12 months",
+      "Points transfer to MR partners"
+    ],
+    "best_for": ["business everyday spend", "no annual fee MR", "flat rate 2x"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-blue-business-plus.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-blue-business-plus-credit-card-amex/",
+    "is_business": true,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "amex-business-platinum",
+    "name": "Business Platinum Card from Amex",
+    "issuer": "amex",
+    "currency": "MR",
+    "network": "amex",
+    "annual_fee_cents": 69500,
+    "signup_bonus": {
+      "points": 150000,
+      "spend_requirement_cents": 2000000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_portal": 5,
+      "purchases_over_5k": 1.5,
+      "dining": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "150k signup bonus (highest MR offer)",
+      "5x on flights and hotels via Amex Travel",
+      "1.5x on purchases $5k+",
+      "$200 airline fee credit",
+      "Centurion Lounge access",
+      "Dell and Indeed credits",
+      "Hilton Gold, Marriott Gold"
+    ],
+    "best_for": ["high-spend business", "largest MR signup bonus"],
+    "credit_score_min": "excellent",
+    "card_art_url": "/cards/amex-business-platinum.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/american-express-business-platinum-credit-card-amex/",
+    "is_business": true,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "citi-strata-premier",
+    "name": "Citi Strata Premier",
+    "issuer": "citi",
+    "currency": "TYP",
+    "network": "mastercard",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 75000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "travel": 3,
+      "dining": 3,
+      "groceries": 3,
+      "gas": 3,
+      "flights": 10,
+      "hotels": 10,
+      "car_rentals": 10,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "10x on hotels, car rentals, flights via portal",
+      "3x on travel, dining, groceries, gas",
+      "$100 annual hotel credit",
+      "No foreign transaction fees",
+      "Trip delay and baggage insurance"
+    ],
+    "best_for": ["all-around travel card", "gas & groceries combo"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/citi-strata-premier.png",
+    "application_url": "https://www.citi.com/credit-cards/citi-strata-premier-credit-card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "citi-custom-cash",
+    "name": "Citi Custom Cash",
+    "issuer": "citi",
+    "currency": "TYP",
+    "network": "mastercard",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 150000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "top_eligible_category": 5,
+      "dining": 1,
+      "travel": 1,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "top_eligible_category", "cap_cents": 50000, "period": "billing_cycle" }
+    ],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "5x on top eligible category each cycle ($500 cap)",
+      "Auto-detected highest category",
+      "No annual fee",
+      "TYP transfer eligible with Strata Premier"
+    ],
+    "best_for": ["targeted category bonus", "no annual fee TYP", "gas or groceries slot"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/citi-custom-cash.png",
+    "application_url": "https://www.citi.com/credit-cards/citi-custom-cash-credit-card",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "citi-double-cash",
+    "name": "Citi Double Cash",
+    "issuer": "citi",
+    "currency": "TYP",
+    "network": "mastercard",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 150000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "dining": 2,
+      "travel": 2,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "2x on everything (1% at purchase + 1% on payment)",
+      "No annual fee",
+      "TYP transfer eligible with Strata Premier",
+      "Simple flat-rate earning"
+    ],
+    "best_for": ["flat rate 2%", "no annual fee", "simple rewards"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/citi-double-cash.png",
+    "application_url": "https://www.citi.com/credit-cards/citi-double-cash-credit-card",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "capital-one-venture-x",
+    "name": "Capital One Venture X",
+    "issuer": "capital_one",
+    "currency": "C1",
+    "network": "visa",
+    "annual_fee_cents": 39500,
+    "signup_bonus": {
+      "points": 75000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_portal": 10,
+      "flights": 5,
+      "hotels": 5,
+      "car_rentals": 5,
+      "dining": 2,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "$300 annual travel credit (portal bookings)",
+      "10,000 anniversary miles (worth $100)",
+      "Capital One Lounge access",
+      "Priority Pass (unlimited guests)",
+      "Global Entry / TSA PreCheck",
+      "Hertz President's Circle",
+      "10x on hotels/cars via portal"
+    ],
+    "best_for": ["premium travel (best value)", "lounge access with guests", "2x everything"],
+    "credit_score_min": "excellent",
+    "card_art_url": "/cards/capital-one-venture-x.png",
+    "application_url": "https://www.capitalone.com/credit-cards/venture-x/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "capital-one-venture",
+    "name": "Capital One Venture Rewards",
+    "issuer": "capital_one",
+    "currency": "C1",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 75000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_portal": 5,
+      "dining": 2,
+      "travel": 2,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "2x on everything",
+      "5x on hotels/car rentals via portal",
+      "Global Entry / TSA PreCheck",
+      "Transfer to 15+ airline/hotel partners",
+      "No foreign transaction fees"
+    ],
+    "best_for": ["simple 2x earning", "mid-tier travel card"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/capital-one-venture.png",
+    "application_url": "https://www.capitalone.com/credit-cards/venture/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "capital-one-savor-one",
+    "name": "Capital One SavorOne",
+    "issuer": "capital_one",
+    "currency": "C1",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 50000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 3,
+      "entertainment": 3,
+      "streaming": 3,
+      "groceries": 3,
+      "brand_portal": 5,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "3x on dining, entertainment, streaming, groceries",
+      "5x on hotels/car rentals via portal",
+      "No annual fee",
+      "Transferable to C1 partners (with Venture/Venture X)"
+    ],
+    "best_for": ["dining & entertainment no AF", "grocery card", "Capital One ecosystem starter"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/capital-one-savor-one.png",
+    "application_url": "https://www.capitalone.com/credit-cards/savorone-dining-rewards/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "bilt-mastercard",
+    "name": "Bilt Mastercard",
+    "issuer": "bilt",
+    "currency": "BILT",
+    "network": "mastercard",
+    "annual_fee_cents": 0,
+    "signup_bonus": null,
+    "earning_rates": {
+      "rent": 1,
+      "dining": 3,
+      "travel": 2,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "Earn points on rent (no fee, up to 100k units)",
+      "1:1 transfer to Hyatt, AA, United, Air Canada, and more",
+      "Rent Day (1st of month): double points on non-rent",
+      "No annual fee",
+      "Points count toward Hyatt status"
+    ],
+    "best_for": ["renters", "Hyatt transfers", "earning on rent"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/bilt-mastercard.png",
+    "application_url": "https://www.biltrewards.com/card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-hilton-honors-surpass",
+    "name": "Hilton Honors American Express Surpass",
+    "issuer": "amex",
+    "currency": "HILTON",
+    "network": "amex",
+    "annual_fee_cents": 15000,
+    "signup_bonus": {
+      "points": 130000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 12,
+      "dining": 6,
+      "groceries": 6,
+      "gas": 6,
+      "travel": 3,
+      "other": 3
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Hilton Gold status",
+      "Free night reward after $15k spend",
+      "12x at Hilton, 6x on dining/groceries/gas",
+      "Priority Pass (10 visits/year)"
+    ],
+    "best_for": ["Hilton loyalists", "grocery & gas earning", "hotel status"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-hilton-surpass.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/hilton-honors-surpass/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-ihg-premier",
+    "name": "IHG One Rewards Premier",
+    "issuer": "chase",
+    "currency": "IHG",
+    "network": "mastercard",
+    "annual_fee_cents": 9900,
+    "signup_bonus": {
+      "points": 140000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 26,
+      "travel": 5,
+      "dining": 5,
+      "gas": 5,
+      "groceries": 1,
+      "other": 3
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "IHG Platinum Elite status",
+      "Free night (up to 40k) on anniversary",
+      "4th night free on award stays",
+      "26x at IHG properties",
+      "Global Entry / TSA PreCheck"
+    ],
+    "best_for": ["IHG loyalists", "free annual night", "hotel status"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-ihg-premier.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/ihg-one-rewards/premier",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-marriott-bonvoy-brilliant",
+    "name": "Marriott Bonvoy Brilliant Amex",
+    "issuer": "amex",
+    "currency": "MARRIOTT",
+    "network": "amex",
+    "annual_fee_cents": 65000,
+    "signup_bonus": {
+      "points": 95000,
+      "spend_requirement_cents": 600000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 6,
+      "flights": 3,
+      "dining": 3,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Marriott Platinum Elite status",
+      "Free night (up to 85k) on anniversary",
+      "$25/mo dining credit",
+      "Priority Pass",
+      "$100 Marriott property credit"
+    ],
+    "best_for": ["Marriott loyalists", "premium hotel card", "Platinum status"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-marriott-brilliant.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/marriott-bonvoy-brilliant/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-united-explorer",
+    "name": "United Explorer Card",
+    "issuer": "chase",
+    "currency": "UA",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 2,
+      "dining": 2,
+      "hotels": 2,
+      "travel": 1,
+      "groceries": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Free first checked bag (saves ~$70/roundtrip)",
+      "2x on United, dining, hotels",
+      "2 United Club passes/year",
+      "Priority boarding",
+      "25% back on inflight purchases",
+      "Trip delay and baggage insurance"
+    ],
+    "best_for": ["United flyers", "free checked bag value", "airline loyalist"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-united-explorer.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/united/explorer",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-delta-gold",
+    "name": "Delta SkyMiles Gold Amex",
+    "issuer": "amex",
+    "currency": "DL",
+    "network": "amex",
+    "annual_fee_cents": 15000,
+    "signup_bonus": {
+      "points": 70000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 2,
+      "dining": 2,
+      "groceries": 2,
+      "travel": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Free first checked bag",
+      "Priority boarding",
+      "2x on Delta purchases",
+      "$200 flight credit after $10k spend",
+      "20% inflight savings"
+    ],
+    "best_for": ["Delta flyers", "free checked bag", "airline loyalty"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-delta-gold.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-gold-american-express-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "citi-aadvantage-executive",
+    "name": "Citi AAdvantage Executive World Elite",
+    "issuer": "citi",
+    "currency": "AA",
+    "network": "mastercard",
+    "annual_fee_cents": 59500,
+    "signup_bonus": {
+      "points": 70000,
+      "spend_requirement_cents": 700000,
+      "timeframe_months": 4
+    },
+    "earning_rates": {
+      "brand_property": 4,
+      "dining": 2,
+      "travel": 2,
+      "groceries": 1,
+      "gas": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Admirals Club membership ($650 value)",
+      "4x on American Airlines purchases",
+      "Free checked bags (you + 8 companions)",
+      "Priority boarding + check-in",
+      "Global Entry / TSA PreCheck"
+    ],
+    "best_for": ["AA frequent flyers", "Admirals Club access", "group travel"],
+    "credit_score_min": "excellent",
+    "card_art_url": "/cards/citi-aa-executive.png",
+    "application_url": "https://www.citi.com/credit-cards/citi-aadvantage-executive-world-elite-mastercard-credit-card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-world-of-hyatt",
+    "name": "World of Hyatt Credit Card",
+    "issuer": "chase",
+    "currency": "HYATT",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 600000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 4,
+      "dining": 2,
+      "travel": 2,
+      "fitness": 2,
+      "transit": 2,
+      "groceries": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Discoverist status",
+      "4x at Hyatt properties",
+      "Free night (up to 15k) on anniversary",
+      "Extra free night at $15k spend",
+      "2 qualifying night credits per $5k spend",
+      "Best hotel points value in the industry (~2 cpp)"
+    ],
+    "best_for": ["best hotel card overall", "Hyatt loyalists", "highest CPP hotel points"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-world-of-hyatt.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/world-of-hyatt/credit-card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "us-bank-altitude-reserve",
+    "name": "U.S. Bank Altitude Reserve",
+    "issuer": "us_bank",
+    "currency": "ALTITUDE",
+    "network": "visa",
+    "annual_fee_cents": 40000,
+    "signup_bonus": {
+      "points": 50000,
+      "spend_requirement_cents": 450000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "travel": 3,
+      "dining": 3,
+      "mobile_wallet": 3,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.5,
+    "key_perks": [
+      "3x on mobile wallet purchases (Apple Pay, Google Pay)",
+      "1.5 cpp in travel portal",
+      "$325 annual travel credit",
+      "Priority Pass",
+      "Global Entry / TSA PreCheck"
+    ],
+    "best_for": ["mobile wallet users", "Apple Pay maximizers"],
+    "credit_score_min": "excellent",
+    "card_art_url": "/cards/us-bank-altitude-reserve.png",
+    "application_url": "https://www.usbank.com/credit-cards/altitude-reserve-visa-infinite-credit-card.html",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "wells-fargo-autograph-journey",
+    "name": "Wells Fargo Autograph Journey",
+    "issuer": "wells_fargo",
+    "currency": "WF",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "hotels": 5,
+      "flights": 4,
+      "car_rentals": 3,
+      "dining": 3,
+      "transit": 3,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "5x on hotels",
+      "4x on airlines",
+      "3x on dining, car rentals, transit",
+      "Transfer to airline/hotel partners",
+      "Cell phone protection",
+      "No foreign transaction fees"
+    ],
+    "best_for": ["hotel & airline earning", "Wells Fargo customers"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/wells-fargo-autograph-journey.png",
+    "application_url": "https://www.wellsfargo.com/credit-cards/autograph-journey/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-ink-business-cash",
+    "name": "Chase Ink Business Cash",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 75000,
+      "spend_requirement_cents": 600000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "internet_cable_phone": 5,
+      "advertising": 5,
+      "gas": 2,
+      "dining": 2,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "internet_cable_phone", "cap_cents": 2500000, "period": "year", "note": "Combined $25k cap across office supplies, internet, phone" },
+      { "category": "gas", "cap_cents": 2500000, "period": "year", "note": "Combined $25k cap across gas and dining" }
+    ],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "5x on office supplies, internet, phone ($25k cap)",
+      "2x on gas and dining ($25k cap)",
+      "No annual fee",
+      "0% intro APR 12 months",
+      "Points transfer to Sapphire cards"
+    ],
+    "best_for": ["business office expenses", "no annual fee UR", "internet and phone bills"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-ink-business-cash.png",
+    "application_url": "https://creditcards.chase.com/business-credit-cards/ink/cash",
+    "is_business": true,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "chase-ink-business-unlimited",
+    "name": "Chase Ink Business Unlimited",
+    "issuer": "chase",
+    "currency": "UR",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 75000,
+      "spend_requirement_cents": 600000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 1.5,
+      "travel": 1.5,
+      "groceries": 1.5,
+      "gas": 1.5,
+      "other": 1.5
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "1.5x on everything",
+      "No annual fee",
+      "0% intro APR 12 months",
+      "Points transfer to Sapphire cards"
+    ],
+    "best_for": ["business flat rate", "no annual fee UR", "simple business spending"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-ink-business-unlimited.png",
+    "application_url": "https://creditcards.chase.com/business-credit-cards/ink/unlimited",
+    "is_business": true,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "amex-blue-cash-preferred",
+    "name": "Blue Cash Preferred Card from Amex",
+    "issuer": "amex",
+    "currency": "BCP_CASH",
+    "network": "amex",
+    "annual_fee_cents": 8388,
+    "signup_bonus": {
+      "points": 25000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "groceries": 6,
+      "streaming": 6,
+      "transit": 3,
+      "gas": 3,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "groceries", "cap_cents": 600000, "period": "year", "note": "6% on first $6k, then 1%" }
+    ],
+    "portal_cpp": null,
+    "key_perks": [
+      "6% on groceries ($6k/year cap)",
+      "6% on streaming",
+      "3% on transit and gas",
+      "$84/year fee ($6.99/mo)",
+      "Cash back rewards (not transferable)"
+    ],
+    "best_for": ["grocery maximizer", "streaming spend", "cash back families"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-blue-cash-preferred.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-preferred/",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "amex-blue-cash-everyday",
+    "name": "Blue Cash Everyday Card from Amex",
+    "issuer": "amex",
+    "currency": "BCE_CASH",
+    "network": "amex",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 200000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "groceries": 3,
+      "online_shopping": 3,
+      "gas": 3,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "groceries", "cap_cents": 600000, "period": "year", "note": "3% on first $6k, then 1%" }
+    ],
+    "portal_cpp": null,
+    "key_perks": [
+      "3% on groceries ($6k/year cap)",
+      "3% on online retail",
+      "3% on gas",
+      "No annual fee",
+      "Cash back rewards (not transferable)"
+    ],
+    "best_for": ["no annual fee cash back", "groceries", "online shopping"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-blue-cash-everyday.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/blue-cash-everyday/",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "amex-hilton-honors-aspire",
+    "name": "Hilton Honors American Express Aspire",
+    "issuer": "amex",
+    "currency": "HILTON",
+    "network": "amex",
+    "annual_fee_cents": 45000,
+    "signup_bonus": {
+      "points": 175000,
+      "spend_requirement_cents": 600000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 14,
+      "flights": 7,
+      "dining": 7,
+      "other": 3
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Hilton Diamond status",
+      "14x at Hilton properties",
+      "7x on flights and dining",
+      "Free night on anniversary",
+      "$250 Hilton resort credit",
+      "$250 airline fee credit",
+      "Priority Pass"
+    ],
+    "best_for": ["Hilton Diamond status", "premium Hilton loyalists", "resort stays"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-hilton-aspire.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/hilton-honors-aspire/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-hilton-honors",
+    "name": "Hilton Honors American Express Card",
+    "issuer": "amex",
+    "currency": "HILTON",
+    "network": "amex",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 80000,
+      "spend_requirement_cents": 200000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 7,
+      "dining": 5,
+      "groceries": 5,
+      "gas": 5,
+      "other": 3
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "7x at Hilton properties",
+      "5x on dining, groceries, gas",
+      "No annual fee",
+      "Hilton Silver status"
+    ],
+    "best_for": ["no annual fee Hilton", "casual Hilton guests", "grocery and gas earning"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-hilton-honors.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/hilton-honors/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "amex-delta-platinum",
+    "name": "Delta SkyMiles Platinum Amex",
+    "issuer": "amex",
+    "currency": "DL",
+    "network": "amex",
+    "annual_fee_cents": 35000,
+    "signup_bonus": {
+      "points": 90000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 3,
+      "dining": 2,
+      "groceries": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "Companion Certificate (domestic roundtrip) on anniversary",
+      "3x on Delta purchases",
+      "2x on dining and groceries",
+      "Free first checked bag",
+      "Priority boarding",
+      "SkyMiles MQD waiver at $25k spend"
+    ],
+    "best_for": ["Delta companion certificate", "Delta status seekers", "frequent Delta flyers"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-delta-platinum.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/card/delta-skymiles-platinum-american-express-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "capital-one-quicksilver",
+    "name": "Capital One Quicksilver",
+    "issuer": "capital_one",
+    "currency": "C1",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 50000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 1.5,
+      "travel": 1.5,
+      "groceries": 1.5,
+      "gas": 1.5,
+      "other": 1.5
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "1.5% on everything",
+      "No annual fee",
+      "No foreign transaction fees",
+      "0% intro APR 15 months"
+    ],
+    "best_for": ["simple flat rate", "no annual fee", "first credit card"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/capital-one-quicksilver.png",
+    "application_url": "https://www.capitalone.com/credit-cards/quicksilver/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "capital-one-venture-x-business",
+    "name": "Capital One Venture X Business",
+    "issuer": "capital_one",
+    "currency": "C1",
+    "network": "visa",
+    "annual_fee_cents": 39500,
+    "signup_bonus": {
+      "points": 150000,
+      "spend_requirement_cents": 3000000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_portal": 10,
+      "flights": 5,
+      "car_rentals": 10,
+      "hotels": 10,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "10x on hotels/cars via Capital One Travel portal",
+      "5x on flights",
+      "2x on everything else",
+      "$300 annual travel credit",
+      "Capital One Lounge access",
+      "Priority Pass",
+      "Global Entry / TSA PreCheck"
+    ],
+    "best_for": ["business premium travel", "Capital One ecosystem", "high portal earning"],
+    "credit_score_min": "excellent",
+    "card_art_url": "/cards/capital-one-venture-x-business.png",
+    "application_url": "https://www.capitalone.com/small-business/credit-cards/venture-x-business/",
+    "is_business": true,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "discover-it-cash-back",
+    "name": "Discover it Cash Back",
+    "issuer": "discover",
+    "currency": "DISCOVER_CASH",
+    "network": "discover",
+    "annual_fee_cents": 0,
+    "signup_bonus": null,
+    "earning_rates": {
+      "rotating_categories": 5,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "rotating_categories", "cap_cents": 150000, "period": "quarter" }
+    ],
+    "portal_cpp": null,
+    "key_perks": [
+      "5% on rotating categories ($1,500/quarter cap)",
+      "Cashback Match: first-year earnings doubled",
+      "No annual fee",
+      "No foreign transaction fees on purchases"
+    ],
+    "best_for": ["rotating category maximizer", "first year double cash back", "no annual fee"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/discover-it-cash-back.png",
+    "application_url": "https://www.discover.com/credit-cards/cash-back/it-card.html",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "discover-it-miles",
+    "name": "Discover it Miles",
+    "issuer": "discover",
+    "currency": "DISCOVER_MILES",
+    "network": "discover",
+    "annual_fee_cents": 0,
+    "signup_bonus": null,
+    "earning_rates": {
+      "dining": 1.5,
+      "travel": 1.5,
+      "groceries": 1.5,
+      "gas": 1.5,
+      "other": 1.5
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "1.5x on everything",
+      "Miles Match: first-year earnings doubled (effectively 3x)",
+      "No annual fee",
+      "No foreign transaction fees on purchases"
+    ],
+    "best_for": ["first year double miles", "simple flat rate", "no annual fee"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/discover-it-miles.png",
+    "application_url": "https://www.discover.com/credit-cards/travel/it-miles.html",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "boa-premium-rewards",
+    "name": "Bank of America Premium Rewards",
+    "issuer": "bank_of_america",
+    "currency": "BOA",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "travel": 2,
+      "dining": 2,
+      "other": 1.5
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "2x on travel and dining",
+      "1.5x on everything else",
+      "$100 airline incidental credit",
+      "Global Entry / TSA PreCheck",
+      "Preferred Rewards boost up to 75%"
+    ],
+    "best_for": ["Bank of America customers", "Preferred Rewards members", "travel and dining"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/boa-premium-rewards.png",
+    "application_url": "https://www.bankofamerica.com/credit-cards/products/premium-rewards-credit-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "boa-customized-cash",
+    "name": "Bank of America Customized Cash Rewards",
+    "issuer": "bank_of_america",
+    "currency": "BOA_CASH",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "rotating_categories": 3,
+      "groceries": 2,
+      "other": 1
+    },
+    "earning_caps": [
+      { "category": "rotating_categories", "cap_cents": 250000, "period": "quarter", "note": "3% on chosen category, $2,500/quarter cap" }
+    ],
+    "portal_cpp": null,
+    "key_perks": [
+      "3% on your chosen category (gas, online shopping, dining, travel, drugstores, or home improvement)",
+      "2% on groceries and wholesale clubs",
+      "No annual fee",
+      "Preferred Rewards boost up to 75%"
+    ],
+    "best_for": ["flexible category selection", "no annual fee cash back", "BofA customers"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/boa-customized-cash.png",
+    "application_url": "https://www.bankofamerica.com/credit-cards/products/cash-back-credit-card/",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "boa-unlimited-cash",
+    "name": "Bank of America Unlimited Cash Rewards",
+    "issuer": "bank_of_america",
+    "currency": "BOA_CASH",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 1.5,
+      "travel": 1.5,
+      "groceries": 1.5,
+      "gas": 1.5,
+      "other": 1.5
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "1.5% on everything",
+      "No annual fee",
+      "Preferred Rewards boost up to 75%",
+      "0% intro APR 15 billing cycles"
+    ],
+    "best_for": ["simple flat rate cash back", "no annual fee", "BofA Preferred Rewards"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/boa-unlimited-cash.png",
+    "application_url": "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-back-credit-card/",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "barclays-aadvantage-aviator-red",
+    "name": "AAdvantage Aviator Red World Elite Mastercard",
+    "issuer": "barclays",
+    "currency": "AA",
+    "network": "mastercard",
+    "annual_fee_cents": 9900,
+    "signup_bonus": {
+      "points": 60000,
+      "spend_requirement_cents": 1,
+      "timeframe_months": 3,
+      "note": "Bonus earned after first purchase and paying annual fee"
+    },
+    "earning_rates": {
+      "brand_property": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "60k miles after first purchase",
+      "2x on American Airlines purchases",
+      "Free first checked bag",
+      "Preferred boarding",
+      "25% inflight savings"
+    ],
+    "best_for": ["easiest signup bonus", "AA miles", "free checked bag"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/barclays-aadvantage-aviator-red.png",
+    "application_url": "https://cards.barclaycardus.com/banking/cards/aadvantage-aviator-red-world-elite-mastercard/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "barclays-jetblue-plus",
+    "name": "JetBlue Plus Card",
+    "issuer": "barclays",
+    "currency": "B6",
+    "network": "mastercard",
+    "annual_fee_cents": 9900,
+    "signup_bonus": {
+      "points": 80000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 6,
+      "dining": 2,
+      "groceries": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "6x on JetBlue purchases",
+      "2x on dining and groceries",
+      "Free first checked bag",
+      "50% savings on inflight purchases",
+      "Anniversary bonus of 5,000 points"
+    ],
+    "best_for": ["JetBlue flyers", "free checked bag", "JetBlue loyalty"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/barclays-jetblue-plus.png",
+    "application_url": "https://cards.barclaycardus.com/banking/cards/jetblue-plus-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "barclays-wyndham-earner-plus",
+    "name": "Wyndham Rewards Earner Plus Card",
+    "issuer": "barclays",
+    "currency": "WYNDHAM",
+    "network": "visa",
+    "annual_fee_cents": 7500,
+    "signup_bonus": {
+      "points": 75000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 6,
+      "gas": 5,
+      "groceries": 2,
+      "dining": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "6x at Wyndham properties",
+      "5x on gas",
+      "2x on groceries and dining",
+      "Wyndham Gold status",
+      "15,000 point anniversary bonus"
+    ],
+    "best_for": ["Wyndham loyalists", "gas spending", "budget hotel stays"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/barclays-wyndham-earner-plus.png",
+    "application_url": "https://cards.barclaycardus.com/banking/cards/wyndham-rewards-earner-plus-card/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "us-bank-altitude-go",
+    "name": "U.S. Bank Altitude Go Visa",
+    "issuer": "us_bank",
+    "currency": "ALTITUDE",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 25000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 4,
+      "groceries": 2,
+      "gas": 2,
+      "streaming": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "4x on dining",
+      "2x on groceries, gas, streaming",
+      "No annual fee",
+      "No foreign transaction fees",
+      "Streaming credit (first year)"
+    ],
+    "best_for": ["dining no annual fee", "US Bank customers", "everyday spending"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/us-bank-altitude-go.png",
+    "application_url": "https://www.usbank.com/credit-cards/altitude-go-visa-signature-credit-card.html",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "wells-fargo-autograph",
+    "name": "Wells Fargo Autograph Card",
+    "issuer": "wells_fargo",
+    "currency": "WF",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 30000,
+      "spend_requirement_cents": 150000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 3,
+      "travel": 3,
+      "gas": 3,
+      "transit": 3,
+      "streaming": 3,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "3x on dining, travel, gas, transit, streaming",
+      "No annual fee",
+      "Cell phone protection",
+      "No foreign transaction fees",
+      "0% intro APR 12 months"
+    ],
+    "best_for": ["no annual fee multi-category", "gas and dining", "Wells Fargo customers"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/wells-fargo-autograph.png",
+    "application_url": "https://www.wellsfargo.com/credit-cards/autograph/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "wells-fargo-active-cash",
+    "name": "Wells Fargo Active Cash Card",
+    "issuer": "wells_fargo",
+    "currency": "WF_CASH",
+    "network": "visa",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 20000,
+      "spend_requirement_cents": 50000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "dining": 2,
+      "travel": 2,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "2% on everything",
+      "No annual fee",
+      "Cell phone protection",
+      "0% intro APR 15 months",
+      "No foreign transaction fees"
+    ],
+    "best_for": ["flat rate 2%", "no annual fee", "simple cash back"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/wells-fargo-active-cash.png",
+    "application_url": "https://www.wellsfargo.com/credit-cards/active-cash/",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "citi-aadvantage-platinum-select",
+    "name": "Citi AAdvantage Platinum Select World Elite Mastercard",
+    "issuer": "citi",
+    "currency": "AA",
+    "network": "mastercard",
+    "annual_fee_cents": 9900,
+    "signup_bonus": {
+      "points": 50000,
+      "spend_requirement_cents": 250000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 2,
+      "gas": 2,
+      "dining": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "2x on AA purchases, gas, dining",
+      "Free first checked bag",
+      "Preferred boarding",
+      "25% savings on inflight food, beverages, Wi-Fi",
+      "$99 annual fee waived first year"
+    ],
+    "best_for": ["AA miles starter", "free checked bag", "dining and gas earning"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/citi-aadvantage-platinum-select.png",
+    "application_url": "https://www.citi.com/credit-cards/citi-aadvantage-platinum-select-credit-card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-marriott-bonvoy-boundless",
+    "name": "Marriott Bonvoy Boundless Credit Card",
+    "issuer": "chase",
+    "currency": "MARRIOTT",
+    "network": "visa",
+    "annual_fee_cents": 9500,
+    "signup_bonus": {
+      "points": 85000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 6,
+      "dining": 3,
+      "groceries": 3,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "6x at Marriott properties",
+      "3x on dining and groceries",
+      "Free night (up to 35k) on anniversary",
+      "Marriott Silver Elite status",
+      "15 elite night credits annually"
+    ],
+    "best_for": ["Marriott loyalists", "free annual night", "mid-tier hotel card"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-marriott-bonvoy-boundless.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/marriott-bonvoy/boundless",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-ihg-one-rewards-traveler",
+    "name": "IHG One Rewards Traveler Credit Card",
+    "issuer": "chase",
+    "currency": "IHG",
+    "network": "mastercard",
+    "annual_fee_cents": 0,
+    "signup_bonus": {
+      "points": 80000,
+      "spend_requirement_cents": 200000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 5,
+      "dining": 3,
+      "gas": 3,
+      "other": 2
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "5x at IHG properties",
+      "3x on dining and gas",
+      "No annual fee",
+      "IHG Silver Elite status",
+      "Reward night discount (up to 20%)"
+    ],
+    "best_for": ["no annual fee hotel card", "IHG starter card", "dining and gas"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-ihg-traveler.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/ihg-one-rewards/traveler",
+    "is_business": false,
+    "foreign_transaction_fee": true
+  },
+  {
+    "slug": "amex-hilton-honors-business",
+    "name": "Hilton Honors American Express Business Card",
+    "issuer": "amex",
+    "currency": "HILTON",
+    "network": "amex",
+    "annual_fee_cents": 19500,
+    "signup_bonus": {
+      "points": 130000,
+      "spend_requirement_cents": 300000,
+      "timeframe_months": 6
+    },
+    "earning_rates": {
+      "brand_property": 12,
+      "flights": 6,
+      "gas": 6,
+      "dining": 6,
+      "shipping": 6,
+      "other": 3
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "12x at Hilton properties",
+      "6x on flights, gas, dining, shipping",
+      "Hilton Gold status",
+      "Free night after $15k spend",
+      "Free night after $60k spend",
+      "Priority Pass (10 visits/year)"
+    ],
+    "best_for": ["Hilton business travelers", "shipping spend", "hotel status"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/amex-hilton-honors-business.png",
+    "application_url": "https://www.americanexpress.com/us/credit-cards/business/business-credit-cards/hilton-honors-business-credit-card-amex/",
+    "is_business": true,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-southwest-rapid-rewards-plus",
+    "name": "Southwest Rapid Rewards Plus Credit Card",
+    "issuer": "chase",
+    "currency": "WN",
+    "network": "visa",
+    "annual_fee_cents": 6900,
+    "signup_bonus": {
+      "points": 50000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "2x on Southwest and Rapid Rewards hotel purchases",
+      "3,000 anniversary points",
+      "Earn toward Companion Pass",
+      "No foreign transaction fees"
+    ],
+    "best_for": ["Southwest flyers", "Companion Pass pursuit", "budget airline"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-southwest-plus.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/southwest/plus",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "chase-southwest-rapid-rewards-priority",
+    "name": "Southwest Rapid Rewards Priority Credit Card",
+    "issuer": "chase",
+    "currency": "WN",
+    "network": "visa",
+    "annual_fee_cents": 14900,
+    "signup_bonus": {
+      "points": 50000,
+      "spend_requirement_cents": 100000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "brand_property": 3,
+      "dining": 2,
+      "streaming": 2,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": null,
+    "key_perks": [
+      "3x on Southwest and Rapid Rewards hotel purchases",
+      "2x on dining and streaming",
+      "7,500 anniversary points",
+      "$75 Southwest travel credit annually",
+      "4 upgraded boardings per year",
+      "Earn toward Companion Pass"
+    ],
+    "best_for": ["Southwest loyalists", "Companion Pass pursuit", "Southwest premium perks"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/chase-southwest-priority.png",
+    "application_url": "https://creditcards.chase.com/travel-credit-cards/southwest/priority",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  }
+]

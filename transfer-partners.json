@@ -1,0 +1,238 @@
+{
+  "currencies": {
+    "UR": {
+      "name": "Chase Ultimate Rewards",
+      "issuer": "chase",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "United MileagePlus", "code": "UA", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Southwest Rapid Rewards", "code": "WN", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "British Airways Avios", "code": "BA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Air Canada Aeroplan", "code": "AC", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Singapore KrisFlyer", "code": "SQ", "ratio": "1:1", "transfer_time": "12-24 hours", "alliance": "Star Alliance" },
+          { "partner": "Emirates Skywards", "code": "EK", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Iberia Avios", "code": "IB", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Virgin Atlantic Flying Club", "code": "VS", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "JetBlue TrueBlue", "code": "B6", "ratio": "1:1", "transfer_time": "instant", "alliance": null }
+        ],
+        "hotels": [
+          { "partner": "World of Hyatt", "code": "HYATT", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "IHG One Rewards", "code": "IHG", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "Marriott Bonvoy", "code": "MARRIOTT", "ratio": "1:1", "transfer_time": "1-2 days" }
+        ]
+      }
+    },
+    "MR": {
+      "name": "American Express Membership Rewards",
+      "issuer": "amex",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "Delta SkyMiles", "code": "DL", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "British Airways Avios", "code": "BA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Singapore KrisFlyer", "code": "SQ", "ratio": "1:1", "transfer_time": "12-24 hours", "alliance": "Star Alliance" },
+          { "partner": "ANA Mileage Club", "code": "NH", "ratio": "1:1", "transfer_time": "2-3 days", "alliance": "Star Alliance" },
+          { "partner": "Virgin Atlantic Flying Club", "code": "VS", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Emirates Skywards", "code": "EK", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Cathay Pacific Asia Miles", "code": "CX", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Qantas Frequent Flyer", "code": "QF", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Avianca LifeMiles", "code": "AV", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "JetBlue TrueBlue", "code": "B6", "ratio": "1:0.25", "transfer_time": "instant", "alliance": null, "note": "250 TrueBlue per 1,000 MR" },
+          { "partner": "Aer Lingus AerClub", "code": "EI", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Etihad Guest", "code": "EY", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Hawaiian Airlines HawaiianMiles", "code": "HA", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Air Canada Aeroplan", "code": "AC", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" }
+        ],
+        "hotels": [
+          { "partner": "Hilton Honors", "code": "HILTON", "ratio": "1:2", "transfer_time": "instant", "note": "2 Hilton points per 1 MR" },
+          { "partner": "Marriott Bonvoy", "code": "MARRIOTT", "ratio": "1:1", "transfer_time": "1-2 days" },
+          { "partner": "Choice Privileges", "code": "CHOICE", "ratio": "1:1", "transfer_time": "instant" }
+        ]
+      }
+    },
+    "TYP": {
+      "name": "Citi ThankYou Points",
+      "issuer": "citi",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "Turkish Miles&Smiles", "code": "TK", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Singapore KrisFlyer", "code": "SQ", "ratio": "1:1", "transfer_time": "12-24 hours", "alliance": "Star Alliance" },
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Virgin Atlantic Flying Club", "code": "VS", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Avianca LifeMiles", "code": "AV", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Cathay Pacific Asia Miles", "code": "CX", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Emirates Skywards", "code": "EK", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Etihad Guest", "code": "EY", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "JetBlue TrueBlue", "code": "B6", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Qantas Frequent Flyer", "code": "QF", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Qatar Airways Privilege Club", "code": "QR", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" }
+        ],
+        "hotels": [
+          { "partner": "Accor Live Limitless", "code": "ACCOR", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "Choice Privileges", "code": "CHOICE", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "Wyndham Rewards", "code": "WYNDHAM", "ratio": "1:1", "transfer_time": "instant" }
+        ]
+      }
+    },
+    "C1": {
+      "name": "Capital One Miles",
+      "issuer": "capital_one",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "Air Canada Aeroplan", "code": "AC", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Turkish Miles&Smiles", "code": "TK", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "British Airways Avios", "code": "BA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Emirates Skywards", "code": "EK", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Singapore KrisFlyer", "code": "SQ", "ratio": "1:1", "transfer_time": "12-24 hours", "alliance": "Star Alliance" },
+          { "partner": "Avianca LifeMiles", "code": "AV", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Cathay Pacific Asia Miles", "code": "CX", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Qantas Frequent Flyer", "code": "QF", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Virgin Atlantic Flying Club", "code": "VS", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Finnair Plus", "code": "AY", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "TAP Miles&Go", "code": "TP", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Etihad Guest", "code": "EY", "ratio": "1:1", "transfer_time": "instant", "alliance": null }
+        ],
+        "hotels": [
+          { "partner": "Accor Live Limitless", "code": "ACCOR", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "Wyndham Rewards", "code": "WYNDHAM", "ratio": "1:1", "transfer_time": "instant" }
+        ]
+      }
+    },
+    "BILT": {
+      "name": "Bilt Rewards",
+      "issuer": "bilt",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "American Airlines AAdvantage", "code": "AA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "United MileagePlus", "code": "UA", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Air Canada Aeroplan", "code": "AC", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Alaska Airlines Mileage Plan", "code": "AS", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "British Airways Avios", "code": "BA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Cathay Pacific Asia Miles", "code": "CX", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Emirates Skywards", "code": "EK", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Turkish Miles&Smiles", "code": "TK", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Virgin Atlantic Flying Club", "code": "VS", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "Hawaiian Airlines HawaiianMiles", "code": "HA", "ratio": "1:1", "transfer_time": "instant", "alliance": null }
+        ],
+        "hotels": [
+          { "partner": "World of Hyatt", "code": "HYATT", "ratio": "1:1", "transfer_time": "instant", "note": "Points count toward Hyatt status" },
+          { "partner": "IHG One Rewards", "code": "IHG", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "Marriott Bonvoy", "code": "MARRIOTT", "ratio": "1:1", "transfer_time": "1-2 days" }
+        ]
+      }
+    },
+    "WF": {
+      "name": "Wells Fargo Rewards",
+      "issuer": "wells_fargo",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "British Airways Avios", "code": "BA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Aer Lingus AerClub", "code": "EI", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Iberia Avios", "code": "IB", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Virgin Atlantic Flying Club", "code": "VS", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" }
+        ],
+        "hotels": [
+          { "partner": "Choice Privileges", "code": "CHOICE", "ratio": "1:1", "transfer_time": "instant" },
+          { "partner": "Wyndham Rewards", "code": "WYNDHAM", "ratio": "1:1", "transfer_time": "instant" }
+        ]
+      }
+    },
+    "ALTITUDE": {
+      "name": "U.S. Bank Altitude Rewards",
+      "issuer": "us_bank",
+      "transfer_partners": {
+        "airlines": [
+          { "partner": "Air France/KLM Flying Blue", "code": "AF", "ratio": "1:1", "transfer_time": "instant", "alliance": "SkyTeam" },
+          { "partner": "British Airways Avios", "code": "BA", "ratio": "1:1", "transfer_time": "instant", "alliance": "oneworld" },
+          { "partner": "Emirates Skywards", "code": "EK", "ratio": "1:1", "transfer_time": "instant", "alliance": null },
+          { "partner": "Avianca LifeMiles", "code": "AV", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" },
+          { "partner": "Turkish Miles&Smiles", "code": "TK", "ratio": "1:1", "transfer_time": "instant", "alliance": "Star Alliance" }
+        ],
+        "hotels": [
+          { "partner": "Wyndham Rewards", "code": "WYNDHAM", "ratio": "1:1", "transfer_time": "instant" }
+        ]
+      }
+    }
+  },
+  "transfer_bonus_history": {
+    "_note": "Populated by bonus scraper at runtime. This structure shows the schema.",
+    "example": {
+      "bank": "chase",
+      "currency": "UR",
+      "partner": "British Airways Avios",
+      "partner_code": "BA",
+      "bonus_percentage": 30,
+      "start_date": "2025-11-01",
+      "end_date": "2025-12-31",
+      "source_url": "https://ultimaterewardspoints.chase.com"
+    }
+  },
+  "cpp_valuations": {
+    "_note": "Community-consensus cents-per-point valuations. Updated quarterly.",
+    "UR": { "cpp": 2.0, "range": "1.5-2.25", "source": "TPG/OMAAT consensus" },
+    "MR": { "cpp": 2.0, "range": "1.5-2.0", "source": "TPG/OMAAT consensus" },
+    "TYP": { "cpp": 1.8, "range": "1.5-2.0", "source": "TPG/OMAAT consensus" },
+    "C1": { "cpp": 1.85, "range": "1.5-2.0", "source": "TPG/OMAAT consensus" },
+    "BILT": { "cpp": 2.05, "range": "1.7-2.2", "source": "TPG/OMAAT consensus" },
+    "WF": { "cpp": 1.5, "range": "1.2-1.8", "source": "TPG/OMAAT consensus" },
+    "ALTITUDE": { "cpp": 1.5, "range": "1.2-1.8", "source": "TPG/OMAAT consensus" },
+    "UA": { "cpp": 1.35, "range": "1.0-1.8", "source": "Award travel community" },
+    "AA": { "cpp": 1.5, "range": "1.0-2.0", "source": "Award travel community" },
+    "DL": { "cpp": 1.2, "range": "0.9-1.5", "source": "Award travel community" },
+    "WN": { "cpp": 1.4, "range": "1.2-1.7", "source": "Award travel community" },
+    "BA": { "cpp": 1.5, "range": "1.0-2.5", "source": "Short-haul sweet spots boost value" },
+    "SQ": { "cpp": 1.8, "range": "1.2-2.5", "source": "Suites/First class redemptions" },
+    "AC": { "cpp": 1.5, "range": "1.2-2.0", "source": "Award travel community" },
+    "NH": { "cpp": 1.8, "range": "1.3-3.0", "source": "RTW and partner awards" },
+    "VS": { "cpp": 1.5, "range": "1.0-2.5", "source": "ANA First via VS sweet spot" },
+    "AF": { "cpp": 1.4, "range": "1.0-2.0", "source": "Promo rewards boost value" },
+    "TK": { "cpp": 1.8, "range": "1.2-3.0", "source": "Star Alliance partner awards" },
+    "AV": { "cpp": 1.5, "range": "1.0-2.5", "source": "Star Alliance partner awards" },
+    "EI": { "cpp": 1.5, "range": "1.0-2.5", "source": "Avios sweet spots (same as BA)" },
+    "AY": { "cpp": 1.3, "range": "1.0-1.8", "source": "oneworld partner awards" },
+    "TP": { "cpp": 1.2, "range": "0.8-1.7", "source": "Star Alliance partner awards" },
+    "QR": { "cpp": 1.5, "range": "1.0-2.5", "source": "QSuites and partner awards" },
+    "HA": { "cpp": 1.2, "range": "0.8-1.5", "source": "Award travel community" },
+    "AS": { "cpp": 1.8, "range": "1.3-2.5", "source": "Partner award sweet spots" },
+    "B6": { "cpp": 1.3, "range": "1.0-1.7", "source": "Award travel community" },
+    "HYATT": { "cpp": 2.0, "range": "1.5-2.5", "source": "Best hotel point value in industry" },
+    "HILTON": { "cpp": 0.5, "range": "0.4-0.7", "source": "Award travel community" },
+    "MARRIOTT": { "cpp": 0.8, "range": "0.6-1.0", "source": "Award travel community" },
+    "IHG": { "cpp": 0.5, "range": "0.4-0.7", "source": "Award travel community" }
+  },
+  "expiration_policies": {
+    "_note": "Defines how/when points expire for each program. Powers the expiration alert system.",
+    "UR": { "policy": "no_expiration", "details": "Points don't expire as long as account is open." },
+    "MR": { "policy": "no_expiration", "details": "Points don't expire as long as at least one MR-earning card is open." },
+    "TYP": { "policy": "no_expiration", "details": "Points don't expire as long as account is open." },
+    "C1": { "policy": "no_expiration", "details": "Miles don't expire as long as account is open." },
+    "BILT": { "policy": "no_expiration", "details": "Points don't expire." },
+    "WF": { "policy": "no_expiration", "details": "Points don't expire as long as account is open." },
+    "ALTITUDE": { "policy": "no_expiration", "details": "Points don't expire as long as account is open." },
+    "UA": { "policy": "activity_based", "inactivity_months": 18, "details": "Miles expire after 18 months of no earning or burning activity." },
+    "AA": { "policy": "no_expiration", "details": "Miles no longer expire (changed 2021)." },
+    "DL": { "policy": "no_expiration", "details": "SkyMiles don't expire." },
+    "WN": { "policy": "no_expiration", "details": "Rapid Rewards points don't expire (changed 2022). Flight credits may expire." },
+    "BA": { "policy": "activity_based", "inactivity_months": 36, "details": "Avios expire after 36 months of no activity." },
+    "AS": { "policy": "no_expiration", "details": "Mileage Plan miles don't expire (changed 2024)." },
+    "SQ": { "policy": "activity_based", "inactivity_months": 36, "details": "KrisFlyer miles expire after 36 months of no activity." },
+    "AC": { "policy": "no_expiration", "details": "Aeroplan points don't expire (changed 2020)." },
+    "NH": { "policy": "fixed_date", "details": "ANA miles expire at the end of the month, 36 months after earning." },
+    "VS": { "policy": "activity_based", "inactivity_months": 36, "details": "Flying Club miles expire after 36 months of no activity." },
+    "AF": { "policy": "activity_based", "inactivity_months": 24, "details": "Flying Blue miles expire after 24 months of no qualifying activity." },
+    "TK": { "policy": "fixed_date", "details": "Miles&Smiles expire at end of the calendar year, 3 years after earning." },
+    "AV": { "policy": "fixed_date", "details": "LifeMiles expire 12 months after last earning/redemption activity." },
+    "CX": { "policy": "no_expiration", "details": "Asia Miles don't expire (changed 2023)." },
+    "EK": { "policy": "activity_based", "inactivity_months": 18, "details": "Skywards miles expire after 18 months of no activity." },
+    "QF": { "policy": "activity_based", "inactivity_months": 18, "details": "Qantas Points expire after 18 months of no activity." },
+    "EY": { "policy": "activity_based", "inactivity_months": 18, "details": "Guest miles expire after 18 months of no activity." },
+    "HYATT": { "policy": "activity_based", "inactivity_months": 24, "details": "Points expire after 24 months of no earning or redemption." },
+    "HILTON": { "policy": "activity_based", "inactivity_months": 24, "details": "Points expire after 24 months of account inactivity." },
+    "MARRIOTT": { "policy": "activity_based", "inactivity_months": 24, "details": "Points expire after 24 months of no earning or redemption." },
+    "IHG": { "policy": "activity_based", "inactivity_months": 12, "details": "Points expire after 12 months of no earning or redemption." }
+  }
+}

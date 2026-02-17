@@ -1,0 +1,14 @@
+# Obsidian workspace and cache files (device-specific, shouldn't be synced)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/graph.json
+.obsidian/cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
