@@ -199,10 +199,18 @@
     "HA": { "cpp": 1.2, "range": "0.8-1.5", "source": "Award travel community" },
     "AS": { "cpp": 1.8, "range": "1.3-2.5", "source": "Partner award sweet spots" },
     "B6": { "cpp": 1.3, "range": "1.0-1.7", "source": "Award travel community" },
+    "CX": { "cpp": 1.5, "range": "1.0-2.0", "source": "oneworld partner awards" },
+    "IB": { "cpp": 1.5, "range": "1.0-2.5", "source": "Avios sweet spots (same as BA)" },
+    "EY": { "cpp": 1.3, "range": "0.8-1.8", "source": "Award travel community" },
+    "EK": { "cpp": 1.3, "range": "0.8-2.0", "source": "Upgrade and partner awards" },
+    "QF": { "cpp": 1.5, "range": "1.0-2.0", "source": "oneworld partner awards" },
     "HYATT": { "cpp": 2.0, "range": "1.5-2.5", "source": "Best hotel point value in industry" },
     "HILTON": { "cpp": 0.5, "range": "0.4-0.7", "source": "Award travel community" },
     "MARRIOTT": { "cpp": 0.8, "range": "0.6-1.0", "source": "Award travel community" },
-    "IHG": { "cpp": 0.5, "range": "0.4-0.7", "source": "Award travel community" }
+    "IHG": { "cpp": 0.5, "range": "0.4-0.7", "source": "Award travel community" },
+    "WYNDHAM": { "cpp": 1.1, "range": "0.8-1.4", "source": "Award travel community" },
+    "CHOICE": { "cpp": 0.6, "range": "0.4-0.8", "source": "Award travel community" },
+    "ACCOR": { "cpp": 2.0, "range": "1.5-2.5", "source": "Award travel community" }
   },
   "expiration_policies": {
     "_note": "Defines how/when points expire for each program. Powers the expiration alert system.",
