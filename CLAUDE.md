@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. The project is in **pre-development phase** — all P0 research is complete and development is about to begin.
+**Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. The project is in **Phase 0, Week 1** — pre-build audit is complete, data foundations are ready, next step is project scaffolding (Turborepo + Next.js + Supabase).
 
 ## Repository Structure
 
@@ -53,6 +53,15 @@ The schema in `001_initial_schema.sql` follows these patterns:
 - **Seller of Travel registration** required in CA, FL, HI, WA before accepting bookings
 - Affiliate revenue (CardRatings, CJ, FlexOffers) is the primary monetization path (55-65%)
 - Subscription tiers: Free (limited) and Pro ($9.99/mo)
+
+## Current Status (Feb 17, 2026)
+
+**Pre-build audit complete.** All 7 critical, 11 important, and 3 minor fixes applied across all three foundation files. Key changes:
+- `001_initial_schema.sql` — Fixed signup_bonus_met trigger (spend-based, not date-based), expiring_points view uses per-program inactivity_months, added CHECK constraints, RLS on transfer_bonus_history, 'upgraded' status, next_anniversary_date() helper
+- `credit-cards.json` — 52 cards (was 26), standardized earning categories, earning_caps added, Delta currency DL (not DELTA), Freedom Flex→visa, Bilt signup_bonus→null
+- `transfer-partners.json` — Added WF + ALTITUDE currencies, 38 cpp_valuations (was 21), JetBlue ratio fixed to 1:0.25, WF/ALTITUDE expiration policies added
+
+**Next up:** Project scaffolding (Turborepo + Next.js + Supabase), run migration, Week 1 sub-agents (trademark, DOT, card art, issuer rules)
 
 ## Development Build Order
 
