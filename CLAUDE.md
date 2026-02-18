@@ -4,34 +4,61 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. The project is in **Phase 0, Week 1** — pre-build audit is complete, data foundations are ready, next step is project scaffolding (Turborepo + Next.js + Supabase).
+**Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. The project is in **Phase 0, Week 1** — scaffolding complete, database live, deploying to production.
 
 ## Repository Structure
 
-This repo currently contains planning documents and data catalogs (no application code yet):
+Turborepo monorepo with pnpm workspaces:
 
-- `WAYLOFT-MASTER-PLAN-V3.md` — Comprehensive development roadmap with week-by-week plan, automation skills/agents, and architecture decisions
-- `Tech Stack.md` — Technology choices and rationale
-- `001_initial_schema.sql` — Full Supabase/PostgreSQL schema (first migration)
-- `credit-cards.json` — Catalog of 50+ credit cards with earning rates, perks, signup bonuses, and transfer partners. Keyed by `slug`.
-- `transfer-partners.json` — Transfer partner relationships and ratios for Chase UR, Amex MR, Citi TYP, Capital One, and Bilt
-- `Research/` — Completed P0 research (legal, competitive, API evaluations, UX teardowns)
+```
+wayloft/
+├── apps/
+│   ├── web/                    # Next.js 16.1.6 (App Router, Tailwind v4, shadcn/ui)
+│   │   ├── app/
+│   │   │   ├── (marketing)/    # Public pages (layout stub)
+│   │   │   ├── (app)/          # Authenticated pages (dashboard stub + 6 route stubs)
+│   │   │   └── api/
+│   │   ├── components/ui/      # shadcn components (button, card, input, badge)
+│   │   ├── lib/
+│   │   │   ├── supabase/       # server.ts, client.ts, middleware.ts
+│   │   │   └── utils.ts        # cn() helper
+│   │   └── middleware.ts       # Supabase auth session refresh
+│   ├── extension/              # Chrome Extension (stub)
+│   └── workers/                # Cloudflare Workers (stub)
+├── packages/
+│   ├── shared/                 # Types, constants, Zod validators (@wayloft/shared)
+│   ├── db/                     # Supabase client, migrations (@wayloft/db)
+│   │   └── migrations/001_initial_schema.sql
+│   └── email/                  # React Email templates (@wayloft/email)
+├── scrapers/                   # Python scraper stubs (bonuses, semi_private)
+├── data/                       # credit-cards.json (52 cards), transfer-partners.json
+├── Research/                   # Completed P0 research
+├── .github/workflows/ci.yml   # CI: lint, type-check, build on push/PR
+├── turbo.json
+├── tsconfig.base.json
+├── pnpm-workspace.yaml
+└── package.json
+```
 
-## Planned Tech Stack
+## Tech Stack (Active)
 
-- **Frontend:** Next.js 15 (App Router), Tailwind CSS v4, shadcn/ui, TanStack Query, Zustand, React Hook Form + Zod, Serwist (PWA)
-- **Backend:** Next.js API Routes, Hono on Cloudflare Workers (edge), Trigger.dev (background jobs)
-- **Scraping:** Python with Playwright + BeautifulSoup on Railway (separate from main app)
-- **Browser Extension:** Chrome Extension Manifest V3 with React + Tailwind
-- **Database:** Supabase (PostgreSQL) with Row Level Security. Upstash Redis for caching. Cloudflare R2 for file storage.
-- **Infrastructure:** Vercel (frontend), Cloudflare Workers (edge), Railway (scrapers), GitHub Actions (CI/CD)
-- **Monitoring:** Sentry (errors), PostHog (analytics)
-- **Payments:** Stripe. **Email:** Resend.
-- **Monorepo:** Turborepo
+- **Frontend:** Next.js 16.1.6 (App Router), Tailwind CSS v4, shadcn/ui (New York, Neutral)
+- **Database:** Supabase (PostgreSQL) — project `wjloligimlldiljeyelh`, migration deployed, 15 tables live with RLS
+- **Auth:** Supabase Auth with @supabase/ssr (server/client/middleware helpers in place)
+- **Infrastructure:** Vercel (auto-deploys from main), GitHub Actions CI
+- **Monorepo:** Turborepo with pnpm 10.30.0
+
+## Tech Stack (Planned, Not Yet Integrated)
+
+- TanStack Query, Zustand, React Hook Form + Zod, Serwist (PWA)
+- Hono on Cloudflare Workers (edge), Trigger.dev (background jobs)
+- Python with Playwright + BeautifulSoup on Railway (scrapers)
+- Chrome Extension Manifest V3
+- Upstash Redis, Cloudflare R2, Sentry, PostHog, Stripe, Resend
 
 ## Database Schema Conventions
 
-The schema in `001_initial_schema.sql` follows these patterns:
+The schema in `packages/db/migrations/001_initial_schema.sql` follows these patterns:
 - All tables use UUID primary keys via `gen_random_uuid()`
 - User data tables reference `profiles(id)` which links to `auth.users(id)` (Supabase Auth)
 - RLS is enabled on all tables; policies enforce user-owns-their-data
@@ -54,14 +81,54 @@ The schema in `001_initial_schema.sql` follows these patterns:
 - Affiliate revenue (CardRatings, CJ, FlexOffers) is the primary monetization path (55-65%)
 - Subscription tiers: Free (limited) and Pro ($9.99/mo)
 
-## Current Status (Feb 17, 2026)
+## Current Status (Feb 18, 2026)
 
-**Pre-build audit complete.** All 7 critical, 11 important, and 3 minor fixes applied across all three foundation files. Key changes:
-- `001_initial_schema.sql` — Fixed signup_bonus_met trigger (spend-based, not date-based), expiring_points view uses per-program inactivity_months, added CHECK constraints, RLS on transfer_bonus_history, 'upgraded' status, next_anniversary_date() helper
-- `credit-cards.json` — 52 cards (was 26), standardized earning categories, earning_caps added, Delta currency DL (not DELTA), Freedom Flex→visa, Bilt signup_bonus→null
-- `transfer-partners.json` — Added WF + ALTITUDE currencies, 38 cpp_valuations (was 21), JetBlue ratio fixed to 1:0.25, WF/ALTITUDE expiration policies added
+**Phase 0 Week 1 — scaffolding complete.** Here's what's done and what's remaining:
 
-**Next up:** Project scaffolding (Turborepo + Next.js + Supabase), run migration, Week 1 sub-agents (trademark, DOT, card art, issuer rules)
+### Done
+- Turborepo monorepo with pnpm workspaces
+- Next.js 16.1.6 app (`apps/web`) with App Router, Tailwind v4, TypeScript
+- shadcn/ui initialized (New York style, Neutral base, 4 starter components)
+- Supabase connected — migration deployed, all 15 tables + RLS + triggers live
+- Supabase client helpers (server, browser, middleware) with @supabase/ssr
+- Route groups: (marketing), (app) with dashboard stub
+- Shared packages: @wayloft/shared (types), @wayloft/db (Supabase client), @wayloft/email (stub)
+- GitHub repo: github.com/annabelfilippini/wayloft (private)
+- Vercel: auto-deploys on push to main, env vars set
+- CI/CD: GitHub Actions (lint, type-check, build)
+- All verification passing: `pnpm turbo build`, `pnpm turbo type-check`, `pnpm turbo dev`
+
+### Remaining Week 1
+- **MCP connections** — Supabase MCP server for direct DB access
+- **4 research sub-agents:** trademark search, DOT/Seller of Travel, card art collection, issuer rules
+- **Brand identity** (owner task) — logo, colors, fonts
+- **GTM** (owner task) — Reddit/Twitter/FlyerTalk presence, waitlist
+
+### Next: Week 2
+- ToS, Privacy Policy (Termly)
+- Chrome Web Store dev account
+- Auth config (Supabase Auth providers)
+- Deploy skeleton (auth flow, protected routes)
+- Core UI components
+- Extension popup wireframes
+- Build 13 Claude Code skills
+- 4 more sub-agents: expiration policy verification, airline DOM, bank DOM, MV3 guide
+
+## Supabase Connection Info
+
+- **Project ID:** wjloligimlldiljeyelh
+- **URL:** https://wjloligimlldiljeyelh.supabase.co
+- **Note:** Direct DB connection is IPv6-only (no IPv4). Use Supabase JS client or dashboard SQL Editor for migrations.
+- **Env vars** are in `apps/web/.env.local` (not committed) and Vercel env settings
+
+## Development Commands
+
+```bash
+pnpm turbo dev          # Start Next.js dev server (localhost:3000)
+pnpm turbo build        # Production build
+pnpm turbo type-check   # TypeScript check across all packages
+pnpm turbo lint         # ESLint across all packages
+```
 
 ## Development Build Order
 
