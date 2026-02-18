@@ -180,6 +180,19 @@ CREATE TABLE public.loyalty_balances (
   UNIQUE(user_id, program_code)
 );
 
+-- Helper: Calculate next anniversary date from a card_since date
+-- (Must be defined before views that reference it)
+CREATE OR REPLACE FUNCTION public.next_anniversary_date(card_since DATE)
+RETURNS DATE AS $$
+BEGIN
+  RETURN CASE
+    WHEN (DATE_TRUNC('year', CURRENT_DATE) + (card_since - DATE_TRUNC('year', card_since))) >= CURRENT_DATE
+    THEN (DATE_TRUNC('year', CURRENT_DATE) + (card_since - DATE_TRUNC('year', card_since)))::DATE
+    ELSE (DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year' + (card_since - DATE_TRUNC('year', card_since)))::DATE
+  END;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
 -- Upcoming reminders (computed view for dashboard)
 -- This view powers the "Action Items" widget on the dashboard
 CREATE OR REPLACE VIEW public.upcoming_card_actions AS
@@ -545,18 +558,6 @@ CREATE INDEX idx_crowdsourced_confidence ON public.crowdsourced_availability(con
 -- ============================================
 -- HELPER FUNCTIONS
 -- ============================================
-
--- Calculate next anniversary date from a card_since date
-CREATE OR REPLACE FUNCTION public.next_anniversary_date(card_since DATE)
-RETURNS DATE AS $$
-BEGIN
-  RETURN CASE
-    WHEN (DATE_TRUNC('year', CURRENT_DATE) + (card_since - DATE_TRUNC('year', card_since))) >= CURRENT_DATE
-    THEN (DATE_TRUNC('year', CURRENT_DATE) + (card_since - DATE_TRUNC('year', card_since)))::DATE
-    ELSE (DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year' + (card_since - DATE_TRUNC('year', card_since)))::DATE
-  END;
-END;
-$$ LANGUAGE plpgsql IMMUTABLE;
 
 -- Auto-update updated_at timestamp
 CREATE OR REPLACE FUNCTION public.set_updated_at()

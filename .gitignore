@@ -1,13 +1,46 @@
-# Obsidian workspace and cache files (device-specific, shouldn't be synced)
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+.turbo/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Obsidian (device-specific)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/workspaces.json
 .obsidian/graph.json
 .obsidian/cache
 
-# OS files
-.DS_Store
-Thumbs.db
+# Debug logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Sentry
+.sentryclirc
 
 # Temporary files
 *.tmp

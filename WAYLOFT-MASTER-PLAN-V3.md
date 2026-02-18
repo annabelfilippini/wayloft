@@ -933,10 +933,10 @@ Embedded Knowledge: JSON schema validation, data source URLs for verification, d
 
 ### Phase 0: Foundation (Weeks 1-2)
 
-| Week | Business | Tech | Design | GTM | Automation |
-|------|----------|------|--------|-----|------------|
-| **1** | File Corp. Bank. wayloft.com. | Repo. Turborepo + Next.js. Cloud accounts. CI/CD. MCP connections. | Brand identity. shadcn/ui. | Reddit/Twitter/FlyerTalk. Waitlist. | **4 sub-agents:** trademark, DOT, card art collection, issuer rules research. |
-| **2** | ToS, Privacy (Termly). Chrome Web Store dev account. | DB migrations. Auth config. Deploy skeleton. | Core components. Extension popup wireframes. | Community engagement. | **Build 13 skills.** Test each. **4 sub-agents:** expiration policy verification, airline DOM, bank DOM, MV3 guide. |
+| Week  | Business                                             | Tech                                                               | Design                                       | GTM                                 | Automation                                                                                                          |
+| ----- | ---------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **1** | File Corp. Bank. wayloft.com.                        | Repo. Turborepo + Next.js. Cloud accounts. CI/CD. MCP connections. | Brand identity. shadcn/ui.                   | Reddit/Twitter/FlyerTalk. Waitlist. | **4 sub-agents:** trademark, DOT, card art collection, issuer rules research.                                       |
+| **2** | ToS, Privacy (Termly). Chrome Web Store dev account. | DB migrations. Auth config. Deploy skeleton.                       | Core components. Extension popup wireframes. | Community engagement.               | **Build 13 skills.** Test each. **4 sub-agents:** expiration policy verification, airline DOM, bank DOM, MV3 guide. |
 
 ### Phase 1: Core Build (Weeks 3-8)
 
