@@ -42,6 +42,9 @@ yarn-error.log*
 # Sentry
 .sentryclirc
 
+# Logs
+logs/
+
 # Temporary files
 *.tmp
 *.temp
