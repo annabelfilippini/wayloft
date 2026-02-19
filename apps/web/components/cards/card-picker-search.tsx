@@ -59,8 +59,8 @@ export function CardPickerSearch({ catalog, onSelect }: CardPickerSearchProps) {
                     {card.annual_fee_cents > 0
                       ? `$${card.annual_fee_cents / 100}/yr`
                       : "No AF"}
-                    {card.signup_bonus.points > 0 &&
-                      ` &middot; ${(card.signup_bonus.points / 1000).toFixed(0)}k bonus`}
+                    {card.signup_bonus?.points > 0 &&
+                      ` \u00b7 ${(card.signup_bonus.points / 1000).toFixed(0)}k bonus`}
                   </p>
                 </div>
               </CommandItem>
