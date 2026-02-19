@@ -1,0 +1,993 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-18",
+  "notes": "40 rules across 10 issuers. 9 rules actively changing — re-verify quarterly against Doctor of Credit, r/churning, and issuer terms.",
+  "issuers": {
+    "chase": {
+      "id": "chase",
+      "name": "Chase (JPMorgan Chase)",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "experian",
+        "multi_pull": false,
+        "combined_pull_possible": false,
+        "notes": "Bureau varies by state. Experian most common."
+      },
+      "application_rules": [
+        {
+          "id": "chase-5-24",
+          "name": "5/24 Rule",
+          "description": "Chase auto-declines most credit card applications if the applicant has opened 5+ new credit card accounts (across ALL issuers) in the past 24 months.",
+          "type": "velocity_limit",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "chase-sapphire-reserve", "chase-sapphire-preferred",
+            "chase-freedom-unlimited", "chase-freedom-flex",
+            "chase-ink-preferred", "chase-ink-business-cash", "chase-ink-business-unlimited",
+            "chase-ihg-premier", "chase-ihg-one-rewards-traveler",
+            "chase-united-explorer", "chase-world-of-hyatt",
+            "chase-marriott-bonvoy-boundless",
+            "chase-southwest-plus", "chase-southwest-priority"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 5,
+            "window_months": 24,
+            "scope": "all_issuers",
+            "counts_from": "account_opened"
+          },
+          "check_function": "checkVelocityAllIssuers",
+          "user_action_if_blocked": "Wait for oldest accounts to age past 24 months, or focus on business cards that don't report to personal credit.",
+          "sources": ["Doctor of Credit", "r/churning community data"],
+          "actively_changing": false,
+          "notes": "Personal cards from all issuers count. Authorized user accounts count. Business cards from most issuers do NOT count (except Capital One and Discover)."
+        },
+        {
+          "id": "chase-2-30",
+          "name": "2/30 Velocity Limit",
+          "description": "Chase limits approvals to ~2 Chase cards per 30-day rolling window.",
+          "type": "velocity_limit",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "chase-sapphire-reserve", "chase-sapphire-preferred",
+            "chase-freedom-unlimited", "chase-freedom-flex",
+            "chase-ink-preferred", "chase-ink-business-cash", "chase-ink-business-unlimited",
+            "chase-ihg-premier", "chase-ihg-one-rewards-traveler",
+            "chase-united-explorer", "chase-world-of-hyatt",
+            "chase-marriott-bonvoy-boundless",
+            "chase-southwest-plus", "chase-southwest-priority"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 2,
+            "window_days": 30,
+            "scope": "same_issuer"
+          },
+          "check_function": "checkVelocitySameIssuer",
+          "user_action_if_blocked": "Wait 30 days between Chase applications.",
+          "sources": ["Doctor of Credit"],
+          "actively_changing": false
+        },
+        {
+          "id": "chase-business-5-24-interaction",
+          "name": "Business Cards and 5/24",
+          "description": "Chase Ink business cards ARE subject to 5/24 (must be under 5/24 to get approved) but do NOT report to personal credit and do NOT add to your 5/24 count. Sole proprietorships are eligible.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "chase-ink-preferred", "chase-ink-business-cash", "chase-ink-business-unlimited"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "scope": "business_cards_only"
+          },
+          "check_function": "checkBusinessCard524",
+          "user_action_if_blocked": "Get under 5/24 before applying for Ink cards.",
+          "sources": ["Doctor of Credit", "r/churning"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "chase-sapphire-48-month",
+          "name": "48-Month Sapphire Bonus Restriction",
+          "description": "Cannot receive a Sapphire signup bonus if you received ANY Sapphire bonus (Preferred or Reserve) within the past 48 months. Clock starts from when the bonus posted, not when the card was opened.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["chase-sapphire-reserve", "chase-sapphire-preferred"],
+          "exempt_cards": [],
+          "parameters": {
+            "cooldown_months": 48,
+            "counts_from": "bonus_posted",
+            "scope": "product_family"
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Wait until 48 months after your last Sapphire bonus posted.",
+          "sources": ["Chase terms", "Doctor of Credit"],
+          "actively_changing": false
+        }
+      ],
+      "product_rules": [
+        {
+          "id": "chase-one-sapphire",
+          "name": "One Sapphire Rule",
+          "description": "Cannot hold both Chase Sapphire Preferred and Chase Sapphire Reserve simultaneously. Must downgrade/cancel one before applying for the other.",
+          "type": "product_exclusion",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["chase-sapphire-reserve", "chase-sapphire-preferred"],
+          "exempt_cards": [],
+          "parameters": {
+            "scope": "product_family",
+            "mutually_exclusive": true
+          },
+          "check_function": "checkProductExclusion",
+          "user_action_if_blocked": "Downgrade or cancel your current Sapphire card before applying for the other.",
+          "sources": ["Chase terms"],
+          "actively_changing": false
+        },
+        {
+          "id": "chase-ihg-5-24-exemption",
+          "name": "IHG 5/24 Exemption",
+          "description": "IHG cards have historically been exempt from 5/24. This has oscillated and is currently disputed.",
+          "type": "other",
+          "enforcement": "varies",
+          "confidence": "rumored",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["chase-ihg-premier", "chase-ihg-one-rewards-traveler"],
+          "exempt_cards": [],
+          "parameters": {},
+          "check_function": null,
+          "user_action_if_blocked": "Apply anyway — may bypass 5/24. Reconsideration line if denied.",
+          "sources": ["r/churning data points"],
+          "actively_changing": true
+        }
+      ]
+    },
+    "amex": {
+      "id": "amex",
+      "name": "American Express",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "experian",
+        "multi_pull": false,
+        "combined_pull_possible": true,
+        "notes": "Multiple same-day applications typically result in only 1 hard pull. Existing cardholders may get soft pull."
+      },
+      "application_rules": [
+        {
+          "id": "amex-2-90",
+          "name": "2/90 Rule",
+          "description": "Max 2 Amex credit card approvals per 90-day rolling window. Charge cards (Platinum, Gold, Green) do NOT count toward this limit.",
+          "type": "velocity_limit",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "amex-blue-business-plus", "amex-hilton-honors-surpass",
+            "amex-hilton-honors-aspire", "amex-hilton-honors",
+            "amex-hilton-honors-business", "amex-marriott-bonvoy-brilliant",
+            "amex-delta-gold", "amex-delta-platinum",
+            "amex-blue-cash-preferred", "amex-blue-cash-everyday"
+          ],
+          "exempt_cards": ["amex-platinum", "amex-gold", "amex-green", "amex-business-platinum"],
+          "parameters": {
+            "max_count": 2,
+            "window_days": 90,
+            "scope": "same_issuer",
+            "card_type_filter": "credit_only"
+          },
+          "check_function": "checkVelocitySameIssuer",
+          "user_action_if_blocked": "Wait 90 days between Amex credit card applications. Charge cards can be applied for anytime.",
+          "sources": ["Doctor of Credit"],
+          "actively_changing": false
+        },
+        {
+          "id": "amex-5-credit-limit",
+          "name": "5 Credit Card Limit",
+          "description": "Max 5 Amex credit cards at once. Charge cards don't count. Must cancel one to open another. May have increased to 6.",
+          "type": "account_limit",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "amex-blue-business-plus", "amex-hilton-honors-surpass",
+            "amex-hilton-honors-aspire", "amex-hilton-honors",
+            "amex-hilton-honors-business", "amex-marriott-bonvoy-brilliant",
+            "amex-delta-gold", "amex-delta-platinum",
+            "amex-blue-cash-preferred", "amex-blue-cash-everyday"
+          ],
+          "exempt_cards": ["amex-platinum", "amex-gold", "amex-green", "amex-business-platinum"],
+          "parameters": {
+            "max_count": 5,
+            "scope": "same_issuer",
+            "card_type_filter": "credit_only"
+          },
+          "check_function": "checkAccountLimit",
+          "user_action_if_blocked": "Cancel an existing Amex credit card before applying for a new one.",
+          "sources": ["Doctor of Credit", "r/churning"],
+          "actively_changing": true,
+          "notes": "Some 2024-2025 reports suggest limit increased to 6. Not universally confirmed."
+        },
+        {
+          "id": "amex-popup-jail",
+          "name": "Pop-Up Jail",
+          "description": "Some users see a pop-up during application stating they're ineligible for the welcome bonus. Application can still be submitted but bonus won't be awarded. Triggered by low Amex spending, opening/closing cards quickly, or gaming patterns.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "amex-platinum", "amex-gold", "amex-green",
+            "amex-blue-business-plus", "amex-business-platinum",
+            "amex-hilton-honors-surpass", "amex-hilton-honors-aspire",
+            "amex-hilton-honors", "amex-hilton-honors-business",
+            "amex-marriott-bonvoy-brilliant",
+            "amex-delta-gold", "amex-delta-platinum",
+            "amex-blue-cash-preferred", "amex-blue-cash-everyday"
+          ],
+          "exempt_cards": [],
+          "parameters": {},
+          "check_function": null,
+          "user_action_if_blocked": "Increase spending on existing Amex cards for 3-6 months before reapplying.",
+          "sources": ["r/churning", "Doctor of Credit"],
+          "actively_changing": false,
+          "notes": "Cannot be detected programmatically. Warn users about risk factors."
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "amex-lifetime-language",
+          "name": "Once-Per-Lifetime / 7-Year Bonus Restriction",
+          "description": "Amex restricts welcome bonuses to once per lifetime per product. Standard language: 'Welcome offer not available to applicants who have or have had this Card.' Mid-2024 Amex began rolling some products to 7-year restriction instead of lifetime.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "amex-platinum", "amex-gold", "amex-green",
+            "amex-blue-business-plus", "amex-business-platinum",
+            "amex-hilton-honors-surpass", "amex-hilton-honors-aspire",
+            "amex-hilton-honors", "amex-hilton-honors-business",
+            "amex-marriott-bonvoy-brilliant",
+            "amex-delta-gold", "amex-delta-platinum",
+            "amex-blue-cash-preferred", "amex-blue-cash-everyday"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "cooldown_months": -1,
+            "counts_from": "ever_held",
+            "scope": "same_product"
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Check current application language — some cards now have 7-year (84-month) restriction instead of lifetime.",
+          "sources": ["Amex terms", "Doctor of Credit"],
+          "actively_changing": true,
+          "notes": "cooldown_months = -1 means lifetime. Per-card language is shifting to 84 months on some products. Verify per-card before recommending."
+        },
+        {
+          "id": "amex-combined-pull",
+          "name": "Combined Hard Pull",
+          "description": "Multiple Amex applications on the same day typically result in only 1 hard pull. Existing cardholders may get soft pull or no pull.",
+          "type": "other",
+          "enforcement": "soft",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "amex-platinum", "amex-gold", "amex-green",
+            "amex-blue-business-plus", "amex-business-platinum",
+            "amex-hilton-honors-surpass", "amex-hilton-honors-aspire",
+            "amex-hilton-honors", "amex-hilton-honors-business",
+            "amex-marriott-bonvoy-brilliant",
+            "amex-delta-gold", "amex-delta-platinum",
+            "amex-blue-cash-preferred", "amex-blue-cash-everyday"
+          ],
+          "exempt_cards": [],
+          "parameters": {},
+          "check_function": null,
+          "user_action_if_blocked": null,
+          "sources": ["Doctor of Credit"],
+          "actively_changing": false
+        }
+      ],
+      "product_rules": [
+        {
+          "id": "amex-charge-vs-credit",
+          "name": "Charge Card vs Credit Card Distinction",
+          "description": "Platinum, Gold, Green, and Business Platinum are charge cards. They do NOT count toward the 5 credit card limit or 2/90 rule. All other Amex cards are credit cards.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["amex-platinum", "amex-gold", "amex-green", "amex-business-platinum"],
+          "exempt_cards": [],
+          "parameters": {
+            "card_classification": "charge"
+          },
+          "check_function": null,
+          "sources": ["Amex terms"],
+          "actively_changing": false
+        }
+      ]
+    },
+    "citi": {
+      "id": "citi",
+      "name": "Citibank",
+      "business_reports_to_personal": true,
+      "bureau_pulls": {
+        "primary_bureau": "experian",
+        "multi_pull": false,
+        "combined_pull_possible": false,
+        "notes": "Bureau varies by state. Experian most common."
+      },
+      "application_rules": [
+        {
+          "id": "citi-8-65",
+          "name": "8/65 Rule",
+          "description": "Max 1 Citi card application per 8 days, max 2 per 65 days.",
+          "type": "velocity_limit",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "citi-strata-premier", "citi-custom-cash", "citi-double-cash",
+            "citi-aadvantage-executive", "citi-aadvantage-platinum-select"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 1,
+            "window_days": 8,
+            "scope": "same_issuer",
+            "secondary_max_count": 2,
+            "secondary_window_days": 65
+          },
+          "check_function": "checkVelocitySameIssuer",
+          "user_action_if_blocked": "Wait 8 days between Citi applications, 65 days for a third.",
+          "sources": ["Doctor of Credit"],
+          "actively_changing": false
+        },
+        {
+          "id": "citi-6-6",
+          "name": "6/6 Inquiry Rule",
+          "description": "6+ hard inquiries in the past 6 months = likely auto-decline.",
+          "type": "inquiry_limit",
+          "enforcement": "soft",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "citi-strata-premier", "citi-custom-cash", "citi-double-cash",
+            "citi-aadvantage-executive", "citi-aadvantage-platinum-select"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 6,
+            "window_months": 6,
+            "scope": "all_bureaus"
+          },
+          "check_function": "checkInquiryLimit",
+          "user_action_if_blocked": "Wait for inquiries to age past 6 months. Avoid Capital One (triple-pull) before Citi.",
+          "sources": ["Doctor of Credit", "r/churning data points"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "citi-48-month",
+          "name": "48-Month Bonus Restriction",
+          "description": "Cannot receive a bonus if you received a bonus on the same card (or same family) within 48 months. Also applies if you closed the same card within 48 months.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "citi-strata-premier", "citi-custom-cash", "citi-double-cash",
+            "citi-aadvantage-executive", "citi-aadvantage-platinum-select"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "cooldown_months": 48,
+            "counts_from": "bonus_posted_and_account_closed",
+            "scope": "product_family"
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Wait 48 months from both last bonus AND last account closure.",
+          "sources": ["Citi terms", "Doctor of Credit"],
+          "actively_changing": false
+        },
+        {
+          "id": "citi-aa-1-24",
+          "name": "1/24 AAdvantage Family Restriction",
+          "description": "Only 1 Citi AAdvantage card bonus per 24 months across the AA product family.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["citi-aadvantage-executive", "citi-aadvantage-platinum-select"],
+          "exempt_cards": [],
+          "parameters": {
+            "cooldown_months": 24,
+            "counts_from": "bonus_posted",
+            "scope": "product_family",
+            "max_count": 1
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Wait 24 months between AAdvantage card bonuses.",
+          "sources": ["Citi terms"],
+          "actively_changing": false
+        }
+      ],
+      "product_rules": [
+        {
+          "id": "citi-strata-family",
+          "name": "Strata Premier Family Restriction",
+          "description": "The rebrand from Premier to Strata Premier may affect 48-month rules. Unclear if they're treated as same product family.",
+          "type": "other",
+          "enforcement": "varies",
+          "confidence": "rumored",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["citi-strata-premier"],
+          "exempt_cards": [],
+          "parameters": {},
+          "check_function": null,
+          "user_action_if_blocked": "Check current Citi terms for Strata Premier bonus eligibility language.",
+          "sources": ["r/churning speculation"],
+          "actively_changing": true
+        }
+      ]
+    },
+    "capital_one": {
+      "id": "capital_one",
+      "name": "Capital One",
+      "business_reports_to_personal": true,
+      "bureau_pulls": {
+        "primary_bureau": "all_three",
+        "multi_pull": true,
+        "combined_pull_possible": false,
+        "notes": "Often pulls ALL THREE bureaus (Experian, Equifax, TransUnion) for a single application. Some recent reports of 1-2 pulls only."
+      },
+      "application_rules": [
+        {
+          "id": "c1-velocity-sensitivity",
+          "name": "Velocity Sensitivity",
+          "description": "Capital One is sensitive to recent applications and new accounts. No hard documented rule, but high velocity = higher denial rates.",
+          "type": "velocity_limit",
+          "enforcement": "soft",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "capital-one-venture-x", "capital-one-venture",
+            "capital-one-savor-one", "capital-one-quicksilver",
+            "capital-one-venture-x-business"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "scope": "all_issuers"
+          },
+          "check_function": null,
+          "user_action_if_blocked": "Space out applications. Avoid applying during high-velocity periods.",
+          "sources": ["r/churning data points"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "c1-card-limit",
+          "name": "Card Limit (Recently Changed)",
+          "description": "Previously strict 1-2 card limit. Now relaxed to 3-4 cards. Exact current limit unclear.",
+          "type": "account_limit",
+          "enforcement": "hard",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "capital-one-venture-x", "capital-one-venture",
+            "capital-one-savor-one", "capital-one-quicksilver",
+            "capital-one-venture-x-business"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 4,
+            "scope": "same_issuer"
+          },
+          "check_function": "checkAccountLimit",
+          "user_action_if_blocked": "Cancel an existing Capital One card.",
+          "sources": ["Doctor of Credit", "r/churning"],
+          "actively_changing": true
+        }
+      ],
+      "product_rules": [
+        {
+          "id": "c1-triple-pull",
+          "name": "Triple Bureau Pull",
+          "description": "Capital One often pulls all three bureaus for a single application. This means each C1 app costs 3 hard inquiries. Especially harmful for Citi's 6/6 rule.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "capital-one-venture-x", "capital-one-venture",
+            "capital-one-savor-one", "capital-one-quicksilver",
+            "capital-one-venture-x-business"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "inquiry_count_per_application": 3
+          },
+          "check_function": null,
+          "user_action_if_blocked": null,
+          "sources": ["Doctor of Credit"],
+          "actively_changing": true,
+          "notes": "Some 2025 reports suggest reduced to 1-2 pulls. Not confirmed."
+        },
+        {
+          "id": "c1-business-reports-personal",
+          "name": "Business Cards Report to Personal",
+          "description": "Capital One business cards DO report to personal credit reports and DO count toward Chase 5/24.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["capital-one-venture-x-business"],
+          "exempt_cards": [],
+          "parameters": {},
+          "check_function": null,
+          "sources": ["Doctor of Credit"],
+          "actively_changing": false
+        }
+      ]
+    },
+    "us_bank": {
+      "id": "us_bank",
+      "name": "US Bank",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "varies",
+        "multi_pull": false,
+        "combined_pull_possible": false
+      },
+      "application_rules": [
+        {
+          "id": "usb-relationship",
+          "name": "Relationship Preference",
+          "description": "US Bank strongly prefers applicants with existing banking relationships (checking/savings). Without one, approval odds drop significantly.",
+          "type": "relationship_requirement",
+          "enforcement": "soft",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["us-bank-altitude-reserve", "us-bank-altitude-go"],
+          "exempt_cards": [],
+          "parameters": {
+            "preferred_relationship": "checking_or_savings"
+          },
+          "check_function": "checkBankingRelationship",
+          "user_action_if_blocked": "Open a US Bank checking or savings account first. Wait 1-2 months before applying for credit card.",
+          "sources": ["Doctor of Credit", "r/churning"],
+          "actively_changing": false
+        },
+        {
+          "id": "usb-inquiry-sensitivity",
+          "name": "Inquiry Sensitivity",
+          "description": "US Bank is among the most inquiry-sensitive issuers. Recent applications or inquiries can cause denials.",
+          "type": "inquiry_limit",
+          "enforcement": "soft",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["us-bank-altitude-reserve", "us-bank-altitude-go"],
+          "exempt_cards": [],
+          "parameters": {
+            "scope": "all_bureaus"
+          },
+          "check_function": null,
+          "user_action_if_blocked": "Minimize hard pulls for 6+ months before applying.",
+          "sources": ["r/churning data points"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "usb-bonus-cooldown",
+          "name": "Bonus Restriction",
+          "description": "Standard bonus restriction — cannot receive bonus if you received one on the same product recently. Exact timeframe varies by product.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["us-bank-altitude-reserve", "us-bank-altitude-go"],
+          "exempt_cards": [],
+          "parameters": {
+            "scope": "same_product"
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Check current product terms for cooldown period.",
+          "sources": ["US Bank terms"],
+          "actively_changing": false
+        }
+      ],
+      "product_rules": []
+    },
+    "barclays": {
+      "id": "barclays",
+      "name": "Barclays",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "transunion",
+        "multi_pull": false,
+        "combined_pull_possible": false
+      },
+      "application_rules": [
+        {
+          "id": "barclays-6-24",
+          "name": "6/24 Sensitivity",
+          "description": "No hard cutoff like Chase, but 6+ new accounts in 24 months = significantly higher denial rates. Also weighs recent inquiries in past 6 months heavily.",
+          "type": "velocity_limit",
+          "enforcement": "soft",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "barclays-aadvantage-aviator-red", "barclays-jetblue-plus",
+            "barclays-wyndham-earner-plus"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 6,
+            "window_months": 24,
+            "scope": "all_issuers"
+          },
+          "check_function": "checkVelocityAllIssuers",
+          "user_action_if_blocked": "Reduce new account velocity. Apply before inquiry-sensitive issuers.",
+          "sources": ["r/churning data points"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "barclays-24-month",
+          "name": "24-Month Bonus Restriction",
+          "description": "Not eligible for bonus if you had the same card in the past 24 months from closure, not bonus receipt.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "barclays-aadvantage-aviator-red", "barclays-jetblue-plus",
+            "barclays-wyndham-earner-plus"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "cooldown_months": 24,
+            "counts_from": "account_closed",
+            "scope": "same_product"
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Wait 24 months after closing the previous card.",
+          "sources": ["Barclays terms"],
+          "actively_changing": false
+        }
+      ],
+      "product_rules": []
+    },
+    "wells_fargo": {
+      "id": "wells_fargo",
+      "name": "Wells Fargo",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "experian",
+        "multi_pull": false,
+        "combined_pull_possible": false
+      },
+      "application_rules": [
+        {
+          "id": "wf-cell-verification",
+          "name": "Cell Phone Verification",
+          "description": "Requires US cell phone for SMS verification. Landlines, VOIP (Google Voice), and some prepaid numbers may not work.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "wells-fargo-autograph-journey", "wells-fargo-autograph",
+            "wells-fargo-active-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {},
+          "check_function": null,
+          "user_action_if_blocked": "Use a standard US cell phone number.",
+          "sources": ["r/churning"],
+          "actively_changing": false
+        },
+        {
+          "id": "wf-velocity",
+          "name": "Velocity Limits",
+          "description": "~2 new WF cards per 12 months. 1 per 6 months is safer.",
+          "type": "velocity_limit",
+          "enforcement": "soft",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "wells-fargo-autograph-journey", "wells-fargo-autograph",
+            "wells-fargo-active-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 2,
+            "window_months": 12,
+            "scope": "same_issuer"
+          },
+          "check_function": "checkVelocitySameIssuer",
+          "user_action_if_blocked": "Wait 6-12 months between Wells Fargo applications.",
+          "sources": ["r/churning data points"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "wf-15-month-cooldown",
+          "name": "15-Month Bonus Cooldown",
+          "description": "One of the shortest cooldowns: 15 months between bonuses on the same product.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "wells-fargo-autograph-journey", "wells-fargo-autograph",
+            "wells-fargo-active-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "cooldown_months": 15,
+            "counts_from": "bonus_posted",
+            "scope": "same_product"
+          },
+          "check_function": "checkBonusCooldown",
+          "user_action_if_blocked": "Wait 15 months after last bonus posted.",
+          "sources": ["Wells Fargo terms"],
+          "actively_changing": true,
+          "notes": "WF has been expanding rewards program — confirm cooldown hasn't changed."
+        }
+      ],
+      "product_rules": []
+    },
+    "boa": {
+      "id": "boa",
+      "name": "Bank of America",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "experian",
+        "multi_pull": false,
+        "combined_pull_possible": false
+      },
+      "application_rules": [
+        {
+          "id": "boa-2-3-4",
+          "name": "2/3/4 Rule",
+          "description": "Max 2 new BofA cards per 60 days. Max 3 per 12 months. Max 4 total (lifetime/very long window).",
+          "type": "velocity_limit",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "boa-premium-rewards", "boa-customized-cash", "boa-unlimited-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 2,
+            "window_days": 60,
+            "scope": "same_issuer",
+            "secondary_max_count": 3,
+            "secondary_window_months": 12,
+            "tertiary_max_count": 4,
+            "tertiary_window": "lifetime"
+          },
+          "check_function": "checkVelocitySameIssuer",
+          "user_action_if_blocked": "Wait 60 days between BofA applications. Max 3 per year, 4 total.",
+          "sources": ["Doctor of Credit"],
+          "actively_changing": false,
+          "notes": "2/60 is hard-enforced. 3/12 and 4-total are softer."
+        },
+        {
+          "id": "boa-7-12",
+          "name": "7/12 Rule",
+          "description": "7+ new cards across ALL issuers in 12 months = higher BofA denial rates. Not absolute cutoff.",
+          "type": "velocity_limit",
+          "enforcement": "soft",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "boa-premium-rewards", "boa-customized-cash", "boa-unlimited-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 7,
+            "window_months": 12,
+            "scope": "all_issuers"
+          },
+          "check_function": "checkVelocityAllIssuers",
+          "user_action_if_blocked": "Reduce new account velocity. Keep under 7 new cards in trailing 12 months.",
+          "sources": ["r/churning data points"],
+          "actively_changing": false
+        }
+      ],
+      "bonus_rules": [
+        {
+          "id": "boa-bonus-restriction",
+          "name": "Bonus Restriction",
+          "description": "Standard bonus restriction. Check current product terms for exact cooldown period.",
+          "type": "bonus_cooldown",
+          "enforcement": "hard",
+          "confidence": "likely",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "boa-premium-rewards", "boa-customized-cash", "boa-unlimited-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "counts_from": "bonus_posted",
+            "scope": "same_product"
+          },
+          "check_function": "checkBonusCooldown",
+          "sources": ["BofA terms"],
+          "actively_changing": false
+        }
+      ],
+      "product_rules": [
+        {
+          "id": "boa-preferred-rewards",
+          "name": "Preferred Rewards Boost",
+          "description": "BofA/Merrill Lynch balances boost card rewards: Gold ($20k+) = 25%, Platinum ($50k+) = 50%, Platinum Honors ($100k+) = 75%. Makes Customized Cash 3% -> 5.25% at top tier. Also improves approval odds.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": [
+            "boa-premium-rewards", "boa-customized-cash", "boa-unlimited-cash"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "tiers": {
+              "gold": { "balance_min": 20000, "boost_pct": 25 },
+              "platinum": { "balance_min": 50000, "boost_pct": 50 },
+              "platinum_honors": { "balance_min": 100000, "boost_pct": 75 }
+            }
+          },
+          "check_function": "applyPreferredRewardsBoost",
+          "sources": ["BofA Preferred Rewards terms"],
+          "actively_changing": false
+        }
+      ]
+    },
+    "bilt": {
+      "id": "bilt",
+      "name": "Bilt Rewards",
+      "business_reports_to_personal": false,
+      "bureau_pulls": {
+        "primary_bureau": "experian",
+        "multi_pull": false,
+        "combined_pull_possible": false,
+        "notes": "Issued by Wells Fargo. Counts toward WF velocity limits."
+      },
+      "application_rules": [
+        {
+          "id": "bilt-wf-interaction",
+          "name": "Wells Fargo Interaction",
+          "description": "Issued by Wells Fargo. Counts toward WF velocity limits and pulls.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["bilt-mastercard"],
+          "exempt_cards": [],
+          "parameters": {
+            "issuer_parent": "wells_fargo"
+          },
+          "check_function": null,
+          "user_action_if_blocked": "Consider impact on WF velocity when timing Bilt application.",
+          "sources": ["Doctor of Credit"],
+          "actively_changing": true,
+          "notes": "Periodic rumors of Bilt switching issuers. Verify WF is still issuer."
+        }
+      ],
+      "bonus_rules": [],
+      "product_rules": [
+        {
+          "id": "bilt-5-transaction-min",
+          "name": "5-Transaction Minimum",
+          "description": "Must make at least 5 transactions per billing cycle to earn ANY points (including rent). Unique among major cards.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["bilt-mastercard"],
+          "exempt_cards": [],
+          "parameters": {
+            "min_transactions_per_cycle": 5
+          },
+          "check_function": null,
+          "user_action_if_blocked": "Set up recurring small purchases (coffee, subscriptions) to hit 5 transactions.",
+          "sources": ["Bilt terms"],
+          "actively_changing": false
+        }
+      ]
+    },
+    "discover": {
+      "id": "discover",
+      "name": "Discover",
+      "business_reports_to_personal": true,
+      "bureau_pulls": {
+        "primary_bureau": "transunion",
+        "multi_pull": false,
+        "combined_pull_possible": false
+      },
+      "application_rules": [],
+      "bonus_rules": [],
+      "product_rules": [
+        {
+          "id": "discover-match",
+          "name": "Cashback/Miles Match",
+          "description": "Discover uses 'Cashback Match' or 'Miles Match' (first year doubled) instead of traditional signup bonuses. Not subject to standard bonus restrictions. One card per product line.",
+          "type": "other",
+          "enforcement": "hard",
+          "confidence": "confirmed",
+          "last_verified": "2026-02-18",
+          "affected_cards": ["discover-it-cash-back", "discover-it-miles"],
+          "exempt_cards": [],
+          "parameters": {
+            "match_period_months": 12,
+            "match_multiplier": 2
+          },
+          "check_function": null,
+          "sources": ["Discover terms"],
+          "actively_changing": false
+        }
+      ]
+    }
+  },
+  "cross_issuer_rules": [
+    {
+      "id": "marriott-cross-issuer",
+      "name": "Marriott Cross-Issuer Restriction",
+      "description": "Cannot earn a signup bonus on a Chase Marriott card if you received an Amex Marriott bonus within 24 months (and vice versa).",
+      "type": "cross_issuer_restriction",
+      "enforcement": "hard",
+      "confidence": "confirmed",
+      "last_verified": "2026-02-18",
+      "affected_cards": ["chase-marriott-bonvoy-boundless", "amex-marriott-bonvoy-brilliant"],
+      "exempt_cards": [],
+      "parameters": {
+        "cooldown_months": 24,
+        "counts_from": "bonus_posted",
+        "scope": "cross_issuer_product_family"
+      },
+      "check_function": "checkCrossIssuerCooldown",
+      "user_action_if_blocked": "Wait 24 months between Marriott bonuses across Chase and Amex.",
+      "sources": ["Chase/Amex terms", "Doctor of Credit"],
+      "actively_changing": true,
+      "notes": "Partnership terms periodically renegotiated."
+    }
+  ],
+  "application_order": {
+    "description": "Recommended application order based on issuer sensitivity. Apply to most sensitive issuers first.",
+    "order": [
+      { "priority": 1, "issuer": "us_bank", "reason": "Most inquiry-sensitive" },
+      { "priority": 2, "issuer": "barclays", "reason": "Inquiry-sensitive" },
+      { "priority": 3, "issuer": "boa", "reason": "7/12 sensitivity" },
+      { "priority": 4, "issuer": "chase", "reason": "5/24 is account-based, not inquiry-based" },
+      { "priority": 5, "issuer": "citi", "reason": "6/6 inquiry rule" },
+      { "priority": 6, "issuer": "capital_one", "reason": "Velocity-sensitive, pulls all 3 bureaus" },
+      { "priority": 7, "issuer": "amex", "reason": "Most lenient, combined hard pulls" },
+      { "priority": 8, "issuer": "wells_fargo", "reason": "Moderate rules" },
+      { "priority": 9, "issuer": "discover", "reason": "Very lenient" }
+    ]
+  },
+  "business_card_524_impact": {
+    "does_not_count": ["chase", "amex", "barclays", "us_bank", "wells_fargo"],
+    "does_count": ["capital_one", "discover"]
+  }
+}
