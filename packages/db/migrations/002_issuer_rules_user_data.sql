@@ -147,7 +147,6 @@ CREATE TABLE IF NOT EXISTS public.user_external_cards (
 ALTER TABLE public.user_external_cards ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users manage own external cards"
   ON public.user_external_cards FOR ALL USING (auth.uid() = user_id);
-
 CREATE TRIGGER set_external_cards_updated_at
   BEFORE UPDATE ON public.user_external_cards
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
