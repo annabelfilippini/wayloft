@@ -8,52 +8,115 @@ interface ActionsWidgetProps {
   userId: string;
 }
 
-const urgencyColors: Record<string, string> = {
+interface ExpiringPoint {
+  balance_id: string;
+  program_name: string;
+  program_code: string;
+  balance: number;
+  currency: string;
+  days_until_expiration: number | null;
+  urgency: "critical" | "warning" | "ok";
+}
+
+interface UnifiedAction {
+  key: string;
+  type: "signup_spend" | "annual_fee" | "points_expiring";
+  title: string;
+  subtitle: string;
+  urgency: "critical" | "warning" | "info" | "ok";
+  daysRemaining: number | null;
+  href: string;
+}
+
+const urgencyColors: Record<string, "destructive" | "secondary" | "outline"> = {
   critical: "destructive",
   warning: "secondary",
   info: "outline",
+  ok: "outline",
+};
+
+const urgencyOrder: Record<string, number> = {
+  critical: 0,
+  warning: 1,
+  info: 2,
+  ok: 3,
+};
+
+const typeLabels: Record<string, string> = {
+  signup_spend: "Bonus",
+  annual_fee: "AF",
+  points_expiring: "Points",
 };
 
 export async function ActionsWidget({ userId }: ActionsWidgetProps) {
   const supabase = await createClient();
 
-  const { data: rows } = await supabase
-    .from("upcoming_card_actions")
-    .select("*")
-    .eq("user_id", userId);
+  // Fetch card actions and expiring points in parallel
+  const [cardActionsRes, expiringRes] = await Promise.all([
+    supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
+    supabase.from("expiring_points").select("*").eq("user_id", userId),
+  ]);
 
-  if (!rows || rows.length === 0) return null;
+  const actions: UnifiedAction[] = [];
 
-  // Flatten the JSONB action columns into typed actions
-  const actions: CardAction[] = [];
+  // Process card actions
+  const rows = cardActionsRes.data ?? [];
   for (const row of rows) {
     if (row.signup_action) {
+      const sa = row.signup_action as CardAction;
       actions.push({
-        user_id: row.user_id,
-        user_card_id: row.user_card_id,
-        card_name: row.card_name,
-        card_slug: row.card_slug,
-        issuer: row.issuer,
-        ...row.signup_action,
+        key: `${row.user_card_id}-signup`,
+        type: "signup_spend",
+        title: row.card_name,
+        subtitle:
+          sa.spend_remaining_cents != null
+            ? `$${(sa.spend_remaining_cents / 100).toLocaleString()} left to spend — ${sa.days_remaining} days`
+            : "Signup spend deadline coming up",
+        urgency: sa.urgency ?? "info",
+        daysRemaining: sa.days_remaining ?? null,
+        href: `/cards/${row.user_card_id}`,
       });
     }
     if (row.af_action) {
+      const af = row.af_action as CardAction;
       actions.push({
-        user_id: row.user_id,
-        user_card_id: row.user_card_id,
-        card_name: row.card_name,
-        card_slug: row.card_slug,
-        issuer: row.issuer,
-        ...row.af_action,
+        key: `${row.user_card_id}-af`,
+        type: "annual_fee",
+        title: row.card_name,
+        subtitle:
+          af.annual_fee_cents != null
+            ? `$${af.annual_fee_cents / 100} annual fee coming up`
+            : "Annual fee reminder",
+        urgency: af.urgency ?? "info",
+        daysRemaining: null,
+        href: `/cards/${row.user_card_id}`,
       });
     }
   }
 
-  // Sort by urgency: critical > warning > info
-  const urgencyOrder = { critical: 0, warning: 1, info: 2 };
-  actions.sort(
-    (a, b) => (urgencyOrder[a.urgency] ?? 3) - (urgencyOrder[b.urgency] ?? 3)
-  );
+  // Process expiring points
+  const expiring = (expiringRes.data ?? []) as ExpiringPoint[];
+  for (const ep of expiring) {
+    actions.push({
+      key: `exp-${ep.balance_id}`,
+      type: "points_expiring",
+      title: ep.program_name,
+      subtitle: `${ep.balance.toLocaleString()} ${ep.currency} expiring${
+        ep.days_until_expiration != null ? ` in ${ep.days_until_expiration} days` : ""
+      }`,
+      urgency: ep.urgency === "ok" ? "info" : ep.urgency,
+      daysRemaining: ep.days_until_expiration,
+      href: "/settings",
+    });
+  }
+
+  // Sort by urgency then days remaining
+  actions.sort((a, b) => {
+    const urgDiff =
+      (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
+    if (urgDiff !== 0) return urgDiff;
+    return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
+  });
 
   if (actions.length === 0) return null;
 
@@ -71,27 +134,23 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
         </div>
         <div className="mt-3 space-y-3">
           {actions.map((action) => (
-            <div
-              key={`${action.user_card_id}-${action.type}`}
-              className="flex items-start justify-between gap-3"
+            <Link
+              key={action.key}
+              href={action.href}
+              className="flex items-start justify-between gap-3 rounded-md p-1 -mx-1 hover:bg-muted/50 transition-colors"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">
-                  {action.card_name}
-                </p>
+                <p className="truncate text-sm font-medium">{action.title}</p>
                 <p className="text-xs text-muted-foreground">
-                  {action.type === "signup_spend" &&
-                    action.spend_remaining_cents != null &&
-                    `$${(action.spend_remaining_cents / 100).toLocaleString()} left to spend — ${action.days_remaining} days`}
-                  {action.type === "annual_fee" &&
-                    action.annual_fee_cents != null &&
-                    `$${action.annual_fee_cents / 100} annual fee coming up`}
+                  {action.subtitle}
                 </p>
               </div>
-              <Badge variant={urgencyColors[action.urgency] as "destructive" | "secondary" | "outline"}>
-                {action.type === "signup_spend" ? "Bonus" : "AF"}
+              <Badge
+                variant={urgencyColors[action.urgency] ?? "outline"}
+              >
+                {typeLabels[action.type] ?? action.type}
               </Badge>
-            </div>
+            </Link>
           ))}
         </div>
       </CardContent>

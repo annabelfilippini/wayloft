@@ -92,3 +92,42 @@ export interface CardAction {
 
 // Legacy alias — keep for backward compat
 export type CreditCard = CatalogCard;
+
+// ── Spending Optimizer ──
+
+export type SpendingCategory =
+  | "dining"
+  | "travel"
+  | "groceries"
+  | "gas"
+  | "streaming"
+  | "online_shopping"
+  | "transit"
+  | "drugstores"
+  | "entertainment"
+  | "rent"
+  | "bills"
+  | "other";
+
+export interface CategoryRecommendation {
+  category: SpendingCategory;
+  displayName: string;
+  rankings: CardRanking[];
+}
+
+export interface CardRanking {
+  cardSlug: string;
+  cardName: string;
+  issuer: string;
+  currency: string;
+  multiplier: number;
+  effectiveCpp: number;
+  effectiveCents: number;
+  capWarning: string | null;
+  notes: string | null;
+}
+
+export interface WalletGuide {
+  categories: CategoryRecommendation[];
+  generatedAt: string;
+}

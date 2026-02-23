@@ -114,3 +114,50 @@ export async function removeCard(formData: FormData) {
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+export async function logAnnualFeeEvent(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const userCardId = formData.get("user_card_id") as string;
+  const eventType = formData.get("event_type") as string;
+  const retentionOfferType = formData.get("retention_offer_type") as string | null;
+  const retentionOfferValue = formData.get("retention_offer_value") as string | null;
+  const retentionSpendRequirement = formData.get("retention_spend_requirement") as string | null;
+  const notes = formData.get("notes") as string | null;
+
+  const validEvents = [
+    "annual_fee_posted",
+    "annual_fee_waived",
+    "retention_offer",
+    "retention_declined",
+  ];
+
+  if (!userCardId || !eventType || !validEvents.includes(eventType)) {
+    return { error: "Invalid input" };
+  }
+
+  const { error } = await supabase.from("card_lifecycle_events").insert({
+    user_id: user.id,
+    user_card_id: userCardId,
+    event_type: eventType,
+    retention_offer_type: retentionOfferType || null,
+    retention_offer_value: retentionOfferValue || null,
+    retention_spend_requirement: retentionSpendRequirement || null,
+    notes: notes || null,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/cards");
+  revalidatePath("/dashboard");
+  return { success: true };
+}

@@ -5,15 +5,17 @@
     "issuer": "chase",
     "currency": "UR",
     "network": "visa",
-    "annual_fee_cents": 55000,
+    "annual_fee_cents": 79500,
     "signup_bonus": {
-      "points": 60000,
-      "spend_requirement_cents": 400000,
+      "points": 125000,
+      "spend_requirement_cents": 600000,
       "timeframe_months": 3
     },
     "earning_rates": {
-      "travel": 3,
+      "flights": 4,
+      "hotels": 4,
       "dining": 3,
+      "travel": 1,
       "streaming": 1,
       "groceries": 1,
       "gas": 1,
@@ -21,17 +23,21 @@
       "other": 1
     },
     "earning_caps": [],
-    "portal_cpp": 1.5,
+    "portal_cpp": 1.0,
     "key_perks": [
       "$300 annual travel credit",
+      "8x on flights, hotels, car rentals via Chase Travel",
+      "Points Boost: redeem at 2cpp on select flights/hotels",
       "Priority Pass lounge access",
       "Global Entry / TSA PreCheck credit",
-      "DoorDash DashPass",
-      "Lyft Pink membership",
-      "Trip delay/cancellation insurance",
-      "10x on hotels/car rentals via Chase portal"
+      "$300 annual StubHub credit",
+      "$150 biannual Sapphire Reserve Exclusive Tables credit",
+      "Apple TV+ and Apple Music ($250/yr value)",
+      "$120 annual Lyft credits",
+      "$120 annual Peloton credit",
+      "Trip delay/cancellation insurance"
     ],
-    "best_for": ["premium travelers", "dining", "flexible points"],
+    "best_for": ["premium travelers", "flights & hotels direct", "flexible points"],
     "credit_score_min": "good",
     "card_art_url": "/cards/chase-sapphire-reserve.png",
     "application_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
@@ -64,11 +70,12 @@
     "key_perks": [
       "$50 annual hotel credit (Chase portal)",
       "5x on Chase travel",
+      "Best card for general travel earning (2x)",
       "Trip delay/cancellation insurance",
       "No foreign transaction fees",
       "10% anniversary point bonus"
     ],
-    "best_for": ["first travel card", "dining", "streaming"],
+    "best_for": ["first travel card", "general travel", "dining", "streaming"],
     "credit_score_min": "good",
     "card_art_url": "/cards/chase-sapphire-preferred.png",
     "application_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
@@ -196,9 +203,9 @@
     "issuer": "amex",
     "currency": "MR",
     "network": "amex",
-    "annual_fee_cents": 69500,
+    "annual_fee_cents": 89500,
     "signup_bonus": {
-      "points": 80000,
+      "points": 150000,
       "spend_requirement_cents": 800000,
       "timeframe_months": 6
     },
@@ -213,12 +220,13 @@
     "earning_caps": [],
     "portal_cpp": 1.0,
     "key_perks": [
+      "$600 hotel credit (FHR/THC)",
+      "$400 annual Resy dining credit ($100/qtr)",
+      "$300 digital entertainment credit",
       "$200 airline fee credit",
-      "$200 hotel credit (FHR/THC)",
-      "$240 digital entertainment credit",
-      "$200 Uber credit ($15/mo + $20 Dec)",
-      "$189 CLEAR Plus credit",
-      "$155 Walmart+ credit",
+      "$200 Oura Ring credit",
+      "$120 Uber One credit ($10/mo)",
+      "Lululemon credit ($75/qtr)",
       "Centurion Lounge access",
       "Priority Pass (no guests)",
       "Global Entry / TSA PreCheck",
@@ -249,19 +257,24 @@
       "groceries": 4,
       "flights": 3,
       "brand_portal": 3,
+      "travel": 2,
       "gas": 1,
       "other": 1
     },
     "earning_caps": [
-      { "category": "groceries", "cap_cents": 2500000, "period": "year" }
+      { "category": "groceries", "limit_cents": 2500000, "period": "year" },
+      { "category": "dining", "limit_cents": 5000000, "period": "year" }
     ],
     "portal_cpp": 1.0,
     "key_perks": [
       "$120 dining credit ($10/mo at select restaurants)",
       "$120 Uber Cash ($10/mo)",
-      "4x on dining worldwide",
-      "4x on US supermarkets ($25k cap)",
+      "$100 annual Resy dining credit ($50 semi-annually)",
+      "$84 annual Dunkin' credit ($7/mo)",
+      "4x on dining worldwide ($50k/yr cap)",
+      "4x on US supermarkets ($25k/yr cap)",
       "3x on flights booked directly",
+      "2x on prepaid hotels and eligible travel",
       "No foreign transaction fees"
     ],
     "best_for": ["dining", "groceries", "everyday premium"],
@@ -295,8 +308,7 @@
     "portal_cpp": 1.0,
     "key_perks": [
       "3x on travel, dining, transit",
-      "$189 CLEAR Plus credit",
-      "LoungeBuddy credits",
+      "$209 CLEAR Plus credit",
       "No foreign transaction fees"
     ],
     "best_for": ["transit commuters", "entry MR card", "travel & dining"],
@@ -348,24 +360,25 @@
     "issuer": "amex",
     "currency": "MR",
     "network": "amex",
-    "annual_fee_cents": 69500,
+    "annual_fee_cents": 89500,
     "signup_bonus": {
-      "points": 150000,
+      "points": 200000,
       "spend_requirement_cents": 2000000,
       "timeframe_months": 3
     },
     "earning_rates": {
       "brand_portal": 5,
-      "purchases_over_5k": 1.5,
+      "purchases_over_5k": 2,
       "dining": 1,
       "other": 1
     },
     "earning_caps": [],
     "portal_cpp": 1.0,
     "key_perks": [
-      "150k signup bonus (highest MR offer)",
+      "200k signup bonus (highest MR offer)",
       "5x on flights and hotels via Amex Travel",
-      "1.5x on purchases $5k+",
+      "2x on purchases $5k+ (select categories)",
+      "$600 hotel credit",
       "$200 airline fee credit",
       "Centurion Lounge access",
       "Dell and Indeed credits",
@@ -403,8 +416,8 @@
     "earning_caps": [],
     "portal_cpp": 1.0,
     "key_perks": [
-      "10x on hotels, car rentals, flights via portal",
-      "3x on travel, dining, groceries, gas",
+      "10x on hotels, car rentals, attractions via Citi Travel",
+      "3x on travel, dining, groceries, gas, EV charging",
       "$100 annual hotel credit",
       "No foreign transaction fees",
       "Trip delay and baggage insurance"
@@ -600,12 +613,44 @@
     "foreign_transaction_fee": false
   },
   {
-    "slug": "bilt-mastercard",
-    "name": "Bilt Mastercard",
+    "slug": "bilt-blue",
+    "name": "Bilt Blue Card",
     "issuer": "bilt",
     "currency": "BILT",
-    "network": "mastercard",
+    "network": "visa",
     "annual_fee_cents": 0,
+    "signup_bonus": null,
+    "earning_rates": {
+      "rent": 1,
+      "dining": 1,
+      "travel": 1,
+      "groceries": 1,
+      "gas": 1,
+      "other": 1
+    },
+    "earning_caps": [],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "Earn points on rent and mortgage (no fee)",
+      "1x on all purchases",
+      "1:1 transfer to Hyatt, AA, United, Air Canada, and more",
+      "No annual fee",
+      "$100 Bilt Cash upon approval"
+    ],
+    "best_for": ["renters", "mortgage holders", "no annual fee housing rewards"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/bilt-blue.png",
+    "application_url": "https://www.biltrewards.com/card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "bilt-obsidian",
+    "name": "Bilt Obsidian Card",
+    "issuer": "bilt",
+    "currency": "BILT",
+    "network": "visa",
+    "annual_fee_cents": 9500,
     "signup_bonus": null,
     "earning_rates": {
       "rent": 1,
@@ -615,18 +660,58 @@
       "gas": 1,
       "other": 1
     },
+    "earning_caps": [
+      { "category": "dining", "limit_cents": 2500000, "period": "year", "note": "3x on chosen category (dining or groceries), $25k/yr cap if groceries" }
+    ],
+    "portal_cpp": 1.0,
+    "key_perks": [
+      "Earn points on rent and mortgage (no fee)",
+      "Choose 3x on dining or groceries annually",
+      "2x on travel",
+      "1:1 transfer to Hyatt, AA, United, Air Canada, and more",
+      "$200 Bilt Cash upon approval"
+    ],
+    "best_for": ["renters", "dining + rent combo", "Hyatt transfers"],
+    "credit_score_min": "good",
+    "card_art_url": "/cards/bilt-obsidian.png",
+    "application_url": "https://www.biltrewards.com/card",
+    "is_business": false,
+    "foreign_transaction_fee": false
+  },
+  {
+    "slug": "bilt-palladium",
+    "name": "Bilt Palladium Card",
+    "issuer": "bilt",
+    "currency": "BILT",
+    "network": "visa",
+    "annual_fee_cents": 49500,
+    "signup_bonus": {
+      "points": 50000,
+      "spend_requirement_cents": 400000,
+      "timeframe_months": 3
+    },
+    "earning_rates": {
+      "rent": 1,
+      "dining": 2,
+      "travel": 2,
+      "groceries": 2,
+      "gas": 2,
+      "other": 2
+    },
     "earning_caps": [],
     "portal_cpp": 1.0,
     "key_perks": [
-      "Earn points on rent (no fee, up to 100k units)",
+      "Earn points on rent and mortgage (no fee)",
+      "2x on all non-housing purchases",
+      "4% Bilt Cash back on everyday purchases",
+      "$400 annual Bilt Travel hotel credits",
+      "$200 annual Bilt Cash",
       "1:1 transfer to Hyatt, AA, United, Air Canada, and more",
-      "Rent Day (1st of month): double points on non-rent",
-      "No annual fee",
-      "Points count toward Hyatt status"
+      "Bilt Gold status"
     ],
-    "best_for": ["renters", "Hyatt transfers", "earning on rent"],
+    "best_for": ["premium renters", "Hyatt transfers", "housing + everyday spend"],
     "credit_score_min": "good",
-    "card_art_url": "/cards/bilt-mastercard.png",
+    "card_art_url": "/cards/bilt-palladium.png",
     "application_url": "https://www.biltrewards.com/card",
     "is_business": false,
     "foreign_transaction_fee": false
@@ -657,7 +742,7 @@
       "Hilton Gold status",
       "Free night reward after $15k spend",
       "12x at Hilton, 6x on dining/groceries/gas",
-      "Priority Pass (10 visits/year)"
+      "$200 Hilton credit ($50/qtr)"
     ],
     "best_for": ["Hilton loyalists", "grocery & gas earning", "hotel status"],
     "credit_score_min": "good",
@@ -710,7 +795,7 @@
     "network": "amex",
     "annual_fee_cents": 65000,
     "signup_bonus": {
-      "points": 95000,
+      "points": 100000,
       "spend_requirement_cents": 600000,
       "timeframe_months": 6
     },
@@ -726,8 +811,10 @@
     "portal_cpp": null,
     "key_perks": [
       "Marriott Platinum Elite status",
+      "25 Elite Night Credits annually",
       "Free night (up to 85k) on anniversary",
-      "$25/mo dining credit",
+      "$300/yr dining credit ($25/mo)",
+      "Earned Choice Award at $60k spend",
       "Priority Pass",
       "$100 Marriott property credit"
     ],
@@ -1111,7 +1198,7 @@
     "issuer": "amex",
     "currency": "HILTON",
     "network": "amex",
-    "annual_fee_cents": 45000,
+    "annual_fee_cents": 55000,
     "signup_bonus": {
       "points": 175000,
       "spend_requirement_cents": 600000,
@@ -1129,10 +1216,11 @@
       "Hilton Diamond status",
       "14x at Hilton properties",
       "7x on flights and dining",
-      "Free night on anniversary",
-      "$250 Hilton resort credit",
-      "$250 airline fee credit",
-      "Priority Pass"
+      "Free night on anniversary (+ extra at $30k/$60k spend)",
+      "$400 Hilton resort credit ($200 semi-annually)",
+      "$200 flight credit ($50/qtr)",
+      "CLEAR Plus credit",
+      "Cell phone protection"
     ],
     "best_for": ["Hilton Diamond status", "premium Hilton loyalists", "resort stays"],
     "credit_score_min": "good",
@@ -1707,6 +1795,7 @@
       "6x at Marriott properties",
       "3x on dining and groceries",
       "Free night (up to 35k) on anniversary",
+      "$100 annual airfare credit ($50 semi-annually)",
       "Marriott Silver Elite status",
       "15 elite night credits annually"
     ],
