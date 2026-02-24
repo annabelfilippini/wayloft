@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CardArtPlaceholder } from "./card-art-placeholder";
 import { BonusProgress, BonusUrgencyBadge } from "./bonus-progress";
-import { SpendUpdateForm } from "./spend-update-form";
 import { CardActionsMenu } from "./card-actions-menu";
 
 interface CardItemProps {
@@ -55,7 +54,7 @@ export function CardItem({ card, catalogCard }: CardItemProps) {
           <div className="min-w-0">
             <Link
               href={`/cards/${card.id}`}
-              className="truncate text-sm font-medium hover:underline"
+              className="truncate text-base font-semibold hover:underline"
             >
               {card.card_name}
             </Link>
@@ -82,18 +81,12 @@ export function CardItem({ card, catalogCard }: CardItemProps) {
         </div>
 
         {hasActiveBonus && (
-          <>
-            <BonusProgress
-              progressCents={card.signup_spend_progress_cents}
-              requirementCents={card.signup_spend_requirement_cents!}
-              deadline={card.signup_spend_deadline}
-              bonusPoints={card.signup_bonus_points}
-            />
-            <SpendUpdateForm
-              cardId={card.id}
-              currentCents={card.signup_spend_progress_cents}
-            />
-          </>
+          <BonusProgress
+            progressCents={card.signup_spend_progress_cents}
+            requirementCents={card.signup_spend_requirement_cents!}
+            deadline={card.signup_spend_deadline}
+            bonusPoints={card.signup_bonus_points}
+          />
         )}
       </CardContent>
     </Card>

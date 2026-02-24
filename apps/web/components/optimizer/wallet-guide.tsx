@@ -2,7 +2,6 @@
 
 import type { WalletGuide as WalletGuideType, CatalogCard } from "@wayloft/shared";
 import { CATEGORY_DEFINITIONS } from "@/lib/optimizer/categories";
-import { QuickReference } from "./quick-reference";
 import { CategoryRow } from "./category-row";
 
 interface WalletGuideProps {
@@ -21,9 +20,6 @@ export function WalletGuide({ guide, catalog }: WalletGuideProps) {
 
   return (
     <div className="space-y-6">
-      {/* Quick reference card */}
-      <QuickReference categories={guide.categories} />
-
       {/* Category grid */}
       <div className="space-y-3">
         {guide.categories.map((cat) => (

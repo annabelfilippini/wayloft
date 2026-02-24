@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateSpendProgress } from "@/app/actions/cards";
@@ -12,7 +12,10 @@ interface SpendUpdateFormProps {
 
 type ActionState = { error?: string; success?: boolean };
 
+const QUICK_INCREMENTS = [500, 1000, 2000];
+
 export function SpendUpdateForm({ cardId, currentCents }: SpendUpdateFormProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
     async (_prev, formData) => {
       return updateSpendProgress(formData);
@@ -20,31 +23,57 @@ export function SpendUpdateForm({ cardId, currentCents }: SpendUpdateFormProps) 
     { error: undefined, success: undefined }
   );
 
-  const currentDollars = (currentCents / 100).toFixed(0);
+  const currentDollars = Math.round(currentCents / 100);
+
+  function handleQuickAdd(amount: number) {
+    const form = new FormData();
+    form.set("card_id", cardId);
+    form.set("increment", String(amount));
+    formAction(form);
+  }
 
   return (
-    <form action={formAction} className="flex items-center gap-2">
-      <input type="hidden" name="card_id" value={cardId} />
-      <div className="relative flex-1">
-        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-          $
-        </span>
-        <Input
-          name="amount"
-          type="number"
-          min="0"
-          step="1"
-          defaultValue={currentDollars}
-          placeholder="0"
-          className="pl-6 text-sm"
-        />
+    <div className="space-y-2">
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs text-muted-foreground">Quick add:</span>
+        {QUICK_INCREMENTS.map((amt) => (
+          <Button
+            key={amt}
+            type="button"
+            size="sm"
+            variant="outline"
+            className="h-7 px-2 text-xs"
+            disabled={isPending}
+            onClick={() => handleQuickAdd(amt)}
+          >
+            +${amt.toLocaleString()}
+          </Button>
+        ))}
       </div>
-      <Button type="submit" size="sm" variant="secondary" disabled={isPending}>
-        {isPending ? "..." : "Update"}
-      </Button>
+      <form action={formAction} className="flex items-center gap-2">
+        <input type="hidden" name="card_id" value={cardId} />
+        <div className="relative flex-1">
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            $
+          </span>
+          <Input
+            ref={inputRef}
+            name="amount"
+            type="number"
+            min="0"
+            step="1"
+            defaultValue={currentDollars}
+            placeholder="0"
+            className="pl-6 text-sm"
+          />
+        </div>
+        <Button type="submit" size="sm" variant="secondary" disabled={isPending}>
+          {isPending ? "..." : "Update"}
+        </Button>
+      </form>
       {state.error && (
         <p className="text-xs text-destructive">{state.error}</p>
       )}
-    </form>
+    </div>
   );
 }

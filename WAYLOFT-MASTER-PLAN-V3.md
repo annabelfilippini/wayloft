@@ -1,9 +1,31 @@
 # Wayloft — Master Business Development Plan
 
-**Version:** 3.2
-**Updated:** February 21, 2026
-**Status:** Phase 1, Loop 1 — Auth + Card Portfolio in progress. Foundation complete, card CRUD built, continuing feature buildout.
+**Version:** 3.4
+**Updated:** February 23, 2026
+**Status:** Phase 1, Loop 1 core complete + Loop 1.5 Spending Optimizer complete + UX polish pass complete + Statement Credit Tracker complete. Remaining Loop 1 features (payment tracker, AF decision helper, education layer, profile/settings) then Loop 2 (Card Recommendation Engine).
 **Owner:** Tom Filippini
+
+---
+
+## What Changed in v3.3 → v3.4
+
+**v3.4 changes (February 23, 2026):**
+- **Statement Credit Tracker (Priority 1A) complete:** Full lifecycle tracking for premium card statement credits (Amex Platinum 7 credits, CSR 4 credits, Amex Gold 4 credits). Auto-generates `user_credit_usage` rows on card add. Credits tab on card detail with progress bars, mark-as-used (full/partial), enrollment buttons, status badges (used/partial/expiring/expired). Annual fee offset calculator shows effective cost after credits. Expiring credits feed into dashboard action items widget.
+- **New migration:** `003_statement_credits.sql` — `user_credit_usage` table with RLS + `expiring_credits` view (remaining_cents, days_until_expiration, urgency).
+- **New types:** `CatalogCredit`, `UserCreditUsage` in `@wayloft/shared`. `credits?` field added to `CatalogCard`.
+- **New server actions:** `markCreditUsed`, `enrollCredit` in `app/actions/cards.ts`.
+- **New component:** `credit-tracker.tsx` — `CreditTracker` + `CreditRow` with grouped-by-period display.
+- **Dashboard expanded:** `expiring_credits` view added as third data source in actions widget.
+
+---
+
+## What Changed in v3.2 → v3.3
+
+**v3.3 changes (February 23, 2026):**
+- **Loop 1 core complete:** Auth, card portfolio (full CRUD, detail view, lifecycle timeline, retention logging), dashboard (portfolio summary, points portfolio, action items, expiration alerts), onboarding quiz — all built and working.
+- **Loop 1.5 Spending Optimizer complete:** 13-category wallet guide with CPP-weighted ranking, category detail drill-down, cap warnings, empty state. Gap detection added (amber suggestions for uncovered categories).
+- **UX polish pass (Priority 0) complete:** Card tile hierarchy improved, amber best_for tags, spend tracker quick-increment buttons (+$500/+$1k/+$2k), AF section simplified, "Travel portal value" with issuer-specific labels, alliance explainer on transfer partners, dashboard headers enlarged, optimizer quick reference removed.
+- **Status updated** for all completed milestones.
 
 ---
 
@@ -1584,22 +1606,10 @@ Embedded Knowledge: JSON schema validation, data source URLs for verification, d
 | Milestone | Target Date | Status |
 |-----------|-------------|--------|
 | All 13 skills built and tested | Week 2 | Not started |
-| Skeleton app deployed | Week 2 | Not started |
-| Card portfolio with auto-populate working | Week 4 | Not started |
-| First card recommendation generated | Week 5 | Not started |
-| First bonus detected | Week 6 | Not started |
-| Transfer Bonus Monitor + Card Deadline Notifier live | Week 6 | Not started |
-| First flight search works | Week 6 | Not started |
-| Extension MVP published to CWS | Week 8 | Not started |
-| 15 card review pages published | Week 8 | Not started |
-| 6 agents running (Bonus, Deadline, Catalog, Extension, Intel, Quality) | Week 10 | Not started |
-| Applied to CardRatings + CJ | Week 9 | Not started |
-| First external user signup | Week 10 | Not started |
-| 50 beta users | Week 10 | Not started |
-| First paying customer | Week 12 | Not started |
-| All 12 agents running | Week 12 | Not started |
-| 30 sub-agents dispatched and delivered | Week 12 | Not started |
-| Spending Optimizer ("wallet guide") live | Week 4 | Not started |
+| Skeleton app deployed | Week 2 | **Complete** (Feb 2026) |
+| Card portfolio with auto-populate working | Week 4 | **Complete** (Feb 2026) |
+| Spending Optimizer ("wallet guide") live | Week 4 | **Complete** (Feb 2026) |
+| UX polish pass (Priority 0) | — | **Complete** (Feb 23, 2026) |
 | Statement credit tracker live (all cards) | Week 4 | Not started |
 | Perks reference + setup checklist live | Week 4 | Not started |
 | Payment due date tracker live | Week 4 | Not started |
@@ -1607,7 +1617,21 @@ Embedded Knowledge: JSON schema validation, data source URLs for verification, d
 | Experience level selector in onboarding | Week 3 | Not started |
 | Glossary + education tooltips live | Week 4 | Not started |
 | credit-cards.json expanded to v3.2 schema (all 52 cards) | Week 3 | Not started |
+| Profile & settings page | Week 4 | Not started |
+| First card recommendation generated | Week 5 | Not started |
 | 5/24 counter widget on dashboard | Week 5 | Not started |
+| First bonus detected | Week 6 | Not started |
+| Transfer Bonus Monitor + Card Deadline Notifier live | Week 6 | Not started |
+| First flight search works | Week 6 | Not started |
+| Extension MVP published to CWS | Week 8 | Not started |
+| 15 card review pages published | Week 8 | Not started |
+| Applied to CardRatings + CJ | Week 9 | Not started |
+| 6 agents running (Bonus, Deadline, Catalog, Extension, Intel, Quality) | Week 10 | Not started |
+| First external user signup | Week 10 | Not started |
+| 50 beta users | Week 10 | Not started |
+| First paying customer | Week 12 | Not started |
+| All 12 agents running | Week 12 | Not started |
+| 30 sub-agents dispatched and delivered | Week 12 | Not started |
 | 100 extension installs | Month 4 | Not started |
 | Email parsing live | Month 4 | Not started |
 | 1,000 users | Month 5 | Not started |

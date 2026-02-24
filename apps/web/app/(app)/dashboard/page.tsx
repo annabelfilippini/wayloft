@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { ActionsWidget } from "@/components/dashboard/actions-widget";
+import { PointsPortfolio } from "@/components/dashboard/points-portfolio";
 import { ExpirationAlerts } from "@/components/dashboard/expiration-alerts";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
 import { Card, CardContent } from "@/components/ui/card";
@@ -95,6 +96,10 @@ export default async function DashboardPage() {
       <div className="mt-6 space-y-6">
         <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
           <PortfolioSummary userId={user.id} />
+        </Suspense>
+
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+          <PointsPortfolio userId={user.id} />
         </Suspense>
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>

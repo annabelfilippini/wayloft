@@ -48,7 +48,7 @@ export async function ExpirationAlerts({ userId }: ExpirationAlertsProps) {
     return (
       <Card>
         <CardContent className="pt-6">
-          <h2 className="text-sm font-semibold">Points Expiration</h2>
+          <h2 className="text-lg font-bold">Points Expiration</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             No expiring points tracked yet.{" "}
             <Link
@@ -67,7 +67,7 @@ export async function ExpirationAlerts({ userId }: ExpirationAlertsProps) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <h2 className="mb-3 text-sm font-semibold">Points Expiration</h2>
+        <h2 className="mb-3 text-lg font-bold">Points Expiration</h2>
         <div className="space-y-3">
           {alerts.map((alert) => (
             <div

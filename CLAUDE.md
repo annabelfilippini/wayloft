@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Feb 20, 2026)
+## Current Status (Feb 23, 2026)
 
-**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system and basic card portfolio are built. Continuing to build out card portfolio features.
+**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Continuing feature buildout.
 
 ### What's Built
 
@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Turborepo monorepo with pnpm workspaces
 - Next.js 16.1.6 app (`apps/web`) with App Router, Tailwind v4, TypeScript
 - shadcn/ui (New York style, Neutral base) — button, card, input, badge, dialog, dropdown-menu, command, progress, separator, skeleton
-- Supabase connected — 2 migrations deployed, 15+ tables with RLS + triggers
+- Supabase connected — 3 migrations deployed, 16+ tables with RLS + triggers
 - Supabase client helpers (server, browser, middleware) via @supabase/ssr
 - GitHub repo: github.com/annabelfilippini/wayloft (private)
 - Vercel: auto-deploys on push to main, env vars set
@@ -31,16 +31,54 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Middleware for session refresh
 - User menu component with sign out
 
-**Card portfolio (partially complete):**
+**Card portfolio (complete):**
 - Card picker search with fuzzy matching against catalog
 - Add card dialog (2-field UX: card_slug + card_since)
 - Card grid + card item display with issuer-colored art placeholders
+- Card detail view (earning rates, transfer partners with alliance explainer, perks, credits tracker, lifecycle timeline)
 - Bonus progress tracker (spend progress bar)
 - Card actions menu (dropdown)
-- Spend update form
+- Spend update form with quick-increment buttons (+$500/+$1k/+$2k)
+- Annual fee section with retention offer logging
 - Empty state for new users
-- Server actions for card CRUD (`app/actions/cards.ts`)
+- Server actions for card CRUD + spend increment (`app/actions/cards.ts`)
 - Card catalog utilities (`lib/cards/catalog.ts`, `lib/cards/issuer-colors.ts`)
+
+**Spending optimizer (complete):**
+- 13 canonical spending categories with earning rate comparison
+- CPP-weighted tie-breaking across all user cards
+- Category rows with best-card recommendation + full ranking on expand
+- Gap detection: amber suggestions for uncovered categories (dining, gas, groceries, streaming, transit)
+- Empty state for users with no cards
+
+**Statement credit tracker (complete):**
+- Credits tab on card detail page with per-period grouping (monthly/quarterly/semi-annual/annual)
+- Progress bars, status badges (used/partial/expiring/expired), mark-as-used (full/partial), enrollment buttons
+- Annual fee offset calculator (effective cost = AF - credits used)
+- Auto-generates credit usage rows when card is added (Amex Platinum, CSR, Amex Gold)
+- `user_credit_usage` table + `expiring_credits` view (migration 003)
+- Server actions: `markCreditUsed`, `enrollCredit`
+
+**Dashboard (complete):**
+- Portfolio summary cards (total cards, total AF, active bonuses)
+- Points portfolio ("My Points & Miles") with estimated values, expiration badges
+- Action items widget (unified deadline feed: signup spend, AF, points expiring, credits expiring)
+- Expiration alerts widget
+- Add balance dialog
+
+**Onboarding (complete):**
+- 2-screen card picker quiz
+- Skip banner for users who bypass onboarding
+
+**UX polish pass (Priority 0 — complete, Feb 23):**
+- Card tile hierarchy: name bumped to text-base font-semibold, SpendUpdateForm removed from grid tiles (detail page only)
+- Amber best_for tags on card detail for visual contrast
+- Spend tracker: quick-increment buttons (+$500/+$1k/+$2k) with server-side increment support
+- AF section simplified: removed "Your options" block, retention CTA as subtle text link
+- Portal value: "Travel portal value" with issuer-specific sublabel
+- Alliance explainer: Star Alliance/oneworld/SkyTeam descriptions on transfer partners tab
+- Dashboard headers bumped to text-lg font-bold
+- Optimizer: removed quick reference card, added gap suggestions with lightbulb icons
 
 **Landing page (complete):**
 - Clean navy hero with Instrument Serif headlines
@@ -63,19 +101,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard page stub with actions widget
 - Route stubs: bonuses, search, settings
 - Community intelligence scan agent + daily cron script
-- 2nd migration: issuer rules + user credit profile data
+- 3 migrations: initial schema, issuer rules + user credit profile, statement credits
 
-### What's Next (Loop 1 completion)
+### What's Next
 
-Card portfolio features still needed:
-- Card detail view (full earning rates, transfer partners, perks)
-- Annual fee reminder system
-- Card lifecycle timeline
-- Points expiration alerts
-- Action Items dashboard widget (unified deadline feed)
-- Points portfolio dashboard (total points, value estimate)
-- Onboarding quiz (2-screen card picker)
+Remaining Loop 1 features:
 - Profile & settings page
+- Payment due date tracker
+- Education layer (glossary, tooltips)
+- AF decision helper (value analysis, downgrade paths)
+- User personas & adaptive complexity
 
 ### Week 2 gaps (can be done anytime)
 - ToS / Privacy Policy (Termly)
@@ -96,8 +131,8 @@ wayloft/
 │   │   │   └── auth/callback/      # OAuth callback handler
 │   │   ├── components/
 │   │   │   ├── auth/               # Auth form, OAuth buttons, submit button, user menu
-│   │   │   ├── cards/              # Card grid, card item, picker, bonus progress, etc.
-│   │   │   ├── dashboard/          # Actions widget
+│   │   │   ├── cards/              # Card grid, card item, picker, bonus progress, credit tracker, etc.
+│   │   │   ├── dashboard/          # Actions widget, points portfolio, expiration alerts
 │   │   │   ├── nav/                # App sidebar
 │   │   │   └── ui/                 # shadcn components
 │   │   ├── lib/
@@ -109,7 +144,7 @@ wayloft/
 │   └── workers/                    # Cloudflare Workers (stub)
 ├── packages/
 │   ├── shared/                     # Types, constants (@wayloft/shared)
-│   ├── db/                         # Supabase client + 2 migrations (@wayloft/db)
+│   ├── db/                         # Supabase client + 3 migrations (@wayloft/db)
 │   └── email/                      # React Email templates stub (@wayloft/email)
 ├── scrapers/                       # Python scraper stubs (bonuses, semi_private)
 ├── data/                           # credit-cards.json, transfer-partners.json, issuer-rules.json
@@ -146,6 +181,7 @@ wayloft/
 **Migrations:** `packages/db/migrations/`
 - `001_initial_schema.sql` — profiles, user_cards, card_lifecycle_events, loyalty_balances, searches, favorites, alerts, transfer_bonuses, transfer_bonus_history, crowdsourced_availability, email_connections, notification_preferences, semi_private_flights + views + triggers
 - `002_issuer_rules_user_data.sql` — issuer rules + user credit profile data
+- `003_statement_credits.sql` — user_credit_usage table + expiring_credits view
 
 **Key conventions:**
 - UUID primary keys via `gen_random_uuid()`
@@ -153,7 +189,7 @@ wayloft/
 - RLS on all tables; user-owns-their-data policies
 - `updated_at` auto-managed by `set_updated_at()` trigger
 - `user_cards` auto-populated from catalog on insert (trigger: `auto_populate_card_fields()`)
-- Views `upcoming_card_actions` and `expiring_points` power dashboard widgets
+- Views `upcoming_card_actions`, `expiring_points`, and `expiring_credits` power dashboard widgets
 
 **Connection:** Supabase JS client only (IPv6-only, no direct DB connection). Env vars in `apps/web/.env.local`.
 

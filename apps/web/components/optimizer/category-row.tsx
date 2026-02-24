@@ -15,11 +15,20 @@ import {
   Home,
   Zap,
   CircleDollarSign,
+  Lightbulb,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { CategoryRecommendation } from "@wayloft/shared";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
 import { CategoryDetail } from "./category-detail";
+
+const GAP_SUGGESTIONS: Record<string, string> = {
+  dining: "Consider: Amex Gold (4x) or Bilt Mastercard (3x)",
+  gas: "Consider: Citi Custom Cash (5x) or Amex Blue Cash Preferred (3%)",
+  groceries: "Consider: Amex Gold (4x) or Blue Cash Preferred (6%)",
+  streaming: "Consider: Citi Custom Cash (5x) or US Bank Altitude Go (4x)",
+  transit: "Consider: Bilt Mastercard (2x) or Chase Freedom Flex (3x)",
+};
 
 const ICON_MAP: Record<string, LucideIcon> = {
   UtensilsCrossed,
@@ -48,12 +57,13 @@ export function CategoryRow({
   catalogMap,
 }: CategoryRowProps) {
   const [expanded, setExpanded] = useState(false);
-  const { displayName, rankings } = recommendation;
+  const { category, displayName, rankings } = recommendation;
   const top = rankings[0];
 
   const IconComponent = ICON_MAP[iconName] ?? CircleDollarSign;
 
   if (!top) {
+    const suggestion = GAP_SUGGESTIONS[category] ?? "No bonus card — consider adding one";
     return (
       <div className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
@@ -62,8 +72,9 @@ export function CategoryRow({
         <span className="text-sm font-medium text-muted-foreground">
           {displayName}
         </span>
-        <span className="ml-auto text-xs text-muted-foreground">
-          No cards earn bonus here
+        <span className="ml-auto flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
+          <Lightbulb className="h-3.5 w-3.5 shrink-0" />
+          {suggestion}
         </span>
       </div>
     );
