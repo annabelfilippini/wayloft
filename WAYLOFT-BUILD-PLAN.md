@@ -1,6 +1,6 @@
 # Wayloft — Consolidated Build Plan
 
-**Updated:** February 23, 2026
+**Updated:** February 24, 2026
 **Source:** Merged from WAYLOFT-MASTER-PLAN-V3.md + wayloft-master-plan-additions-v3.2.md
 **Purpose:** Single source of truth for what to build next. Check boxes as you go.
 
@@ -12,7 +12,7 @@ Everything below is built and functional in the codebase.
 
 ### Infrastructure (Phase 0)
 - [x] Turborepo monorepo, Next.js 16, Tailwind v4, shadcn/ui
-- [x] Supabase (15+ tables, RLS, triggers, views)
+- [x] Supabase (16+ tables, 3 migrations, RLS, triggers, views)
 - [x] Supabase Auth (email + Google OAuth)
 - [x] Vercel auto-deploy, GitHub Actions CI
 - [x] Brand identity (Instrument Serif + DM Sans, navy/amber palette)
@@ -27,15 +27,25 @@ Everything below is built and functional in the codebase.
 - [x] Card picker search with fuzzy matching
 - [x] Add card dialog (2-field UX: slug + date)
 - [x] Card grid with issuer-colored art placeholders
-- [x] Card detail page (4 tabs: Earning, Perks, Transfer Partners, History)
+- [x] Card detail page (5 tabs: Earning, Perks, Credits, Transfer Partners, History)
 - [x] Signup bonus tracker (progress bar, spend update form)
-- [x] Annual fee section with retention offer logging
+- [x] Annual fee section with retention offer logging + offset calculator
 - [x] Card lifecycle timeline (History tab, log event form, auto-log on create)
 - [x] Points expiration alerts (dashboard widget)
-- [x] Action items widget (unified deadlines: signup spend + AF + expiring points)
+- [x] Action items widget (unified deadlines: signup spend + AF + expiring points + expiring credits)
 - [x] Points portfolio dashboard (balance list, CPP valuations, estimated value)
 - [x] CPP valuation utility (from transfer-partners.json)
 - [x] Add balance dialog (24 programs)
+
+### Statement Credit Tracker (Priority 1A — complete)
+- [x] `credits` array in credit-cards.json (Amex Platinum 7, CSR 4, Amex Gold 4)
+- [x] `CatalogCredit` + `UserCreditUsage` types in @wayloft/shared
+- [x] Migration 003: `user_credit_usage` table + `expiring_credits` view + RLS
+- [x] Auto-generate credit rows on card add (`calculatePeriodDates` helper)
+- [x] Credits tab on card detail (grouped by period, progress bars, status badges)
+- [x] Mark-as-used (full/partial) + enrollment actions
+- [x] Annual fee offset calculator (effective cost = AF - credits used)
+- [x] Expiring credits in dashboard action items (≤30 days)
 
 ### Spending Optimizer (Loop 1.5)
 - [x] Wallet guide page with category grid
@@ -86,8 +96,8 @@ The Action Items widget currently pulls from signup spend deadlines, AF dates, a
 - Signup spend deadlines (existing)
 - Annual fee dates (existing)
 - Expiring points (existing)
-- Statement credits expiring (Priority 1A)
-- Credits needing enrollment (Priority 1A)
+- ~~Statement credits expiring (Priority 1A)~~ ✓ shipped
+- Credits needing enrollment (Priority 1A — enrollment tracked, dashboard nudge TBD)
 - Quarterly category activations (spending optimizer)
 - Perks not yet set up (Priority 1B)
 - Transfer bonuses ending soon (Priority 3)
@@ -126,16 +136,8 @@ The Action Items widget currently pulls from signup spend deadlines, AF dates, a
 
 These are the remaining Loop 1 features from the plan. They deepen the card portfolio from "tracking" to "intelligence" — and they're what make users come back.
 
-#### 1A. Statement Credit Tracker
-**Why:** Users leave $500-1K+ on the table annually. This is the biggest value-add for card holders.
-**What to build:**
-- Expand `credit-cards.json` with `credits` array per card (amount, period, reset logic, enrollment, merchants, gotchas)
-- New DB table: `user_credit_usage` (tracks usage per credit per period)
-- New DB view: `expiring_credits`
-- Credit tracker UI on card detail page (status badges, mark-as-used, enrollment CTAs)
-- Expiration countdowns on dashboard
-- Annual fee offset calculator (fee - credits used - perks = effective fee)
-- Auto-generate credit rows when card added, expire when period ends
+#### ~~1A. Statement Credit Tracker~~ — COMPLETE (Feb 23)
+Built. See "What's Done" section above for full checklist.
 
 #### 1B. Perks & Benefits Reference
 **Why:** Users don't know they have primary rental car insurance or trip delay coverage.
@@ -283,13 +285,13 @@ These are the remaining Loop 1 features from the plan. They deepen the card port
 
 ## Immediate Next Action
 
-**Priority 0 is done. Next up: Priority 1A (Statement Credit Tracker).**
+**Priority 1A (Statement Credit Tracker) is done. Next up: Priority 1B (Perks & Benefits Reference).**
 
-1. Expand `credit-cards.json` with `credits` array for top cards (start with Amex Platinum, CSR, Gold)
-2. Write migration for `user_credit_usage` table + `expiring_credits` view
-3. Build credit tracker UI on card detail page
-4. Add expiration countdown to dashboard
-5. Build annual fee offset calculator
+1. Expand `credit-cards.json` with `perks` array for top cards (insurance, travel, lifestyle, financial)
+2. Write migration for `user_perk_setup` table
+3. Build perks section on card detail (grouped by category, setup checklist)
+4. Perk value estimator (sum estimated annual value)
+5. "Unused perks" nudge in dashboard action items
 
 ---
 
