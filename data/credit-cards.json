@@ -80,6 +80,96 @@
         "gotchas": "Covers Peloton membership. Annual credit."
       }
     ],
+    "perks": [
+      {
+        "id": "csr_priority_pass",
+        "name": "Priority Pass Lounge Access",
+        "category": "travel",
+        "type": "enrollment_required",
+        "description": "Unlimited access to 1,500+ airport lounges worldwide for you and 2 guests.",
+        "setup_instructions": "Register at prioritypass.com with your CSR card number. Digital card available immediately; physical card arrives in 1-2 weeks.",
+        "estimated_annual_value_cents": 42900,
+        "enrollment_required": true,
+        "renewal": null
+      },
+      {
+        "id": "csr_global_entry",
+        "name": "Global Entry / TSA PreCheck Credit",
+        "category": "travel",
+        "type": "one_time_setup",
+        "description": "Up to $100 statement credit for Global Entry ($100) or TSA PreCheck ($78) application fee.",
+        "setup_instructions": "Apply at ttp.cbp.dhs.gov. Pay the fee with your CSR and the credit posts automatically within 1-2 statements.",
+        "estimated_annual_value_cents": 2500,
+        "enrollment_required": false,
+        "renewal": "every_4_years"
+      },
+      {
+        "id": "csr_trip_delay",
+        "name": "Trip Delay Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Up to $500 per ticket for reasonable expenses when your trip is delayed 6+ hours. Covers meals, lodging, and toiletries.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 15000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "csr_trip_cancel",
+        "name": "Trip Cancellation/Interruption Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Up to $10,000 per person and $20,000 per trip for prepaid, non-refundable travel expenses.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 20000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "csr_rental_car",
+        "name": "Primary Rental Car Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Primary auto rental collision damage waiver. Decline the rental company's CDW and save $15-30/day.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 30000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "csr_doordash",
+        "name": "Complimentary DashPass",
+        "category": "dining",
+        "type": "enrollment_required",
+        "description": "Free DashPass membership ($9.99/mo value) with unlimited $0 delivery fees on eligible orders.",
+        "setup_instructions": "Link your CSR at doordash.com/consumer/benefit/sapphire-reserve. Activate through your DoorDash account settings.",
+        "estimated_annual_value_cents": 11988,
+        "enrollment_required": true,
+        "renewal": "annual"
+      },
+      {
+        "id": "csr_chase_travel_boost",
+        "name": "Chase Travel 8x Boost",
+        "category": "travel",
+        "type": "always_on",
+        "description": "Earn 8x total points on flights, hotels, and car rentals booked through Chase Travel portal.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 20000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "csr_points_boost",
+        "name": "Points Boost (2cpp Redemptions)",
+        "category": "financial",
+        "type": "always_on",
+        "description": "Redeem points at 2 cents per point on select flights and hotels through Chase Travel.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 25000,
+        "enrollment_required": false,
+        "renewal": null
+      }
+    ],
     "is_business": false,
     "foreign_transaction_fee": false
   },
@@ -338,6 +428,129 @@
         "gotchas": "$75 per quarter. Automatically applied to lululemon purchases."
       }
     ],
+    "perks": [
+      {
+        "id": "plat_centurion_lounge",
+        "name": "Centurion Lounge Access",
+        "category": "travel",
+        "type": "always_on",
+        "description": "Access to Amex Centurion Lounges worldwide. Includes food, drinks, spa amenities, and shower suites at select locations.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 50000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "plat_priority_pass",
+        "name": "Priority Pass (Select, No Guests)",
+        "category": "travel",
+        "type": "enrollment_required",
+        "description": "Access to 1,500+ Priority Pass lounges. Cardmember only — no guest access included.",
+        "setup_instructions": "Enroll at prioritypass.com/amex or through the Amex app under Benefits. Digital card available immediately.",
+        "estimated_annual_value_cents": 32900,
+        "enrollment_required": true,
+        "renewal": null
+      },
+      {
+        "id": "plat_global_entry",
+        "name": "Global Entry / TSA PreCheck Credit",
+        "category": "travel",
+        "type": "one_time_setup",
+        "description": "Up to $100 statement credit for Global Entry ($100) or TSA PreCheck ($78) application fee.",
+        "setup_instructions": "Apply at ttp.cbp.dhs.gov. Pay with your Platinum Card and the credit posts automatically.",
+        "estimated_annual_value_cents": 2500,
+        "enrollment_required": false,
+        "renewal": "every_4_years"
+      },
+      {
+        "id": "plat_hilton_gold",
+        "name": "Hilton Honors Gold Status",
+        "category": "status",
+        "type": "enrollment_required",
+        "description": "Complimentary Hilton Gold: 80% bonus points, room upgrades, free breakfast at select properties.",
+        "setup_instructions": "Link your Hilton Honors account through the Amex Benefits portal. Status appears within 24-48 hours.",
+        "estimated_annual_value_cents": 30000,
+        "enrollment_required": true,
+        "renewal": "annual"
+      },
+      {
+        "id": "plat_marriott_gold",
+        "name": "Marriott Bonvoy Gold Elite Status",
+        "category": "status",
+        "type": "enrollment_required",
+        "description": "Complimentary Marriott Gold Elite: 25% bonus points, enhanced room upgrades, late checkout at 2pm.",
+        "setup_instructions": "Link your Marriott Bonvoy account through the Amex Benefits portal. Status appears within 24-48 hours.",
+        "estimated_annual_value_cents": 20000,
+        "enrollment_required": true,
+        "renewal": "annual"
+      },
+      {
+        "id": "plat_car_rental",
+        "name": "Premium Car Rental Status",
+        "category": "travel",
+        "type": "enrollment_required",
+        "description": "Complimentary status with Hertz, Avis, and National car rental companies. Skip the counter, get free upgrades.",
+        "setup_instructions": "Enroll through the Amex Benefits portal under 'Car Rental Privileges'. Link your loyalty accounts.",
+        "estimated_annual_value_cents": 10000,
+        "enrollment_required": true,
+        "renewal": "annual"
+      },
+      {
+        "id": "plat_trip_delay",
+        "name": "Trip Delay Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Up to $500 for trip delays of 6+ hours. Covers meals, lodging, and essential purchases.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 15000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "plat_trip_cancel",
+        "name": "Trip Cancellation/Interruption Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Up to $10,000 per person for prepaid, non-refundable travel expenses when trips are cancelled or interrupted.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 20000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "plat_secondary_car",
+        "name": "Secondary Rental Car Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Secondary auto rental collision damage waiver for rental cars. Kicks in after your personal auto insurance.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 10000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "plat_saks",
+        "name": "Saks Fifth Avenue Credit",
+        "category": "lifestyle",
+        "type": "enrollment_required",
+        "description": "$100 Saks Fifth Avenue credit ($50 Jan-Jun, $50 Jul-Dec). Enroll your Platinum Card at Saks.",
+        "setup_instructions": "Enroll at saksfifthavenue.com/platinum. Use your Platinum Card at Saks and credit applies automatically.",
+        "estimated_annual_value_cents": 10000,
+        "enrollment_required": true,
+        "renewal": "annual"
+      },
+      {
+        "id": "plat_5x_flights",
+        "name": "5x Points on Flights Booked Direct",
+        "category": "financial",
+        "type": "always_on",
+        "description": "Earn 5x Membership Rewards points on flights booked directly with airlines or through Amex Travel.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 20000,
+        "enrollment_required": false,
+        "renewal": null
+      }
+    ],
     "best_for": ["luxury travel", "lounge access", "premium perks"],
     "credit_score_min": "excellent",
     "card_art_url": "/cards/amex-platinum.png",
@@ -421,6 +634,63 @@
         "enrollment_required": false,
         "merchants": ["Dunkin'"],
         "gotchas": "$7/mo at Dunkin'. Use it or lose it each month."
+      }
+    ],
+    "perks": [
+      {
+        "id": "gold_purchase_protection",
+        "name": "Purchase Protection",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Covers eligible purchases against damage or theft for up to 90 days from purchase date, up to $10,000 per occurrence.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 10000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "gold_extended_warranty",
+        "name": "Extended Warranty",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Adds up to 1 extra year to eligible manufacturer warranties of 5 years or less.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 5000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "gold_baggage_insurance",
+        "name": "Baggage Insurance",
+        "category": "insurance",
+        "type": "always_on",
+        "description": "Up to $1,250 for carry-on and $500 for checked baggage if lost, damaged, or stolen on eligible flights.",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 5000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "gold_4x_dining",
+        "name": "4x Points at Restaurants Worldwide",
+        "category": "dining",
+        "type": "always_on",
+        "description": "Earn 4x Membership Rewards points at restaurants worldwide (up to $50,000/yr in purchases, then 1x).",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 30000,
+        "enrollment_required": false,
+        "renewal": null
+      },
+      {
+        "id": "gold_4x_groceries",
+        "name": "4x Points at US Supermarkets",
+        "category": "dining",
+        "type": "always_on",
+        "description": "Earn 4x Membership Rewards points at US supermarkets (up to $25,000/yr in purchases, then 1x).",
+        "setup_instructions": null,
+        "estimated_annual_value_cents": 25000,
+        "enrollment_required": false,
+        "renewal": null
       }
     ],
     "best_for": ["dining", "groceries", "everyday premium"],

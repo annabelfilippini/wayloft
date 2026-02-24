@@ -30,9 +30,22 @@ interface ExpiringCredit {
   urgency: "critical" | "warning" | "info";
 }
 
+interface UnusedPerk {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  card_name: string;
+  card_slug: string;
+  perk_id: string;
+  perk_name: string;
+  perk_type: string;
+  estimated_annual_value_cents: number;
+  urgency: "warning" | "info";
+}
+
 interface UnifiedAction {
   key: string;
-  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring";
+  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup";
   title: string;
   subtitle: string;
   urgency: "critical" | "warning" | "info" | "ok";
@@ -59,13 +72,14 @@ const typeLabels: Record<string, string> = {
   annual_fee: "AF",
   points_expiring: "Points",
   credit_expiring: "Credit",
+  perk_setup: "Perk",
 };
 
 export async function ActionsWidget({ userId }: ActionsWidgetProps) {
   const supabase = await createClient();
 
-  // Fetch card actions, expiring points, and expiring credits in parallel
-  const [cardActionsRes, expiringRes, expiringCreditsRes] = await Promise.all([
+  // Fetch card actions, expiring points, expiring credits, and unused perks in parallel
+  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes] = await Promise.all([
     supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
     supabase.from("expiring_points").select("*").eq("user_id", userId),
     supabase
@@ -73,6 +87,14 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
       .select("*")
       .eq("user_id", userId)
       .lte("days_until_expiration", 30),
+    supabase
+      .from("unused_perks")
+      .select("*")
+      .eq("user_id", userId)
+      .in("perk_type", ["one_time_setup", "enrollment_required"])
+      .eq("status", "not_started")
+      .order("estimated_annual_value_cents", { ascending: false })
+      .limit(3),
   ]);
 
   const actions: UnifiedAction[] = [];
@@ -139,6 +161,21 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
       urgency: ec.urgency,
       daysRemaining: ec.days_until_expiration,
       href: `/cards/${ec.user_card_id}`,
+    });
+  }
+
+  // Process unused perks
+  const unusedPerks = (unusedPerksRes.data ?? []) as UnusedPerk[];
+  for (const up of unusedPerks) {
+    const valueDollars = Math.round(up.estimated_annual_value_cents / 100);
+    actions.push({
+      key: `perk-${up.id}`,
+      type: "perk_setup",
+      title: up.card_name,
+      subtitle: `${up.perk_name} — set up to save ~$${valueDollars}/yr`,
+      urgency: up.urgency === "warning" ? "info" : "info",
+      daysRemaining: null,
+      href: `/cards/${up.user_card_id}`,
     });
   }
 

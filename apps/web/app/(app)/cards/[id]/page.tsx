@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
 import { getTransferPartners } from "@/lib/cards/transfer-partners";
 import { CardDetail } from "@/components/cards/card-detail";
-import type { UserCard, CardLifecycleEvent, UserCreditUsage } from "@wayloft/shared";
+import type { UserCard, CardLifecycleEvent, UserCreditUsage, UserPerkSetup } from "@wayloft/shared";
 
 export default async function CardDetailPage({
   params,
@@ -31,7 +31,7 @@ export default async function CardDetailPage({
 
   const transferPartners = getTransferPartners(userCard.currency);
 
-  const [{ data: eventRows }, { data: creditRows }] = await Promise.all([
+  const [{ data: eventRows }, { data: creditRows }, { data: perkRows }] = await Promise.all([
     supabase
       .from("card_lifecycle_events")
       .select("*")
@@ -44,10 +44,43 @@ export default async function CardDetailPage({
       .eq("user_card_id", id)
       .eq("user_id", user.id)
       .order("period_end", { ascending: true }),
+    supabase
+      .from("user_perk_setup")
+      .select("*")
+      .eq("user_card_id", id)
+      .eq("user_id", user.id)
+      .order("category", { ascending: true }),
   ]);
 
   const lifecycleEvents = (eventRows ?? []) as CardLifecycleEvent[];
   const creditUsage = (creditRows ?? []) as UserCreditUsage[];
+  let perkSetup = (perkRows ?? []) as UserPerkSetup[];
+
+  // Lazy backfill: if catalog has perks but DB has no rows, insert them
+  if (perkSetup.length === 0 && catalogCard.perks && catalogCard.perks.length > 0) {
+    const backfillRows = catalogCard.perks.map((perk) => ({
+      user_id: user.id,
+      user_card_id: id,
+      card_slug: userCard.card_slug,
+      perk_id: perk.id,
+      perk_name: perk.name,
+      category: perk.category,
+      perk_type: perk.type,
+      status: perk.type === "always_on" ? "completed" : "not_started",
+      completed_at: perk.type === "always_on" ? new Date().toISOString() : null,
+      estimated_annual_value_cents: perk.estimated_annual_value_cents,
+    }));
+    await supabase.from("user_perk_setup").insert(backfillRows);
+
+    // Re-fetch after backfill
+    const { data: refetchedPerks } = await supabase
+      .from("user_perk_setup")
+      .select("*")
+      .eq("user_card_id", id)
+      .eq("user_id", user.id)
+      .order("category", { ascending: true });
+    perkSetup = (refetchedPerks ?? []) as UserPerkSetup[];
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
@@ -57,6 +90,7 @@ export default async function CardDetailPage({
         transferPartners={transferPartners}
         lifecycleEvents={lifecycleEvents}
         creditUsage={creditUsage}
+        perkSetup={perkSetup}
       />
     </div>
   );

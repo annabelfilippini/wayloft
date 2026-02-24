@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import type { UserCard, CatalogCard, CardLifecycleEvent, LifecycleEventType, UserCreditUsage } from "@wayloft/shared";
+import type { UserCard, CatalogCard, CardLifecycleEvent, LifecycleEventType, UserCreditUsage, UserPerkSetup } from "@wayloft/shared";
 import {
   ArrowLeft,
   Plane,
@@ -38,6 +38,7 @@ import { CardArtPlaceholder } from "./card-art-placeholder";
 import { BonusProgress } from "./bonus-progress";
 import { SpendUpdateForm } from "./spend-update-form";
 import { CreditTracker } from "./credit-tracker";
+import { PerkChecklist } from "./perk-checklist";
 import { logAnnualFeeEvent, logLifecycleEvent } from "@/app/actions/cards";
 
 interface TransferPartnerEntry {
@@ -64,6 +65,7 @@ interface CardDetailProps {
   transferPartners: TransferPartnerData | null;
   lifecycleEvents: CardLifecycleEvent[];
   creditUsage: UserCreditUsage[];
+  perkSetup: UserPerkSetup[];
 }
 
 function formatDaysRemaining(days: number) {
@@ -82,6 +84,7 @@ export function CardDetail({
   transferPartners,
   lifecycleEvents,
   creditUsage,
+  perkSetup,
 }: CardDetailProps) {
   const annualFeeDollars = userCard.annual_fee_cents / 100;
   const hasActiveBonus =
@@ -277,24 +280,8 @@ export function CardDetail({
         <TabsContent value="perks">
           <Card>
             <CardContent className="pt-6">
-              <h3 className="mb-4 text-sm font-semibold">Key Perks</h3>
-              {catalogCard.key_perks.length > 0 ? (
-                <ul className="space-y-3">
-                  {catalogCard.key_perks.map((perk) => (
-                    <li
-                      key={perk}
-                      className="flex items-start gap-3 text-sm"
-                    >
-                      <CreditCard className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                      <span>{perk}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  No key perks listed for this card.
-                </p>
-              )}
+              <h3 className="mb-4 text-sm font-semibold">Perks & Benefits</h3>
+              <PerkChecklist perks={perkSetup} keyPerks={catalogCard.key_perks} />
             </CardContent>
           </Card>
         </TabsContent>

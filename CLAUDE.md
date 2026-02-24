@@ -182,6 +182,7 @@ wayloft/
 - `001_initial_schema.sql` — profiles, user_cards, card_lifecycle_events, loyalty_balances, searches, favorites, alerts, transfer_bonuses, transfer_bonus_history, crowdsourced_availability, email_connections, notification_preferences, semi_private_flights + views + triggers
 - `002_issuer_rules_user_data.sql` — issuer rules + user credit profile data
 - `003_statement_credits.sql` — user_credit_usage table + expiring_credits view
+- `004_perk_setup.sql` — user_perk_setup table + unused_perks view
 
 **Key conventions:**
 - UUID primary keys via `gen_random_uuid()`
@@ -192,6 +193,8 @@ wayloft/
 - Views `upcoming_card_actions`, `expiring_points`, and `expiring_credits` power dashboard widgets
 
 **Connection:** Supabase JS client only (IPv6-only, no direct DB connection). Env vars in `apps/web/.env.local`.
+
+**IMPORTANT — Running migrations:** There is NO Supabase CLI auth and NO direct DB connection. Do NOT attempt `supabase login`, `supabase db execute`, `psql`, or any REST-based SQL execution. Instead, output the migration SQL for the user to paste into the **Supabase Dashboard SQL Editor**.
 
 ## Critical Business Rules
 

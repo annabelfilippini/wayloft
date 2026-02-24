@@ -34,6 +34,42 @@ export interface CatalogCredit {
   gotchas?: string;
 }
 
+// ── Perks & Benefits ──
+
+export type PerkCategory = "travel" | "insurance" | "lifestyle" | "financial" | "dining" | "status";
+export type PerkType = "always_on" | "one_time_setup" | "enrollment_required" | "periodic_activation";
+export type PerkSetupStatus = "not_started" | "in_progress" | "completed" | "not_applicable";
+
+export interface CatalogPerk {
+  id: string;
+  name: string;
+  category: PerkCategory;
+  type: PerkType;
+  description: string;
+  setup_instructions: string | null;
+  estimated_annual_value_cents: number;
+  enrollment_required: boolean;
+  renewal: "annual" | "every_4_years" | null;
+}
+
+export interface UserPerkSetup {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  card_slug: string;
+  perk_id: string;
+  perk_name: string;
+  category: string;
+  perk_type: PerkType;
+  status: PerkSetupStatus;
+  completed_at: string | null;
+  renewal_due: string | null;
+  notes: string | null;
+  estimated_annual_value_cents: number;
+  created_at: string;
+  updated_at: string;
+}
+
 // Matches the shape of data/credit-cards.json entries
 export interface CatalogCard {
   slug: string;
@@ -56,6 +92,7 @@ export interface CatalogCard {
   card_art_url: string;
   application_url: string;
   credits?: CatalogCredit[];
+  perks?: CatalogPerk[];
   is_business: boolean;
   foreign_transaction_fee: boolean;
 }
@@ -92,7 +129,7 @@ export interface CardAction {
   card_name: string;
   card_slug: string;
   issuer: string;
-  type: "signup_spend" | "annual_fee" | "credit_expiring";
+  type: "signup_spend" | "annual_fee" | "credit_expiring" | "perk_setup";
   urgency: "critical" | "warning" | "info";
   days_remaining?: number;
   spend_remaining_cents?: number;

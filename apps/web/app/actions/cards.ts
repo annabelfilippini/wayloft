@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
-import type { LifecycleEventType, CatalogCredit } from "@wayloft/shared";
+import type { LifecycleEventType, CatalogCredit, PerkSetupStatus } from "@wayloft/shared";
 
 function calculatePeriodDates(
   period: CatalogCredit["period"],
@@ -124,6 +124,24 @@ export async function addCard(formData: FormData) {
         };
       });
       await supabase.from("user_credit_usage").insert(creditRows);
+    }
+
+    // Auto-generate perk setup rows if card has structured perks
+    const perks = catalog.perks;
+    if (perks && perks.length > 0) {
+      const perkRows = perks.map((perk) => ({
+        user_id: user.id,
+        user_card_id: inserted.id,
+        card_slug: catalog.slug,
+        perk_id: perk.id,
+        perk_name: perk.name,
+        category: perk.category,
+        perk_type: perk.type,
+        status: perk.type === "always_on" ? "completed" : "not_started",
+        completed_at: perk.type === "always_on" ? new Date().toISOString() : null,
+        estimated_annual_value_cents: perk.estimated_annual_value_cents,
+      }));
+      await supabase.from("user_perk_setup").insert(perkRows);
     }
   }
 
@@ -417,6 +435,89 @@ export async function enrollCredit(formData: FormData) {
     .from("user_credit_usage")
     .update({ enrolled: true })
     .eq("id", creditId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/cards");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function markPerkSetup(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const perkId = formData.get("perk_id") as string;
+  const newStatus = formData.get("status") as PerkSetupStatus;
+
+  if (!perkId || !newStatus) {
+    return { error: "Invalid input" };
+  }
+
+  const validStatuses: PerkSetupStatus[] = [
+    "not_started",
+    "in_progress",
+    "completed",
+    "not_applicable",
+  ];
+  if (!validStatuses.includes(newStatus)) {
+    return { error: "Invalid status" };
+  }
+
+  const updates: Record<string, unknown> = { status: newStatus };
+  if (newStatus === "completed") {
+    updates.completed_at = new Date().toISOString();
+  }
+
+  const notes = formData.get("notes") as string | null;
+  if (notes) {
+    updates.notes = notes;
+  }
+
+  const { error } = await supabase
+    .from("user_perk_setup")
+    .update(updates)
+    .eq("id", perkId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/cards");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function dismissPerk(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const perkId = formData.get("perk_id") as string;
+
+  if (!perkId) {
+    return { error: "No perk specified" };
+  }
+
+  const { error } = await supabase
+    .from("user_perk_setup")
+    .update({ status: "not_applicable" })
+    .eq("id", perkId)
     .eq("user_id", user.id);
 
   if (error) {
