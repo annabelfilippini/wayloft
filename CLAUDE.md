@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current Status (Feb 24, 2026)
 
-**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Priority 1A (Statement Credits) and 1B (Perks & Benefits) complete. Continuing feature buildout.
+**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Priority 1A (Statement Credits), 1B (Perks & Benefits), and 1C (AF Decision Helper) complete. Continuing feature buildout.
 
 ### What's Built
 
@@ -70,6 +70,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard: top 3 unused perks by value appear as "Perk" action items
 - Fallback: cards without structured perks render the original key_perks string list
 
+**Annual fee decision helper (complete):**
+- AF decision helper component: value breakdown (credits + perks vs AF), verdict badge (KEEP/CALL/DOWNGRADE)
+- Retention guide with phone numbers, success rates, common offers, past retention history
+- Downgrade comparison with lose/keep lists for CSR (3 paths), Amex Platinum (2), Amex Gold (1)
+- `DowngradeOption`, `RetentionOffer`, `RetentionData` types + catalog JSON fields
+- Wired into AnnualFeeSection with expand/collapse CTA (shows when AF ≤ 60 days)
+- Dashboard AF actions show enhanced subtitle for cards with decision data
+- No new DB migration — all client-side from existing tables + catalog
+
 **Dashboard (complete):**
 - Portfolio summary cards (total cards, total AF, active bonuses)
 - Points portfolio ("My Points & Miles") with estimated values, expiration badges
@@ -117,10 +126,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### What's Next
 
 Remaining Loop 1 features:
-- Profile & settings page
 - Payment due date tracker
 - Education layer (glossary, tooltips)
-- AF decision helper (value analysis, downgrade paths)
 - User personas & adaptive complexity
 
 ### Week 2 gaps (can be done anytime)

@@ -61,6 +61,17 @@ Everything below is built and functional in the codebase.
 - [x] Fallback: cards without structured perks render original key_perks string list
 - [x] Updated `CardAction.type` union to include `perk_setup`
 
+### Annual Fee Decision Helper (Priority 1C — complete)
+- [x] `DowngradeOption`, `RetentionOffer`, `RetentionData` types in @wayloft/shared
+- [x] `downgrade_options` + `retention_data` optional fields on `CatalogCard`
+- [x] Catalog data for CSR (3 downgrade paths), Amex Platinum (2), Amex Gold (1)
+- [x] Retention data with phone numbers, success rates, common offers for all 3 premium cards
+- [x] `AFDecisionHelper` component: value breakdown (credits + perks vs AF), verdict badge (KEEP/CALL/DOWNGRADE), retention guide, downgrade comparison with lose/keep lists
+- [x] Verdict logic: net value ≥ +$50 → KEEP, -$50 to +$50 → CALL, < -$50 → DOWNGRADE
+- [x] Wired into AnnualFeeSection with expand/collapse CTA (shows when AF ≤ 60 days away)
+- [x] Dashboard AF action items show enhanced subtitle for cards with decision data
+- [x] No new DB migration — all computed client-side from existing tables + catalog JSON
+
 ### Spending Optimizer (Loop 1.5)
 - [x] Wallet guide page with category grid
 - [x] Quick reference card
@@ -117,7 +128,7 @@ The Action Items widget currently pulls from signup spend deadlines, AF dates, a
 - Transfer bonuses ending soon (Priority 3)
 - 5/24 approaching (Priority 2)
 - Payment due dates without autopay (Priority 1D)
-- Retention call windows (Priority 1C)
+- ~~Retention call windows (Priority 1C)~~ ✓ shipped
 
 **Tag types:** Bonus, Credit, AF, Activate, Expiring, Setup, Transfer, Call, Payment, Alert
 
@@ -156,14 +167,8 @@ Built. See "What's Done" section above for full checklist.
 #### ~~1B. Perks & Benefits Reference~~ — COMPLETE (Feb 24)
 Built. See "What's Done" section above for full checklist.
 
-#### 1C. Annual Fee Decision Helper
-**Why:** Upgrades a simple "AF posts in 30 days" alert to a full keep/downgrade/cancel advisor.
-**What to build:**
-- Expand `credit-cards.json` with `downgrade_options` and `retention_data` per card
-- AF analysis page: credits used + perk value + earning value vs AF → recommendation
-- Downgrade comparison (side-by-side: what you lose, what you keep)
-- Retention offer guide (phone number, script, common offers)
-- Wire into existing annual fee section as a CTA
+#### ~~1C. Annual Fee Decision Helper~~ — COMPLETE (Feb 24)
+Built. See "What's Done" section above for full checklist.
 
 #### 1D. Payment Due Date Tracker
 **Why:** #1 fear for new cardholders. Late payments = fees + credit score damage.
@@ -292,13 +297,14 @@ Built. See "What's Done" section above for full checklist.
 
 ## Immediate Next Action
 
-**Priority 1A and 1B are done. Next up: Priority 1C (Annual Fee Decision Helper).**
+**Priority 1A, 1B, and 1C are done. Next up: Priority 1D (Payment Due Date Tracker).**
 
-1. Expand `credit-cards.json` with `downgrade_options` and `retention_data` per card
-2. AF analysis page: credits used + perk value + earning value vs AF → recommendation
-3. Downgrade comparison (side-by-side: what you lose, what you keep)
-4. Retention offer guide (phone number, script, common offers)
-5. Wire into existing annual fee section as a CTA
+1. Expand `credit-cards.json` with `payment_info` per card (grace period, autopay URL, late fee)
+2. New DB table: `user_payment_info` (due day, autopay status, minimum payment)
+3. New DB table: `payment_history` (payment log)
+4. Payment due date UI on card detail
+5. "Upcoming Payments" dashboard widget
+6. Autopay setup checklist for new cards
 
 ---
 
