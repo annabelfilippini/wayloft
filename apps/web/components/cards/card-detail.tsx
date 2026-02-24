@@ -39,6 +39,7 @@ import { BonusProgress } from "./bonus-progress";
 import { SpendUpdateForm } from "./spend-update-form";
 import { CreditTracker } from "./credit-tracker";
 import { PerkChecklist } from "./perk-checklist";
+import { AFDecisionHelper } from "./af-decision-helper";
 import { logAnnualFeeEvent, logLifecycleEvent } from "@/app/actions/cards";
 
 interface TransferPartnerEntry {
@@ -197,6 +198,9 @@ export function CardDetail({
               daysRemaining={afDaysRemaining}
               perks={catalogCard.key_perks}
               creditUsage={creditUsage}
+              catalogCard={catalogCard}
+              perkSetup={perkSetup}
+              lifecycleEvents={lifecycleEvents}
             />
           )}
         </div>
@@ -739,14 +743,25 @@ function AnnualFeeSection({
   daysRemaining,
   perks,
   creditUsage,
+  catalogCard,
+  perkSetup,
+  lifecycleEvents,
 }: {
   userCard: UserCard;
   annualFeeDollars: number;
   daysRemaining: number;
   perks: string[];
   creditUsage: UserCreditUsage[];
+  catalogCard: CatalogCard;
+  perkSetup: UserPerkSetup[];
+  lifecycleEvents: CardLifecycleEvent[];
 }) {
   const [showRetentionForm, setShowRetentionForm] = useState(false);
+  const [showDecisionHelper, setShowDecisionHelper] = useState(false);
+
+  const hasDecisionData = !!(catalogCard.downgrade_options?.length || catalogCard.retention_data);
+  const showDecisionCTA = hasDecisionData && daysRemaining <= 60;
+
   const [state, formAction, isPending] = useActionState<AFActionState, FormData>(
     async (_prev, formData) => {
       const result = await logAnnualFeeEvent(formData);
@@ -784,6 +799,26 @@ function AnnualFeeSection({
 
         {/* AF Offset Calculator */}
         {creditUsage.length > 0 && <AnnualFeeOffset annualFeeDollars={annualFeeDollars} credits={creditUsage} />}
+
+        {/* AF Decision Helper */}
+        {showDecisionCTA && !showDecisionHelper && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={() => setShowDecisionHelper(true)}
+          >
+            Review your options
+          </Button>
+        )}
+        {showDecisionHelper && (
+          <AFDecisionHelper
+            catalogCard={catalogCard}
+            creditUsage={creditUsage}
+            perkSetup={perkSetup}
+            lifecycleEvents={lifecycleEvents}
+          />
+        )}
 
         {/* Retention offer CTA */}
         {!showRetentionForm ? (

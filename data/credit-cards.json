@@ -170,6 +170,52 @@
         "renewal": null
       }
     ],
+    "downgrade_options": [
+      {
+        "to_card_slug": "chase-sapphire-preferred",
+        "to_card_name": "Chase Sapphire Preferred",
+        "annual_fee_cents": 9500,
+        "preserves_points": true,
+        "preserves_credit_line": true,
+        "what_you_lose": ["Priority Pass lounges", "3x on dining (drops to 2x)", "$300 travel credit", "DoorDash & Instacart credits", "TSA PreCheck/Global Entry credit", "1.5cpp portal redemption"],
+        "what_you_keep": ["Transfer partners (UR)", "Trip cancellation insurance", "Primary rental car coverage", "Purchase protection"]
+      },
+      {
+        "to_card_slug": "chase-freedom-unlimited",
+        "to_card_name": "Chase Freedom Unlimited",
+        "annual_fee_cents": 0,
+        "preserves_points": true,
+        "preserves_credit_line": true,
+        "what_you_lose": ["Transfer partners", "Lounge access", "Travel credits", "Elevated travel & dining rates", "Travel insurance suite"],
+        "what_you_keep": ["1.5x on everything", "UR points (pair with another Sapphire to transfer)", "Purchase protection"]
+      },
+      {
+        "to_card_slug": "chase-freedom-flex",
+        "to_card_name": "Chase Freedom Flex",
+        "annual_fee_cents": 0,
+        "preserves_points": true,
+        "preserves_credit_line": true,
+        "what_you_lose": ["Transfer partners", "Lounge access", "Travel credits", "Consistent earning rates", "Travel insurance suite"],
+        "what_you_keep": ["5x rotating categories", "3x dining & drugstores", "UR points (pair with another Sapphire to transfer)", "Purchase protection"]
+      }
+    ],
+    "retention_data": {
+      "common_offers": [
+        {
+          "type": "statement_credit",
+          "typical_value_cents": 15000,
+          "typical_spend_requirement_cents": 0
+        },
+        {
+          "type": "bonus_points",
+          "typical_value_cents": 10000,
+          "typical_spend_requirement_cents": 400000
+        }
+      ],
+      "best_time_to_call": "Call 1-2 months before your AF posts. Weekday mornings tend to have shorter wait times.",
+      "success_rate_estimate": "moderate",
+      "phone_number": "1-800-432-3117"
+    },
     "is_business": false,
     "foreign_transaction_fee": false
   },
@@ -555,6 +601,48 @@
     "credit_score_min": "excellent",
     "card_art_url": "/cards/amex-platinum.png",
     "application_url": "https://www.americanexpress.com/us/credit-cards/card/platinum/",
+    "downgrade_options": [
+      {
+        "to_card_slug": "amex-gold",
+        "to_card_name": "American Express Gold Card",
+        "annual_fee_cents": 32500,
+        "preserves_points": true,
+        "preserves_credit_line": false,
+        "what_you_lose": ["Centurion Lounges", "Priority Pass", "Hotel elite status credits", "$200 airline fee credit", "$200 Uber credit", "$189 Clear credit", "5x flights"],
+        "what_you_keep": ["Transfer partners (MR)", "4x dining & groceries", "$120 dining credit", "$120 Uber Cash", "$10/mo Dunkin credit"]
+      },
+      {
+        "to_card_slug": "amex-green",
+        "to_card_name": "American Express Green Card",
+        "annual_fee_cents": 15000,
+        "preserves_points": true,
+        "preserves_credit_line": false,
+        "what_you_lose": ["Centurion Lounges", "Priority Pass", "All statement credits", "Hotel elite status", "4x dining & groceries", "5x flights", "Uber Cash"],
+        "what_you_keep": ["Transfer partners (MR)", "3x travel & transit", "LoungeBuddy access ($100/yr credit)", "Trip delay insurance"]
+      }
+    ],
+    "retention_data": {
+      "common_offers": [
+        {
+          "type": "statement_credit",
+          "typical_value_cents": 55000,
+          "typical_spend_requirement_cents": 400000
+        },
+        {
+          "type": "bonus_points",
+          "typical_value_cents": 50000,
+          "typical_spend_requirement_cents": 400000
+        },
+        {
+          "type": "reduced_fee",
+          "typical_value_cents": 30000,
+          "typical_spend_requirement_cents": 0
+        }
+      ],
+      "best_time_to_call": "Call when your AF posts or 1-2 months before. Amex retention is most generous with high annual spend ($15k+).",
+      "success_rate_estimate": "high",
+      "phone_number": "1-800-528-4800"
+    },
     "is_business": false,
     "foreign_transaction_fee": false
   },
@@ -697,6 +785,34 @@
     "credit_score_min": "good",
     "card_art_url": "/cards/amex-gold.png",
     "application_url": "https://www.americanexpress.com/us/credit-cards/card/gold-card/",
+    "downgrade_options": [
+      {
+        "to_card_slug": "amex-green",
+        "to_card_name": "American Express Green Card",
+        "annual_fee_cents": 15000,
+        "preserves_points": true,
+        "preserves_credit_line": false,
+        "what_you_lose": ["4x dining", "4x groceries (at U.S. supermarkets)", "$120 dining credit", "$120 Uber Cash", "$10/mo Dunkin credit"],
+        "what_you_keep": ["Transfer partners (MR)", "3x travel & transit", "LoungeBuddy access ($100/yr credit)", "Trip delay insurance"]
+      }
+    ],
+    "retention_data": {
+      "common_offers": [
+        {
+          "type": "statement_credit",
+          "typical_value_cents": 15000,
+          "typical_spend_requirement_cents": 200000
+        },
+        {
+          "type": "bonus_points",
+          "typical_value_cents": 20000,
+          "typical_spend_requirement_cents": 200000
+        }
+      ],
+      "best_time_to_call": "Call when your AF posts. Amex Gold retention offers tend to be smaller than Platinum but still worthwhile.",
+      "success_rate_estimate": "high",
+      "phone_number": "1-800-528-4800"
+    },
     "is_business": false,
     "foreign_transaction_fee": false
   },

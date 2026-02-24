@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { CardAction } from "@wayloft/shared";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getCardBySlug } from "@/lib/cards/catalog";
 
 interface ActionsWidgetProps {
   userId: string;
@@ -119,14 +120,20 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
     }
     if (row.af_action) {
       const af = row.af_action as CardAction;
+      const catalogCard = row.card_slug ? getCardBySlug(row.card_slug) : undefined;
+      const hasDecisionData = !!(catalogCard?.downgrade_options?.length || catalogCard?.retention_data);
+      const afDollars = af.annual_fee_cents != null ? af.annual_fee_cents / 100 : null;
+
       actions.push({
         key: `${row.user_card_id}-af`,
         type: "annual_fee",
         title: row.card_name,
         subtitle:
-          af.annual_fee_cents != null
-            ? `$${af.annual_fee_cents / 100} annual fee coming up`
-            : "Annual fee reminder",
+          afDollars != null && hasDecisionData
+            ? `$${afDollars} AF coming up — review your keep/downgrade options`
+            : afDollars != null
+              ? `$${afDollars} annual fee coming up`
+              : "Annual fee reminder",
         urgency: af.urgency ?? "info",
         daysRemaining: null,
         href: `/cards/${row.user_card_id}`,

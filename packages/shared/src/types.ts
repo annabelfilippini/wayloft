@@ -70,6 +70,31 @@ export interface UserPerkSetup {
   updated_at: string;
 }
 
+// ── AF Decision Helper ──
+
+export interface DowngradeOption {
+  to_card_slug: string;
+  to_card_name: string;
+  annual_fee_cents: number;
+  preserves_points: boolean;
+  preserves_credit_line: boolean;
+  what_you_lose: string[];
+  what_you_keep: string[];
+}
+
+export interface RetentionOffer {
+  type: "statement_credit" | "bonus_points" | "reduced_fee" | "spend_bonus";
+  typical_value_cents: number;
+  typical_spend_requirement_cents: number;
+}
+
+export interface RetentionData {
+  common_offers: RetentionOffer[];
+  best_time_to_call: string;
+  success_rate_estimate: "low" | "moderate" | "high";
+  phone_number?: string;
+}
+
 // Matches the shape of data/credit-cards.json entries
 export interface CatalogCard {
   slug: string;
@@ -93,6 +118,8 @@ export interface CatalogCard {
   application_url: string;
   credits?: CatalogCredit[];
   perks?: CatalogPerk[];
+  downgrade_options?: DowngradeOption[];
+  retention_data?: RetentionData;
   is_business: boolean;
   foreign_transaction_fee: boolean;
 }
