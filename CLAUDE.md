@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current Status (Feb 24, 2026)
 
-**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Priority 1A (Statement Credits), 1B (Perks & Benefits), and 1C (AF Decision Helper) complete. Continuing feature buildout.
+**Phase 1, Loop 1 (Auth + Card Portfolio) — complete.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Priorities 1A (Statement Credits), 1B (Perks & Benefits), 1C (AF Decision Helper), 1D (Payment Tracker), 1E (Experience Levels), and 1F (Education Layer) all complete. Loop 1 done — moving to Loop 2 (Card Recommendation Engine).
 
 ### What's Built
 
@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Turborepo monorepo with pnpm workspaces
 - Next.js 16.1.6 app (`apps/web`) with App Router, Tailwind v4, TypeScript
 - shadcn/ui (New York style, Neutral base) — button, card, input, badge, dialog, dropdown-menu, command, progress, separator, skeleton
-- Supabase connected — 3 migrations deployed, 16+ tables with RLS + triggers
+- Supabase connected — 6 migrations, 20+ tables with RLS + triggers
 - Supabase client helpers (server, browser, middleware) via @supabase/ssr
 - GitHub repo: github.com/annabelfilippini/wayloft (private)
 - Vercel: auto-deploys on push to main, env vars set
@@ -79,6 +79,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard AF actions show enhanced subtitle for cards with decision data
 - No new DB migration — all client-side from existing tables + catalog
 
+**Payment due date tracker (complete):**
+- `payment_info` on all 54 cards in catalog, migration 005: `user_payment_info` table + views
+- PaymentTracker component on card detail (empty state form + display with autopay badge, late fee warning)
+- Server actions: `addPaymentInfo`, `updatePaymentInfo`, `deletePaymentInfo`
+- Dashboard: upcoming payments + missing autopay nudges in action items feed
+
+**Experience level system (complete):**
+- Migration 006: `experience_level` column on profiles (`beginner`/`intermediate`/`advanced`)
+- Onboarding step 0: "How experienced are you?" with visual selector
+- `lib/experience.ts` utilities (`getEffectiveLevel`, `isBeginnerOrBelow`, `isAdvanced`, `formatCurrencyName`)
+- Settings dropdown to change level, `ExperienceLevel` type in @wayloft/shared
+- Conditional rendering: beginner-friendly currency names, portfolio value/cpp hiding
+
+**Education layer (complete):**
+- `lib/glossary.ts`: 8-term glossary with beginner + intermediate definitions
+- `JargonTip` component: dotted-underline tooltip wrapper, level-aware (no tooltip for advanced)
+- `TooltipProvider` in app layout for global tooltip support
+- Card detail: earning caps hidden for beginners, portal cpp as friendly sentence
+- Optimizer: ¢/$ tooltips, cap warnings hidden for beginners
+- Dashboard: "AF" → "Fee" for beginners, cpp tooltips on points portfolio
+
 **Dashboard (complete):**
 - Portfolio summary cards (total cards, total AF, active bonuses)
 - Points portfolio ("My Points & Miles") with estimated values, expiration badges
@@ -121,14 +142,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard page stub with actions widget
 - Route stubs: bonuses, search, settings
 - Community intelligence scan agent + daily cron script
-- 4 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup
+- 6 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level
 
 ### What's Next
 
-Remaining Loop 1 features:
-- Payment due date tracker
-- Education layer (glossary, tooltips)
-- User personas & adaptive complexity
+Loop 1 complete. Next priorities:
+- Priority 2: Card Recommendation Engine (spending quiz, scoring, affiliate links)
+- Priority 3: Transfer Bonus Tracker (scrapers, alerts)
+- Priority 4: Flight Search via Duffel
 
 ### Week 2 gaps (can be done anytime)
 - ToS / Privacy Policy (Termly)

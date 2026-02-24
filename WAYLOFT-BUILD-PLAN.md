@@ -173,21 +173,11 @@ Built. See "What's Done" section above for full checklist.
 #### ~~1D. Payment Due Date Tracker~~ — COMPLETE (Feb 24)
 Built. `payment_info` added to all 54 cards in catalog. Migration 005: `user_payment_info` table + `upcoming_payments` and `cards_missing_autopay` views + RLS. PaymentTracker component on card detail (empty state form + display state with autopay badge, late fee warning, external autopay link). Server actions: `addPaymentInfo`, `updatePaymentInfo`, `deletePaymentInfo`. Dashboard integration: upcoming payments (≤14 days, no autopay) + missing autopay nudges in action items feed. Skipped `payment_history` table for MVP — payment logging can come later.
 
-#### 1E. Experience Level Selector
-**Why:** Makes Wayloft work for first-time cardholder to 15-card optimizer.
-**What to build:**
-- Add `experience_level` column to profiles (`beginner`/`intermediate`/`advanced`)
-- Onboarding screen 0: "How experienced are you?"
-- `lib/experience.ts` utility for conditional formatting
-- Conditional rendering across wallet guide, points display, card detail
+#### ~~1E. Experience Level Selector~~ — COMPLETE (Feb 24)
+Built. Migration 006: `experience_level` column on profiles (`beginner`/`intermediate`/`advanced`, default `intermediate`). Onboarding step 0: "How experienced are you?" with 3 visual options. `lib/experience.ts` utilities (`getEffectiveLevel`, `isBeginnerOrBelow`, `isAdvanced`, `formatCurrencyName`). Settings dropdown to change level. Conditional rendering: beginner-friendly currency names ("Chase points" vs "UR"), portfolio value/cpp hidden for beginners. `ExperienceLevel` type in @wayloft/shared.
 
-#### 1F. Education Layer
-**Why:** Teach at the moment of relevance, not in a separate "learn" section.
-**What to build:**
-- `data/glossary.json` (10+ terms with short/full/example/show_for_levels)
-- `<Tooltip>`, `<ExplainerCard>`, `<FirstTimeHint>`, `<GlossaryModal>` components
-- Wire tooltips into existing jargon across the app
-- Glossary accessible from settings/help
+#### ~~1F. Education Layer~~ — COMPLETE (Feb 24)
+Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitions). `JargonTip` component: dotted-underline tooltip for beginner/intermediate, plain text for advanced. `TooltipProvider` in app layout. Card detail: earning caps hidden for beginners, portal cpp rewritten as friendly sentence. Optimizer: ¢/$ wrapped in JargonTip, cap warnings hidden for beginners. Dashboard: "AF" → "Fee" label for beginners, cpp tooltips on points portfolio.
 
 ---
 
@@ -290,7 +280,7 @@ Built. `payment_info` added to all 54 cards in catalog. Migration 005: `user_pay
 
 ## Immediate Next Action
 
-**Priority 1A–1D are done. Next up: Priority 1E (Experience Level Selector) → 1F (Education Layer).**
+**Priority 1A–1F are done. Loop 1 is complete. Next up: Priority 2 (Card Recommendation Engine).**
 
 ---
 
