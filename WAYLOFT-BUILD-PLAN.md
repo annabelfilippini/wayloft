@@ -12,7 +12,7 @@ Everything below is built and functional in the codebase.
 
 ### Infrastructure (Phase 0)
 - [x] Turborepo monorepo, Next.js 16, Tailwind v4, shadcn/ui
-- [x] Supabase (16+ tables, 3 migrations, RLS, triggers, views)
+- [x] Supabase (16+ tables, 4 migrations, RLS, triggers, views)
 - [x] Supabase Auth (email + Google OAuth)
 - [x] Vercel auto-deploy, GitHub Actions CI
 - [x] Brand identity (Instrument Serif + DM Sans, navy/amber palette)
@@ -46,6 +46,20 @@ Everything below is built and functional in the codebase.
 - [x] Mark-as-used (full/partial) + enrollment actions
 - [x] Annual fee offset calculator (effective cost = AF - credits used)
 - [x] Expiring credits in dashboard action items (≤30 days)
+
+### Perks & Benefits Reference (Priority 1B — complete)
+- [x] `perks` array in credit-cards.json (CSR 8, Amex Platinum 11, Amex Gold 5) — non-monetary benefits only
+- [x] `CatalogPerk`, `UserPerkSetup`, `PerkCategory`, `PerkType`, `PerkSetupStatus` types in @wayloft/shared
+- [x] Migration 004: `user_perk_setup` table + `unused_perks` view + RLS
+- [x] Auto-generate perk rows on card add (`always_on` → auto-completed, others → `not_started`)
+- [x] Lazy backfill for cards added before 1B (inserts perk rows on card detail page load)
+- [x] Interactive PerkChecklist component (grouped by category, value summary + progress bar)
+- [x] Status toggle (not_started → in_progress → completed), dismiss as not_applicable
+- [x] Perk status badges (Active / In progress / Setup needed)
+- [x] Server actions: `markPerkSetup`, `dismissPerk`
+- [x] Dashboard: top 3 unused perks by estimated value in action items feed
+- [x] Fallback: cards without structured perks render original key_perks string list
+- [x] Updated `CardAction.type` union to include `perk_setup`
 
 ### Spending Optimizer (Loop 1.5)
 - [x] Wallet guide page with category grid
@@ -99,7 +113,7 @@ The Action Items widget currently pulls from signup spend deadlines, AF dates, a
 - ~~Statement credits expiring (Priority 1A)~~ ✓ shipped
 - Credits needing enrollment (Priority 1A — enrollment tracked, dashboard nudge TBD)
 - Quarterly category activations (spending optimizer)
-- Perks not yet set up (Priority 1B)
+- ~~Perks not yet set up (Priority 1B)~~ ✓ shipped
 - Transfer bonuses ending soon (Priority 3)
 - 5/24 approaching (Priority 2)
 - Payment due dates without autopay (Priority 1D)
@@ -139,15 +153,8 @@ These are the remaining Loop 1 features from the plan. They deepen the card port
 #### ~~1A. Statement Credit Tracker~~ — COMPLETE (Feb 23)
 Built. See "What's Done" section above for full checklist.
 
-#### 1B. Perks & Benefits Reference
-**Why:** Users don't know they have primary rental car insurance or trip delay coverage.
-**What to build:**
-- Expand `credit-cards.json` with `perks` array per card (category, description, estimated value, setup instructions)
-- New DB table: `user_perk_setup` (tracks one-time perk activation)
-- Perks section on card detail (grouped by travel/insurance/lifestyle/financial)
-- Setup checklist ("3 of 5 perks activated")
-- Perk value estimator (sum estimated_annual_value_cents)
-- "Unused perks" dashboard nudge
+#### ~~1B. Perks & Benefits Reference~~ — COMPLETE (Feb 24)
+Built. See "What's Done" section above for full checklist.
 
 #### 1C. Annual Fee Decision Helper
 **Why:** Upgrades a simple "AF posts in 30 days" alert to a full keep/downgrade/cancel advisor.
@@ -285,13 +292,13 @@ Built. See "What's Done" section above for full checklist.
 
 ## Immediate Next Action
 
-**Priority 1A (Statement Credit Tracker) is done. Next up: Priority 1B (Perks & Benefits Reference).**
+**Priority 1A and 1B are done. Next up: Priority 1C (Annual Fee Decision Helper).**
 
-1. Expand `credit-cards.json` with `perks` array for top cards (insurance, travel, lifestyle, financial)
-2. Write migration for `user_perk_setup` table
-3. Build perks section on card detail (grouped by category, setup checklist)
-4. Perk value estimator (sum estimated annual value)
-5. "Unused perks" nudge in dashboard action items
+1. Expand `credit-cards.json` with `downgrade_options` and `retention_data` per card
+2. AF analysis page: credits used + perk value + earning value vs AF → recommendation
+3. Downgrade comparison (side-by-side: what you lose, what you keep)
+4. Retention offer guide (phone number, script, common offers)
+5. Wire into existing annual fee section as a CTA
 
 ---
 

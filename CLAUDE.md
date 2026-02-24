@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Feb 23, 2026)
+## Current Status (Feb 24, 2026)
 
-**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Continuing feature buildout.
+**Phase 1, Loop 1 (Auth + Card Portfolio) — in progress.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Priority 1A (Statement Credits) and 1B (Perks & Benefits) complete. Continuing feature buildout.
 
 ### What's Built
 
@@ -59,6 +59,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `user_credit_usage` table + `expiring_credits` view (migration 003)
 - Server actions: `markCreditUsed`, `enrollCredit`
 
+**Perks & benefits reference (complete):**
+- Interactive perk checklist on card detail Perks tab, grouped by category (travel/insurance/lifestyle/financial/dining/status)
+- Value summary with progress bar ("3 of 5 perks activated · ~$X,XXX/yr value")
+- Status toggle (not_started → in_progress → completed), dismiss as not_applicable
+- Structured perks on 3 premium cards (CSR: 8, Amex Platinum: 11, Amex Gold: 5) — non-monetary benefits only
+- Auto-generates perk rows when card is added; lazy backfill for pre-existing cards
+- `user_perk_setup` table + `unused_perks` view (migration 004)
+- Server actions: `markPerkSetup`, `dismissPerk`
+- Dashboard: top 3 unused perks by value appear as "Perk" action items
+- Fallback: cards without structured perks render the original key_perks string list
+
 **Dashboard (complete):**
 - Portfolio summary cards (total cards, total AF, active bonuses)
 - Points portfolio ("My Points & Miles") with estimated values, expiration badges
@@ -101,7 +112,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard page stub with actions widget
 - Route stubs: bonuses, search, settings
 - Community intelligence scan agent + daily cron script
-- 3 migrations: initial schema, issuer rules + user credit profile, statement credits
+- 4 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup
 
 ### What's Next
 
