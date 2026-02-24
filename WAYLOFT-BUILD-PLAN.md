@@ -127,7 +127,7 @@ The Action Items widget currently pulls from signup spend deadlines, AF dates, a
 - ~~Perks not yet set up (Priority 1B)~~ ✓ shipped
 - Transfer bonuses ending soon (Priority 3)
 - 5/24 approaching (Priority 2)
-- Payment due dates without autopay (Priority 1D)
+- ~~Payment due dates without autopay (Priority 1D)~~ ✓ shipped
 - ~~Retention call windows (Priority 1C)~~ ✓ shipped
 
 **Tag types:** Bonus, Credit, AF, Activate, Expiring, Setup, Transfer, Call, Payment, Alert
@@ -170,15 +170,8 @@ Built. See "What's Done" section above for full checklist.
 #### ~~1C. Annual Fee Decision Helper~~ — COMPLETE (Feb 24)
 Built. See "What's Done" section above for full checklist.
 
-#### 1D. Payment Due Date Tracker
-**Why:** #1 fear for new cardholders. Late payments = fees + credit score damage.
-**What to build:**
-- Expand `credit-cards.json` with `payment_info` per card (grace period, autopay URL, late fee)
-- New DB table: `user_payment_info` (due day, autopay status, minimum payment)
-- New DB table: `payment_history` (payment log)
-- Payment due date UI on card detail
-- "Upcoming Payments" dashboard widget
-- Autopay setup checklist for new cards
+#### ~~1D. Payment Due Date Tracker~~ — COMPLETE (Feb 24)
+Built. `payment_info` added to all 54 cards in catalog. Migration 005: `user_payment_info` table + `upcoming_payments` and `cards_missing_autopay` views + RLS. PaymentTracker component on card detail (empty state form + display state with autopay badge, late fee warning, external autopay link). Server actions: `addPaymentInfo`, `updatePaymentInfo`, `deletePaymentInfo`. Dashboard integration: upcoming payments (≤14 days, no autopay) + missing autopay nudges in action items feed. Skipped `payment_history` table for MVP — payment logging can come later.
 
 #### 1E. Experience Level Selector
 **Why:** Makes Wayloft work for first-time cardholder to 15-card optimizer.
@@ -297,14 +290,7 @@ Built. See "What's Done" section above for full checklist.
 
 ## Immediate Next Action
 
-**Priority 1A, 1B, and 1C are done. Next up: Priority 1D (Payment Due Date Tracker).**
-
-1. Expand `credit-cards.json` with `payment_info` per card (grace period, autopay URL, late fee)
-2. New DB table: `user_payment_info` (due day, autopay status, minimum payment)
-3. New DB table: `payment_history` (payment log)
-4. Payment due date UI on card detail
-5. "Upcoming Payments" dashboard widget
-6. Autopay setup checklist for new cards
+**Priority 1A–1D are done. Next up: Priority 1E (Experience Level Selector) → 1F (Education Layer).**
 
 ---
 

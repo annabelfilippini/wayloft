@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import type { UserCard, CatalogCard, CardLifecycleEvent, LifecycleEventType, UserCreditUsage, UserPerkSetup } from "@wayloft/shared";
+import type { UserCard, CatalogCard, CardLifecycleEvent, LifecycleEventType, UserCreditUsage, UserPerkSetup, UserPaymentInfo, ExperienceLevel } from "@wayloft/shared";
+import { formatCurrencyName, isBeginnerOrBelow } from "@/lib/experience";
 import {
   ArrowLeft,
   Plane,
@@ -40,6 +41,7 @@ import { SpendUpdateForm } from "./spend-update-form";
 import { CreditTracker } from "./credit-tracker";
 import { PerkChecklist } from "./perk-checklist";
 import { AFDecisionHelper } from "./af-decision-helper";
+import { PaymentTracker } from "./payment-tracker";
 import { logAnnualFeeEvent, logLifecycleEvent } from "@/app/actions/cards";
 
 interface TransferPartnerEntry {
@@ -67,6 +69,8 @@ interface CardDetailProps {
   lifecycleEvents: CardLifecycleEvent[];
   creditUsage: UserCreditUsage[];
   perkSetup: UserPerkSetup[];
+  paymentInfo: UserPaymentInfo | null;
+  experienceLevel?: ExperienceLevel | null;
 }
 
 function formatDaysRemaining(days: number) {
@@ -86,7 +90,10 @@ export function CardDetail({
   lifecycleEvents,
   creditUsage,
   perkSetup,
+  paymentInfo,
+  experienceLevel,
 }: CardDetailProps) {
+  const isBeginner = isBeginnerOrBelow(experienceLevel);
   const annualFeeDollars = userCard.annual_fee_cents / 100;
   const hasActiveBonus =
     userCard.signup_spend_requirement_cents != null &&
@@ -134,7 +141,7 @@ export function CardDetail({
 
           {/* Quick stats */}
           <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">{userCard.currency}</Badge>
+            <Badge variant="secondary">{formatCurrencyName(userCard.currency, experienceLevel)}</Badge>
             <Badge variant="outline">{catalogCard.network.toUpperCase()}</Badge>
             <Badge variant="outline">
               {annualFeeDollars > 0 ? `$${annualFeeDollars}/yr` : "No AF"}
@@ -203,6 +210,14 @@ export function CardDetail({
               lifecycleEvents={lifecycleEvents}
             />
           )}
+
+          {/* Payment Due Date Tracker */}
+          <PaymentTracker
+            paymentInfo={paymentInfo}
+            catalogPaymentInfo={catalogCard.payment_info ?? null}
+            userCardId={userCard.id}
+            cardSlug={userCard.card_slug}
+          />
         </div>
       </div>
 
@@ -239,7 +254,7 @@ export function CardDetail({
                 ))}
               </div>
 
-              {catalogCard.earning_caps.length > 0 && (
+              {!isBeginner && catalogCard.earning_caps.length > 0 && (
                 <>
                   <Separator className="my-4" />
                   <h3 className="mb-2 text-sm font-semibold">Earning Caps</h3>
@@ -257,25 +272,34 @@ export function CardDetail({
                 </>
               )}
 
-              {catalogCard.portal_cpp > 0 && (
-                <>
-                  <Separator className="my-4" />
-                  <div className="flex items-center justify-between text-sm">
-                    <div>
-                      <span className="text-muted-foreground">
-                        Travel portal value
-                      </span>
-                      <p className="text-xs text-muted-foreground/70">
-                        Worth {catalogCard.portal_cpp}&cent; per point when booking through{" "}
-                        {userCard.issuer === "chase" ? "Chase" : userCard.issuer === "amex" ? "Amex" : userCard.issuer === "citi" ? "Citi" : userCard.issuer === "capital_one" ? "Capital One" : userCard.issuer === "us_bank" ? "U.S. Bank" : userCard.issuer === "bilt" ? "Bilt" : userCard.issuer.replace("_", " ").replace(/\b\w/g, (c: string) => c.toUpperCase())}&apos;s travel portal
+              {catalogCard.portal_cpp > 0 && (() => {
+                const issuerName = userCard.issuer === "chase" ? "Chase" : userCard.issuer === "amex" ? "Amex" : userCard.issuer === "citi" ? "Citi" : userCard.issuer === "capital_one" ? "Capital One" : userCard.issuer === "us_bank" ? "U.S. Bank" : userCard.issuer === "bilt" ? "Bilt" : userCard.issuer.replace("_", " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
+                return (
+                  <>
+                    <Separator className="my-4" />
+                    {isBeginner ? (
+                      <p className="text-sm text-muted-foreground">
+                        Each point is worth {catalogCard.portal_cpp}&cent; when you book travel through {issuerName}
                       </p>
-                    </div>
-                    <span className="font-medium shrink-0">
-                      {catalogCard.portal_cpp}&cent;/pt
-                    </span>
-                  </div>
-                </>
-              )}
+                    ) : (
+                      <div className="flex items-center justify-between text-sm">
+                        <div>
+                          <span className="text-muted-foreground">
+                            Travel portal value
+                          </span>
+                          <p className="text-xs text-muted-foreground/70">
+                            Worth {catalogCard.portal_cpp}&cent; per point when booking through{" "}
+                            {issuerName}&apos;s travel portal
+                          </p>
+                        </div>
+                        <span className="font-medium shrink-0">
+                          {catalogCard.portal_cpp}&cent;/pt
+                        </span>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </CardContent>
           </Card>
         </TabsContent>

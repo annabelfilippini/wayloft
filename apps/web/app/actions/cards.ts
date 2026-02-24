@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
-import type { LifecycleEventType, CatalogCredit, PerkSetupStatus } from "@wayloft/shared";
+import type { LifecycleEventType, CatalogCredit, PerkSetupStatus, AutopayType } from "@wayloft/shared";
 
 function calculatePeriodDates(
   period: CatalogCredit["period"],
@@ -518,6 +518,160 @@ export async function dismissPerk(formData: FormData) {
     .from("user_perk_setup")
     .update({ status: "not_applicable" })
     .eq("id", perkId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/cards");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+const VALID_AUTOPAY_TYPES: AutopayType[] = [
+  "full_balance",
+  "minimum",
+  "fixed_amount",
+  "none",
+];
+
+export async function addPaymentInfo(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const userCardId = formData.get("user_card_id") as string;
+  const cardSlug = formData.get("card_slug") as string;
+  const dueDayStr = formData.get("due_day") as string;
+  const autopayEnabled = formData.get("autopay_enabled") === "true";
+  const autopayType = (formData.get("autopay_type") as AutopayType) || "none";
+  const notes = formData.get("notes") as string | null;
+
+  if (!userCardId || !cardSlug || !dueDayStr) {
+    return { error: "Invalid input" };
+  }
+
+  const dueDay = parseInt(dueDayStr, 10);
+  if (isNaN(dueDay) || dueDay < 1 || dueDay > 28) {
+    return { error: "Due day must be between 1 and 28" };
+  }
+
+  if (!VALID_AUTOPAY_TYPES.includes(autopayType)) {
+    return { error: "Invalid autopay type" };
+  }
+
+  const { error } = await supabase.from("user_payment_info").insert({
+    user_id: user.id,
+    user_card_id: userCardId,
+    card_slug: cardSlug,
+    due_day: dueDay,
+    autopay_enabled: autopayEnabled,
+    autopay_type: autopayEnabled ? autopayType : "none",
+    notes: notes || null,
+  });
+
+  if (error) {
+    if (error.code === "23505") {
+      return { error: "Payment info already exists for this card" };
+    }
+    return { error: error.message };
+  }
+
+  revalidatePath("/cards");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function updatePaymentInfo(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const paymentInfoId = formData.get("payment_info_id") as string;
+
+  if (!paymentInfoId) {
+    return { error: "No payment info specified" };
+  }
+
+  const updates: Record<string, unknown> = {};
+
+  const dueDayStr = formData.get("due_day") as string | null;
+  if (dueDayStr) {
+    const dueDay = parseInt(dueDayStr, 10);
+    if (isNaN(dueDay) || dueDay < 1 || dueDay > 28) {
+      return { error: "Due day must be between 1 and 28" };
+    }
+    updates.due_day = dueDay;
+  }
+
+  const autopayEnabledStr = formData.get("autopay_enabled") as string | null;
+  if (autopayEnabledStr !== null) {
+    updates.autopay_enabled = autopayEnabledStr === "true";
+  }
+
+  const autopayType = formData.get("autopay_type") as string | null;
+  if (autopayType) {
+    if (!VALID_AUTOPAY_TYPES.includes(autopayType as AutopayType)) {
+      return { error: "Invalid autopay type" };
+    }
+    updates.autopay_type = autopayType;
+  }
+
+  const notes = formData.get("notes") as string | null;
+  if (notes !== null) {
+    updates.notes = notes || null;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return { error: "No changes provided" };
+  }
+
+  const { error } = await supabase
+    .from("user_payment_info")
+    .update(updates)
+    .eq("id", paymentInfoId)
+    .eq("user_id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/cards");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function deletePaymentInfo(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { error: "Not authenticated" };
+  }
+
+  const paymentInfoId = formData.get("payment_info_id") as string;
+
+  if (!paymentInfoId) {
+    return { error: "No payment info specified" };
+  }
+
+  const { error } = await supabase
+    .from("user_payment_info")
+    .delete()
+    .eq("id", paymentInfoId)
     .eq("user_id", user.id);
 
   if (error) {

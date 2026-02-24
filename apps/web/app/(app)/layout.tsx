@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth/require-user";
 import { AppSidebar } from "@/components/nav/app-sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default async function AppLayout({
   children,
@@ -11,7 +12,9 @@ export default async function AppLayout({
   return (
     <div className="flex h-screen overflow-hidden">
       <AppSidebar user={user} />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <TooltipProvider delayDuration={300}>
+        <main className="flex-1 overflow-y-auto">{children}</main>
+      </TooltipProvider>
     </div>
   );
 }

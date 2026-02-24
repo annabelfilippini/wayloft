@@ -20,6 +20,7 @@ interface ProfileFormProps {
     home_airport: string | null;
     preferred_cabin: string;
     preferred_airlines: string[] | null;
+    experience_level: string | null;
   };
   email: string;
 }
@@ -28,6 +29,9 @@ type ActionState = { error?: string; success?: boolean };
 
 export function ProfileForm({ profile, email }: ProfileFormProps) {
   const [cabin, setCabin] = useState(profile.preferred_cabin);
+  const [experienceLevel, setExperienceLevel] = useState(
+    profile.experience_level ?? ""
+  );
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
     async (_prev, formData) => {
       return updateProfile(formData);
@@ -82,6 +86,28 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
               <SelectItem value="first">First</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="experience_level">Experience Level</Label>
+          <input
+            type="hidden"
+            name="experience_level"
+            value={experienceLevel}
+          />
+          <Select value={experienceLevel} onValueChange={setExperienceLevel}>
+            <SelectTrigger id="experience_level" className="w-56">
+              <SelectValue placeholder="Select your level" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="beginner">Just getting started</SelectItem>
+              <SelectItem value="intermediate">I know the basics</SelectItem>
+              <SelectItem value="advanced">Points pro</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            Controls how much jargon and detail you see across the app.
+          </p>
         </div>
 
         <div className="space-y-2">

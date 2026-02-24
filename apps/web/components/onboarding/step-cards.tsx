@@ -20,6 +20,7 @@ interface StepCardsProps {
   selected: string[];
   onSelect: (slugs: string[]) => void;
   onNext: () => void;
+  onBack?: () => void;
   onSkip: () => void;
 }
 
@@ -40,6 +41,7 @@ export function StepCards({
   selected,
   onSelect,
   onNext,
+  onBack,
   onSkip,
 }: StepCardsProps) {
   const [showSearch, setShowSearch] = useState(false);
@@ -182,9 +184,16 @@ export function StepCards({
 
       {/* Actions */}
       <div className="flex items-center justify-between pt-2">
-        <Button variant="ghost" size="sm" onClick={onSkip}>
-          Skip for now
-        </Button>
+        <div className="flex gap-2">
+          {onBack && (
+            <Button variant="ghost" size="sm" onClick={onBack}>
+              Back
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={onSkip}>
+            Skip for now
+          </Button>
+        </div>
         <Button onClick={onNext}>
           {selected.length > 0
             ? `Continue with ${selected.length} card${selected.length !== 1 ? "s" : ""}`

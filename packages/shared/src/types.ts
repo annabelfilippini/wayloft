@@ -70,6 +70,35 @@ export interface UserPerkSetup {
   updated_at: string;
 }
 
+// ── Experience Level ──
+
+export type ExperienceLevel = "beginner" | "intermediate" | "advanced";
+
+// ── Payment Due Dates ──
+
+export type AutopayType = "full_balance" | "minimum" | "fixed_amount" | "none";
+
+export interface CatalogPaymentInfo {
+  autopay_url: string;
+  payment_url: string;
+  grace_period_days: number;
+  late_fee_cents: number;
+}
+
+export interface UserPaymentInfo {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  card_slug: string;
+  due_day: number; // 1-28
+  autopay_enabled: boolean;
+  autopay_type: AutopayType;
+  minimum_payment_cents: number | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // ── AF Decision Helper ──
 
 export interface DowngradeOption {
@@ -120,6 +149,7 @@ export interface CatalogCard {
   perks?: CatalogPerk[];
   downgrade_options?: DowngradeOption[];
   retention_data?: RetentionData;
+  payment_info?: CatalogPaymentInfo;
   is_business: boolean;
   foreign_transaction_fee: boolean;
 }
@@ -156,7 +186,7 @@ export interface CardAction {
   card_name: string;
   card_slug: string;
   issuer: string;
-  type: "signup_spend" | "annual_fee" | "credit_expiring" | "perk_setup";
+  type: "signup_spend" | "annual_fee" | "credit_expiring" | "perk_setup" | "payment_due";
   urgency: "critical" | "warning" | "info";
   days_remaining?: number;
   spend_remaining_cents?: number;

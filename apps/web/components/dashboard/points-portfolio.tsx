@@ -1,16 +1,20 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAllCppValuations } from "@/lib/cards/valuations";
-import type { LoyaltyBalance } from "@wayloft/shared";
+import type { LoyaltyBalance, ExperienceLevel } from "@wayloft/shared";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Wallet } from "lucide-react";
 import { AddBalanceDialog } from "./add-balance-dialog";
+import { formatCurrencyName, isBeginnerOrBelow } from "@/lib/experience";
+import { JargonTip } from "@/components/ui/jargon-tip";
 
 interface PointsPortfolioProps {
   userId: string;
+  experienceLevel?: ExperienceLevel | null;
 }
 
-export async function PointsPortfolio({ userId }: PointsPortfolioProps) {
+export async function PointsPortfolio({ userId, experienceLevel }: PointsPortfolioProps) {
+  const isBeginner = isBeginnerOrBelow(experienceLevel);
   const supabase = await createClient();
   const { data: rows } = await supabase
     .from("loyalty_balances")
@@ -58,14 +62,22 @@ export async function PointsPortfolio({ userId }: PointsPortfolioProps) {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-bold">My Points &amp; Miles</h2>
-            <p className="text-xs text-muted-foreground">Your balances across all programs and what they&apos;re worth</p>
-            <p className="text-2xl font-bold">
-              ${totalValue.toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              })}
+            <p className="text-xs text-muted-foreground">
+              {isBeginner
+                ? "Your balances across all programs"
+                : "Your balances across all programs and what they\u2019re worth"}
             </p>
-            <p className="text-xs text-muted-foreground">Estimated total value</p>
+            {!isBeginner && (
+              <>
+                <p className="text-2xl font-bold">
+                  ${totalValue.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}
+                </p>
+                <p className="text-xs text-muted-foreground">Estimated total value</p>
+              </>
+            )}
           </div>
           <AddBalanceDialog />
         </div>
@@ -92,22 +104,31 @@ export async function PointsPortfolio({ userId }: PointsPortfolioProps) {
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    {b.balance.toLocaleString()} {b.currency}
-                    {b.cpp && ` · ${b.cpp}¢/pt`}
+                    {b.balance.toLocaleString()} {formatCurrencyName(b.currency, experienceLevel)}
+                    {!isBeginner && b.cpp && (
+                      <>
+                        {" · "}
+                        <JargonTip term="cpp" experienceLevel={experienceLevel}>
+                          {b.cpp}¢/pt
+                        </JargonTip>
+                      </>
+                    )}
                   </p>
                 </div>
-                <div className="shrink-0 text-right">
-                  {b.estimatedValue !== null ? (
-                    <p className="font-medium">
-                      ${b.estimatedValue.toLocaleString(undefined, {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                      })}
-                    </p>
-                  ) : (
-                    <p className="text-xs text-muted-foreground">—</p>
-                  )}
-                </div>
+                {!isBeginner && (
+                  <div className="shrink-0 text-right">
+                    {b.estimatedValue !== null ? (
+                      <p className="font-medium">
+                        ${b.estimatedValue.toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        })}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">—</p>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}

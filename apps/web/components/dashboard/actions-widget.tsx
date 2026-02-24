@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import type { CardAction } from "@wayloft/shared";
+import type { CardAction, ExperienceLevel } from "@wayloft/shared";
+import { isBeginnerOrBelow } from "@/lib/experience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCardBySlug } from "@/lib/cards/catalog";
 
 interface ActionsWidgetProps {
   userId: string;
+  experienceLevel?: ExperienceLevel | null;
 }
 
 interface ExpiringPoint {
@@ -44,9 +46,33 @@ interface UnusedPerk {
   urgency: "warning" | "info";
 }
 
+interface UpcomingPayment {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  card_name: string;
+  card_slug: string;
+  issuer: string;
+  due_day: number;
+  autopay_enabled: boolean;
+  autopay_type: string;
+  next_due_date: string;
+  days_until_due: number;
+  urgency: "critical" | "warning" | "info";
+}
+
+interface MissingAutopay {
+  user_card_id: string;
+  user_id: string;
+  card_name: string;
+  card_slug: string;
+  issuer: string;
+  reason: "no_payment_info" | "no_autopay";
+}
+
 interface UnifiedAction {
   key: string;
-  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup";
+  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup" | "payment_due";
   title: string;
   subtitle: string;
   urgency: "critical" | "warning" | "info" | "ok";
@@ -74,13 +100,19 @@ const typeLabels: Record<string, string> = {
   points_expiring: "Points",
   credit_expiring: "Credit",
   perk_setup: "Perk",
+  payment_due: "Payment",
 };
 
-export async function ActionsWidget({ userId }: ActionsWidgetProps) {
+const beginnerTypeLabels: Record<string, string> = {
+  ...typeLabels,
+  annual_fee: "Fee",
+};
+
+export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetProps) {
   const supabase = await createClient();
 
-  // Fetch card actions, expiring points, expiring credits, and unused perks in parallel
-  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes] = await Promise.all([
+  // Fetch card actions, expiring points, expiring credits, unused perks, and payment data in parallel
+  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes, upcomingPaymentsRes, missingAutopayRes] = await Promise.all([
     supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
     supabase.from("expiring_points").select("*").eq("user_id", userId),
     supabase
@@ -95,6 +127,17 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
       .in("perk_type", ["one_time_setup", "enrollment_required"])
       .eq("status", "not_started")
       .order("estimated_annual_value_cents", { ascending: false })
+      .limit(3),
+    supabase
+      .from("upcoming_payments")
+      .select("*")
+      .eq("user_id", userId)
+      .lte("days_until_due", 14)
+      .eq("autopay_enabled", false),
+    supabase
+      .from("cards_missing_autopay")
+      .select("*")
+      .eq("user_id", userId)
       .limit(3),
   ]);
 
@@ -186,6 +229,41 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
     });
   }
 
+  // Process upcoming payments (no autopay, due within 14 days)
+  const upcomingPayments = (upcomingPaymentsRes.data ?? []) as UpcomingPayment[];
+  for (const up of upcomingPayments) {
+    const catalogCard = up.card_slug ? getCardBySlug(up.card_slug) : undefined;
+    const lateFee = catalogCard?.payment_info?.late_fee_cents;
+    const lateFeeStr = lateFee ? ` — $${(lateFee / 100).toFixed(0)} late fee` : "";
+    actions.push({
+      key: `payment-${up.id}`,
+      type: "payment_due",
+      title: up.card_name,
+      subtitle: `Payment due in ${up.days_until_due} days${lateFeeStr}`,
+      urgency: up.urgency,
+      daysRemaining: up.days_until_due,
+      href: `/cards/${up.user_card_id}`,
+    });
+  }
+
+  // Process cards missing autopay
+  const missingAutopay = (missingAutopayRes.data ?? []) as MissingAutopay[];
+  for (const ma of missingAutopay) {
+    // Skip if we already have an upcoming payment action for this card
+    if (upcomingPayments.some((up) => up.user_card_id === ma.user_card_id)) continue;
+    actions.push({
+      key: `autopay-${ma.user_card_id}`,
+      type: "payment_due",
+      title: ma.card_name,
+      subtitle: ma.reason === "no_payment_info"
+        ? "Add your payment due date to avoid late fees"
+        : "Set up autopay to avoid late fees",
+      urgency: "info",
+      daysRemaining: null,
+      href: `/cards/${ma.user_card_id}`,
+    });
+  }
+
   // Sort by urgency then days remaining
   actions.sort((a, b) => {
     const urgDiff =
@@ -195,6 +273,8 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
   });
 
   if (actions.length === 0) return null;
+
+  const labels = isBeginnerOrBelow(experienceLevel) ? beginnerTypeLabels : typeLabels;
 
   return (
     <Card>
@@ -224,7 +304,7 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
               <Badge
                 variant={urgencyColors[action.urgency] ?? "outline"}
               >
-                {typeLabels[action.type] ?? action.type}
+                {labels[action.type] ?? action.type}
               </Badge>
             </Link>
           ))}

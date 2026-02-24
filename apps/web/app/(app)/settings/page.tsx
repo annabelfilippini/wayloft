@@ -11,6 +11,7 @@ interface Profile {
   home_airport: string | null;
   preferred_cabin: string;
   preferred_airlines: string[] | null;
+  experience_level: string | null;
 }
 
 interface NotificationPrefs {
@@ -37,6 +38,7 @@ export default async function SettingsPage() {
     home_airport: profileRes.data?.home_airport ?? null,
     preferred_cabin: profileRes.data?.preferred_cabin ?? "economy",
     preferred_airlines: profileRes.data?.preferred_airlines ?? null,
+    experience_level: profileRes.data?.experience_level ?? null,
   };
 
   const notifications: NotificationPrefs = {

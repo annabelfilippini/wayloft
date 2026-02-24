@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
 import { getTransferPartners } from "@/lib/cards/transfer-partners";
 import { CardDetail } from "@/components/cards/card-detail";
-import type { UserCard, CardLifecycleEvent, UserCreditUsage, UserPerkSetup } from "@wayloft/shared";
+import type { UserCard, CardLifecycleEvent, UserCreditUsage, UserPerkSetup, UserPaymentInfo, ExperienceLevel } from "@wayloft/shared";
 
 export default async function CardDetailPage({
   params,
@@ -31,7 +31,14 @@ export default async function CardDetailPage({
 
   const transferPartners = getTransferPartners(userCard.currency);
 
-  const [{ data: eventRows }, { data: creditRows }, { data: perkRows }] = await Promise.all([
+  const { data: profileData } = await supabase
+    .from("profiles")
+    .select("experience_level")
+    .eq("id", user.id)
+    .single();
+  const experienceLevel = (profileData?.experience_level as ExperienceLevel) ?? null;
+
+  const [{ data: eventRows }, { data: creditRows }, { data: perkRows }, { data: paymentRow }] = await Promise.all([
     supabase
       .from("card_lifecycle_events")
       .select("*")
@@ -50,11 +57,18 @@ export default async function CardDetailPage({
       .eq("user_card_id", id)
       .eq("user_id", user.id)
       .order("category", { ascending: true }),
+    supabase
+      .from("user_payment_info")
+      .select("*")
+      .eq("user_card_id", id)
+      .eq("user_id", user.id)
+      .maybeSingle(),
   ]);
 
   const lifecycleEvents = (eventRows ?? []) as CardLifecycleEvent[];
   const creditUsage = (creditRows ?? []) as UserCreditUsage[];
   let perkSetup = (perkRows ?? []) as UserPerkSetup[];
+  const paymentInfo = (paymentRow as UserPaymentInfo) ?? null;
 
   // Lazy backfill: if catalog has perks but DB has no rows, insert them
   if (perkSetup.length === 0 && catalogCard.perks && catalogCard.perks.length > 0) {
@@ -91,6 +105,8 @@ export default async function CardDetailPage({
         lifecycleEvents={lifecycleEvents}
         creditUsage={creditUsage}
         perkSetup={perkSetup}
+        paymentInfo={paymentInfo}
+        experienceLevel={experienceLevel}
       />
     </div>
   );

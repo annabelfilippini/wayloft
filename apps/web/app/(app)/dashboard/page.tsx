@@ -8,7 +8,7 @@ import { ExpirationAlerts } from "@/components/dashboard/expiration-alerts";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { UserCard } from "@wayloft/shared";
+import type { UserCard, ExperienceLevel } from "@wayloft/shared";
 
 async function PortfolioSummary({ userId }: { userId: string }) {
   const supabase = await createClient();
@@ -62,11 +62,12 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("onboarding_completed")
+    .select("onboarding_completed, experience_level")
     .eq("id", user.id)
     .single();
 
   const onboardingCompleted = profile?.onboarding_completed ?? false;
+  const experienceLevel = (profile?.experience_level as ExperienceLevel) ?? null;
 
   // First visit after signup: redirect to onboarding once
   // After that, users see the skip banner but can use the app freely
@@ -99,11 +100,11 @@ export default async function DashboardPage() {
         </Suspense>
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
-          <PointsPortfolio userId={user.id} />
+          <PointsPortfolio userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
-          <ActionsWidget userId={user.id} />
+          <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>

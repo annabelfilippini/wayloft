@@ -2,7 +2,7 @@ import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCards } from "@/lib/cards/catalog";
 import { generateWalletGuide } from "@/lib/optimizer/engine";
-import type { UserCard } from "@wayloft/shared";
+import type { UserCard, ExperienceLevel } from "@wayloft/shared";
 import { WalletGuide } from "@/components/optimizer/wallet-guide";
 import { EmptyOptimizer } from "@/components/optimizer/empty-optimizer";
 
@@ -10,12 +10,21 @@ export default async function OptimizerPage() {
   const user = await requireUser();
   const supabase = await createClient();
 
-  const { data: userCards } = await supabase
-    .from("user_cards")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("status", "active")
-    .order("created_at", { ascending: false });
+  const [{ data: userCards }, { data: profile }] = await Promise.all([
+    supabase
+      .from("user_cards")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("profiles")
+      .select("experience_level")
+      .eq("id", user.id)
+      .single(),
+  ]);
+
+  const experienceLevel = (profile?.experience_level as ExperienceLevel) ?? null;
 
   const cards = (userCards ?? []) as UserCard[];
   const catalog = getAllCards();
@@ -49,7 +58,7 @@ export default async function OptimizerPage() {
         </p>
       </div>
       <div className="mt-6">
-        <WalletGuide guide={guide} catalog={catalog} />
+        <WalletGuide guide={guide} catalog={catalog} experienceLevel={experienceLevel} />
       </div>
     </div>
   );

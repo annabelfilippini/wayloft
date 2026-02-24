@@ -16,11 +16,13 @@ export async function updateProfile(formData: FormData) {
   const fullName = formData.get("full_name") as string;
   const homeAirport = (formData.get("home_airport") as string)?.toUpperCase().trim() || null;
   const preferredCabin = formData.get("preferred_cabin") as string;
+  const experienceLevel = formData.get("experience_level") as string | null;
   const preferredAirlines = (formData.get("preferred_airlines") as string)
     ?.split(",")
     .map((s) => s.trim())
     .filter(Boolean) ?? [];
 
+  const validLevels = ["beginner", "intermediate", "advanced"];
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -28,6 +30,9 @@ export async function updateProfile(formData: FormData) {
       home_airport: homeAirport,
       preferred_cabin: preferredCabin || "economy",
       preferred_airlines: preferredAirlines.length > 0 ? preferredAirlines : null,
+      experience_level: experienceLevel && validLevels.includes(experienceLevel)
+        ? experienceLevel
+        : null,
     })
     .eq("id", user.id);
 

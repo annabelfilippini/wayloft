@@ -2,7 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import type { CatalogCard } from "@wayloft/shared";
+import type { CatalogCard, ExperienceLevel } from "@wayloft/shared";
+import { StepExperience } from "./step-experience";
 import { StepCards } from "./step-cards";
 import { StepGoals } from "./step-goals";
 import { completeOnboarding } from "@/app/actions/onboarding";
@@ -13,7 +14,9 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
+  const [experienceLevel, setExperienceLevel] =
+    useState<ExperienceLevel | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
 
@@ -29,6 +32,7 @@ export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
       }
       if (goal) formData.set("travel_goal", goal);
       if (airport) formData.set("home_airport", airport);
+      if (experienceLevel) formData.set("experience_level", experienceLevel);
 
       const result = await completeOnboarding(formData);
       if (result.success) {
@@ -43,6 +47,11 @@ export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
       <div className="mb-8 flex items-center gap-2">
         <div
           className={`h-1.5 flex-1 rounded-full ${
+            step >= 0 ? "bg-primary" : "bg-muted"
+          }`}
+        />
+        <div
+          className={`h-1.5 flex-1 rounded-full ${
             step >= 1 ? "bg-primary" : "bg-muted"
           }`}
         />
@@ -53,12 +62,23 @@ export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
         />
       </div>
 
+      {step === 0 && (
+        <StepExperience
+          onNext={(level) => {
+            setExperienceLevel(level);
+            setStep(1);
+          }}
+          onSkip={handleSkip}
+        />
+      )}
+
       {step === 1 && (
         <StepCards
           catalog={catalog}
           selected={selectedCards}
           onSelect={setSelectedCards}
           onNext={() => setStep(2)}
+          onBack={() => setStep(0)}
           onSkip={handleSkip}
         />
       )}

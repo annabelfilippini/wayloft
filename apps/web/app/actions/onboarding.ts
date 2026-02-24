@@ -17,6 +17,7 @@ export async function completeOnboarding(formData: FormData) {
   const cardSlugs = formData.getAll("card_slugs") as string[];
   const travelGoal = formData.get("travel_goal") as string | null;
   const homeAirport = (formData.get("home_airport") as string)?.toUpperCase().trim() || null;
+  const experienceLevel = formData.get("experience_level") as string | null;
 
   // Insert selected cards
   if (cardSlugs.length > 0) {
@@ -50,10 +51,14 @@ export async function completeOnboarding(formData: FormData) {
   }
 
   // Update profile with goals and airport, flip onboarding_completed
+  const validLevels = ["beginner", "intermediate", "advanced"];
   const updates: Record<string, unknown> = {
     onboarding_completed: true,
   };
   if (homeAirport) updates.home_airport = homeAirport;
+  if (experienceLevel && validLevels.includes(experienceLevel)) {
+    updates.experience_level = experienceLevel;
+  }
   // Store travel goal in user_metadata or as preferred_cabin proxy
   // For now, we'll store it in the quiz responses table
   if (travelGoal) {

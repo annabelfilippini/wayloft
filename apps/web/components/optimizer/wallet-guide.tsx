@@ -1,15 +1,16 @@
 "use client";
 
-import type { WalletGuide as WalletGuideType, CatalogCard } from "@wayloft/shared";
+import type { WalletGuide as WalletGuideType, CatalogCard, ExperienceLevel } from "@wayloft/shared";
 import { CATEGORY_DEFINITIONS } from "@/lib/optimizer/categories";
 import { CategoryRow } from "./category-row";
 
 interface WalletGuideProps {
   guide: WalletGuideType;
   catalog: CatalogCard[];
+  experienceLevel?: ExperienceLevel | null;
 }
 
-export function WalletGuide({ guide, catalog }: WalletGuideProps) {
+export function WalletGuide({ guide, catalog, experienceLevel }: WalletGuideProps) {
   const catalogMap = new Map(
     catalog.map((c) => [c.slug, { network: c.network }])
   );
@@ -28,6 +29,7 @@ export function WalletGuide({ guide, catalog }: WalletGuideProps) {
             recommendation={cat}
             iconName={categoryIconMap.get(cat.category) ?? "CircleDollarSign"}
             catalogMap={catalogMap}
+            experienceLevel={experienceLevel}
           />
         ))}
       </div>

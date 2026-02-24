@@ -18,7 +18,9 @@ import {
   Lightbulb,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import type { CategoryRecommendation } from "@wayloft/shared";
+import type { CategoryRecommendation, ExperienceLevel } from "@wayloft/shared";
+import { isBeginnerOrBelow } from "@/lib/experience";
+import { JargonTip } from "@/components/ui/jargon-tip";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
 import { CategoryDetail } from "./category-detail";
 
@@ -49,16 +51,19 @@ interface CategoryRowProps {
   recommendation: CategoryRecommendation;
   iconName: string;
   catalogMap: Map<string, { network: string }>;
+  experienceLevel?: ExperienceLevel | null;
 }
 
 export function CategoryRow({
   recommendation,
   iconName,
   catalogMap,
+  experienceLevel,
 }: CategoryRowProps) {
   const [expanded, setExpanded] = useState(false);
   const { category, displayName, rankings } = recommendation;
   const top = rankings[0];
+  const isBeginner = isBeginnerOrBelow(experienceLevel);
 
   const IconComponent = ICON_MAP[iconName] ?? CircleDollarSign;
 
@@ -116,7 +121,9 @@ export function CategoryRow({
             {top.multiplier}x
           </span>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            {top.effectiveCents.toFixed(1)}¢/$
+            <JargonTip term="effective_cents" experienceLevel={experienceLevel}>
+              {top.effectiveCents.toFixed(1)}¢/$
+            </JargonTip>
           </p>
         </div>
 
@@ -131,7 +138,7 @@ export function CategoryRow({
       </button>
 
       {/* Cap warning on winner */}
-      {top.capWarning && (
+      {!isBeginner && top.capWarning && (
         <div className="border-t border-border/50 px-4 py-1.5">
           <p className="text-xs font-medium text-amber-600 dark:text-amber-400">
             {top.capWarning}
