@@ -18,9 +18,21 @@ interface ExpiringPoint {
   urgency: "critical" | "warning" | "ok";
 }
 
+interface ExpiringCredit {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  card_name: string;
+  card_slug: string;
+  credit_name: string;
+  remaining_cents: number;
+  days_until_expiration: number;
+  urgency: "critical" | "warning" | "info";
+}
+
 interface UnifiedAction {
   key: string;
-  type: "signup_spend" | "annual_fee" | "points_expiring";
+  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring";
   title: string;
   subtitle: string;
   urgency: "critical" | "warning" | "info" | "ok";
@@ -46,15 +58,21 @@ const typeLabels: Record<string, string> = {
   signup_spend: "Bonus",
   annual_fee: "AF",
   points_expiring: "Points",
+  credit_expiring: "Credit",
 };
 
 export async function ActionsWidget({ userId }: ActionsWidgetProps) {
   const supabase = await createClient();
 
-  // Fetch card actions and expiring points in parallel
-  const [cardActionsRes, expiringRes] = await Promise.all([
+  // Fetch card actions, expiring points, and expiring credits in parallel
+  const [cardActionsRes, expiringRes, expiringCreditsRes] = await Promise.all([
     supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
     supabase.from("expiring_points").select("*").eq("user_id", userId),
+    supabase
+      .from("expiring_credits")
+      .select("*")
+      .eq("user_id", userId)
+      .lte("days_until_expiration", 30),
   ]);
 
   const actions: UnifiedAction[] = [];
@@ -110,6 +128,20 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
     });
   }
 
+  // Process expiring credits
+  const expiringCredits = (expiringCreditsRes.data ?? []) as ExpiringCredit[];
+  for (const ec of expiringCredits) {
+    actions.push({
+      key: `credit-${ec.id}`,
+      type: "credit_expiring",
+      title: ec.card_name,
+      subtitle: `$${(ec.remaining_cents / 100).toFixed(0)} ${ec.credit_name} expires in ${ec.days_until_expiration} days`,
+      urgency: ec.urgency,
+      daysRemaining: ec.days_until_expiration,
+      href: `/cards/${ec.user_card_id}`,
+    });
+  }
+
   // Sort by urgency then days remaining
   actions.sort((a, b) => {
     const urgDiff =
@@ -124,7 +156,7 @@ export async function ActionsWidget({ userId }: ActionsWidgetProps) {
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Action Items</h2>
+          <h2 className="text-lg font-bold">Action Items</h2>
           <Link
             href="/cards"
             className="text-xs text-muted-foreground hover:text-foreground"

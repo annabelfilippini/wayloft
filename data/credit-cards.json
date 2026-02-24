@@ -41,6 +41,45 @@
     "credit_score_min": "good",
     "card_art_url": "/cards/chase-sapphire-reserve.png",
     "application_url": "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+    "credits": [
+      {
+        "name": "Travel Credit",
+        "type": "travel",
+        "amount_cents": 30000,
+        "period": "annual",
+        "enrollment_required": false,
+        "merchants": ["Any travel purchase"],
+        "gotchas": "Automatically applied to travel purchases."
+      },
+      {
+        "name": "Lyft Credit",
+        "type": "lyft",
+        "amount_cents": 12000,
+        "period": "monthly",
+        "monthly_cap_cents": 1000,
+        "enrollment_required": false,
+        "merchants": ["Lyft"],
+        "gotchas": "Monthly cap of $10/mo. Use it or lose it each month."
+      },
+      {
+        "name": "StubHub Credit",
+        "type": "stubhub",
+        "amount_cents": 30000,
+        "period": "annual",
+        "enrollment_required": false,
+        "merchants": ["StubHub"],
+        "gotchas": "Applied automatically to StubHub purchases."
+      },
+      {
+        "name": "Peloton Credit",
+        "type": "peloton",
+        "amount_cents": 12000,
+        "period": "annual",
+        "enrollment_required": false,
+        "merchants": ["Peloton"],
+        "gotchas": "Covers Peloton membership. Annual credit."
+      }
+    ],
     "is_business": false,
     "foreign_transaction_fee": false
   },
@@ -233,6 +272,72 @@
       "Hilton Gold, Marriott Gold",
       "5x on flights booked directly"
     ],
+    "credits": [
+      {
+        "name": "Uber Credit",
+        "type": "uber",
+        "amount_cents": 12000,
+        "period": "monthly",
+        "monthly_cap_cents": 1000,
+        "enrollment_required": false,
+        "merchants": ["Uber", "Uber Eats"],
+        "gotchas": "Monthly cap of $10/mo. Use it or lose it each month."
+      },
+      {
+        "name": "Resy Dining Credit",
+        "type": "resy_dining",
+        "amount_cents": 40000,
+        "period": "quarterly",
+        "enrollment_required": false,
+        "merchants": ["Resy-booked restaurants"],
+        "gotchas": "$100 per quarter. Must book through Resy."
+      },
+      {
+        "name": "Hotel Credit (FHR/THC)",
+        "type": "hotel_fhr",
+        "amount_cents": 60000,
+        "period": "semi_annual",
+        "enrollment_required": false,
+        "merchants": ["Fine Hotels + Resorts", "The Hotel Collection"],
+        "gotchas": "Must book through Amex Travel. Minimum 2-night stay for THC."
+      },
+      {
+        "name": "Airline Fee Credit",
+        "type": "airline_fee",
+        "amount_cents": 20000,
+        "period": "annual",
+        "enrollment_required": true,
+        "merchants": ["Selected airline"],
+        "gotchas": "Must select one airline per year. Covers incidental fees only (baggage, seat upgrades)."
+      },
+      {
+        "name": "Digital Entertainment Credit",
+        "type": "digital_entertainment",
+        "amount_cents": 30000,
+        "period": "annual",
+        "enrollment_required": true,
+        "merchants": ["Disney+", "Hulu", "ESPN+", "The New York Times", "The Wall Street Journal", "Peacock"],
+        "gotchas": "Must enroll each merchant. Covers select streaming and news subscriptions."
+      },
+      {
+        "name": "Oura Ring Credit",
+        "type": "oura",
+        "amount_cents": 20000,
+        "period": "annual",
+        "enrollment_required": true,
+        "merchants": ["Oura"],
+        "gotchas": "Must enroll. Covers Oura Ring membership."
+      },
+      {
+        "name": "Lululemon Credit",
+        "type": "lululemon",
+        "amount_cents": 30000,
+        "period": "quarterly",
+        "enrollment_required": false,
+        "merchants": ["lululemon"],
+        "gotchas": "$75 per quarter. Automatically applied to lululemon purchases."
+      }
+    ],
     "best_for": ["luxury travel", "lounge access", "premium perks"],
     "credit_score_min": "excellent",
     "card_art_url": "/cards/amex-platinum.png",
@@ -276,6 +381,47 @@
       "3x on flights booked directly",
       "2x on prepaid hotels and eligible travel",
       "No foreign transaction fees"
+    ],
+    "credits": [
+      {
+        "name": "Uber Cash",
+        "type": "uber_cash",
+        "amount_cents": 12000,
+        "period": "monthly",
+        "monthly_cap_cents": 1000,
+        "enrollment_required": false,
+        "merchants": ["Uber", "Uber Eats"],
+        "gotchas": "Monthly cap of $10/mo. Use it or lose it each month."
+      },
+      {
+        "name": "Dining Credit",
+        "type": "dining",
+        "amount_cents": 12000,
+        "period": "monthly",
+        "monthly_cap_cents": 1000,
+        "enrollment_required": false,
+        "merchants": ["Grubhub", "The Cheesecake Factory", "Goldbelly", "Wine.com", "Milk Bar", "select Shake Shack"],
+        "gotchas": "$10/mo at participating dining partners. Must use enrolled Amex Gold."
+      },
+      {
+        "name": "Resy Dining Credit",
+        "type": "resy_dining",
+        "amount_cents": 10000,
+        "period": "semi_annual",
+        "enrollment_required": false,
+        "merchants": ["Resy-booked restaurants"],
+        "gotchas": "$50 semi-annually. Must book through Resy."
+      },
+      {
+        "name": "Dunkin' Credit",
+        "type": "dunkin",
+        "amount_cents": 8400,
+        "period": "monthly",
+        "monthly_cap_cents": 700,
+        "enrollment_required": false,
+        "merchants": ["Dunkin'"],
+        "gotchas": "$7/mo at Dunkin'. Use it or lose it each month."
+      }
     ],
     "best_for": ["dining", "groceries", "everyday premium"],
     "credit_score_min": "good",

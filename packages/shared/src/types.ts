@@ -23,6 +23,17 @@ export interface TransferPartner {
   cpp_valuation: number | null;
 }
 
+export interface CatalogCredit {
+  name: string;
+  type: string;
+  amount_cents: number;
+  period: "monthly" | "quarterly" | "semi_annual" | "annual" | "card_year";
+  monthly_cap_cents?: number;
+  enrollment_required: boolean;
+  merchants: string[];
+  gotchas?: string;
+}
+
 // Matches the shape of data/credit-cards.json entries
 export interface CatalogCard {
   slug: string;
@@ -44,6 +55,7 @@ export interface CatalogCard {
   credit_score_min: string;
   card_art_url: string;
   application_url: string;
+  credits?: CatalogCredit[];
   is_business: boolean;
   foreign_transaction_fee: boolean;
 }
@@ -80,7 +92,7 @@ export interface CardAction {
   card_name: string;
   card_slug: string;
   issuer: string;
-  type: "signup_spend" | "annual_fee";
+  type: "signup_spend" | "annual_fee" | "credit_expiring";
   urgency: "critical" | "warning" | "info";
   days_remaining?: number;
   spend_remaining_cents?: number;
@@ -88,6 +100,25 @@ export interface CardAction {
   bonus_points?: number;
   deadline?: string;
   annual_fee_cents?: number;
+}
+
+// Matches user_credit_usage DB table row
+export interface UserCreditUsage {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  credit_type: string;
+  credit_name: string;
+  credit_amount_cents: number;
+  period: "monthly" | "quarterly" | "semi_annual" | "annual" | "card_year";
+  period_start: string;
+  period_end: string;
+  amount_used_cents: number;
+  status: "available" | "partial" | "used" | "expired";
+  enrollment_required: boolean;
+  enrolled: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 // Legacy alias — keep for backward compat
@@ -130,4 +161,56 @@ export interface CardRanking {
 export interface WalletGuide {
   categories: CategoryRecommendation[];
   generatedAt: string;
+}
+
+// ── Card Lifecycle Events ──
+
+export type LifecycleEventType =
+  | "opened"
+  | "product_change"
+  | "downgrade"
+  | "upgrade"
+  | "cancelled"
+  | "retention_offer"
+  | "retention_declined"
+  | "annual_fee_posted"
+  | "annual_fee_waived"
+  | "signup_bonus_met"
+  | "signup_bonus_earned";
+
+export interface CardLifecycleEvent {
+  id: string;
+  user_id: string;
+  user_card_id: string;
+  event_type: LifecycleEventType;
+  event_date: string;
+  from_card_slug: string | null;
+  to_card_slug: string | null;
+  retention_offer_type: string | null;
+  retention_offer_value: string | null;
+  retention_spend_requirement: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+// ── Loyalty Balances ──
+
+export interface LoyaltyBalance {
+  id: string;
+  user_id: string;
+  program_name: string;
+  program_code: string;
+  program_type: "credit_card" | "airline" | "hotel";
+  balance: number;
+  currency: string;
+  source: "manual" | "extension" | "email" | "awardwallet";
+  last_verified_at: string;
+  expires_at: string | null;
+  expiration_policy: string | null;
+  expiration_notes: string | null;
+  last_activity_date: string | null;
+  inactivity_months: number | null;
+  tier_status: string | null;
+  created_at: string;
+  updated_at: string;
 }

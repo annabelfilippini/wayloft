@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
 import { getTransferPartners } from "@/lib/cards/transfer-partners";
 import { CardDetail } from "@/components/cards/card-detail";
-import type { UserCard } from "@wayloft/shared";
+import type { UserCard, CardLifecycleEvent, UserCreditUsage } from "@wayloft/shared";
 
 export default async function CardDetailPage({
   params,
@@ -31,12 +31,32 @@ export default async function CardDetailPage({
 
   const transferPartners = getTransferPartners(userCard.currency);
 
+  const [{ data: eventRows }, { data: creditRows }] = await Promise.all([
+    supabase
+      .from("card_lifecycle_events")
+      .select("*")
+      .eq("user_card_id", id)
+      .eq("user_id", user.id)
+      .order("event_date", { ascending: false }),
+    supabase
+      .from("user_credit_usage")
+      .select("*")
+      .eq("user_card_id", id)
+      .eq("user_id", user.id)
+      .order("period_end", { ascending: true }),
+  ]);
+
+  const lifecycleEvents = (eventRows ?? []) as CardLifecycleEvent[];
+  const creditUsage = (creditRows ?? []) as UserCreditUsage[];
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       <CardDetail
         userCard={userCard}
         catalogCard={catalogCard}
         transferPartners={transferPartners}
+        lifecycleEvents={lifecycleEvents}
+        creditUsage={creditUsage}
       />
     </div>
   );
