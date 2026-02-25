@@ -215,6 +215,35 @@ export interface UserCreditUsage {
   updated_at: string;
 }
 
+// Matches user_external_cards DB table row
+export interface UserExternalCard {
+  id: string;
+  user_id: string;
+  card_name: string;
+  issuer: string | null;
+  is_business: boolean;
+  opened_at: string;
+  closed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// ── 5/24 Rule ──
+
+export interface FiveTwentyFourStatus {
+  count: number;
+  maxAllowed: number;
+  isEligible: boolean;
+  slotsRemaining: number;
+  nextEligibleDate: string | null;
+  countedCards: Array<{
+    name: string;
+    openedDate: string;
+    source: "portfolio" | "external";
+    agesOutDate: string;
+  }>;
+}
+
 // Legacy alias — keep for backward compat
 export type CreditCard = CatalogCard;
 

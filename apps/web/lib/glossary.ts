@@ -53,4 +53,11 @@ export const GLOSSARY: Record<
       "A big chunk of points you get after spending a required amount in your first few months",
     intermediate: "Welcome offer points after meeting minimum spend",
   },
+  five_twenty_four: {
+    term: "5/24 Rule",
+    beginner:
+      "Chase won't approve you if you've opened 5+ credit cards (any issuer) in the past 24 months",
+    intermediate:
+      "Chase velocity limit: max 5 new accounts in 24-month rolling window across all issuers",
+  },
 };

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ActionsWidget } from "@/components/dashboard/actions-widget";
 import { PointsPortfolio } from "@/components/dashboard/points-portfolio";
 import { ExpirationAlerts } from "@/components/dashboard/expiration-alerts";
+import { FiveTwentyFourCounter } from "@/components/dashboard/five-twenty-four-counter";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -97,6 +98,10 @@ export default async function DashboardPage() {
       <div className="mt-6 space-y-6">
         <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
           <PortfolioSummary userId={user.id} />
+        </Suspense>
+
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+          <FiveTwentyFourCounter userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
