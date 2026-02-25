@@ -185,7 +185,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 **Why:** Primary monetization feature (affiliate revenue = 55-65% of revenue).
 
-- [ ] 5-step spending quiz wizard
+- [x] 5-step spending quiz wizard (route: `/recommend`, saves to `card_quiz_responses`)
 - [ ] Scoring algorithm (weighted by spend, goals, credit score, existing cards)
 - [ ] **Bonus value personalizer** — rank signup bonuses by how valuable they are *for this user* based on their spending patterns and travel goals, not just raw point count. "80K UR is worth more to you than 100K Hilton because you fly 6x/year and rarely stay at Hiltons."
 - [ ] Results page with top 5 cards + reasoning
