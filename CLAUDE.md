@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current Status (Feb 27, 2026)
 
-**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, and issuer rule checking are built. Scoring engine uses portfolio-aware CPP (accounts for transfer partner gateway cards), 3-tier goal alignment (+25%/neutral/-10%), signup bonus achievability, and credit utilization. 7 issuer rules wired in from `issuer-rules.json`: Chase One Sapphire (hard filter), Chase 5/24, Barclays 6/24, Citi 8/48, Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull. Quiz collects both 24-month and 48-month card counts for accurate rule checking. Catalog data audited and corrected. Remaining P2 work: card comparison view, card review pages, affiliate infrastructure.
+**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, issuer rule checking, and card comparison view are built. Scoring engine uses portfolio-aware CPP (accounts for transfer partner gateway cards), 3-tier goal alignment (+25%/neutral/-10%), signup bonus achievability, and credit utilization. 7 issuer rules wired in from `issuer-rules.json`: Chase One Sapphire (hard filter), Chase 5/24, Barclays 6/24, Citi 8/48, Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull. Quiz collects both 24-month and 48-month card counts for accurate rule checking. Catalog data audited and corrected. Remaining P2 work: card review pages, affiliate infrastructure.
 
 ### What's Built
 
@@ -153,6 +153,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Info warnings (blue): Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull
   - Severity-based styling in score-card.tsx (amber/AlertTriangle vs blue/Info icon)
 - Results UI (`components/recommend/results.tsx`, `score-card.tsx`): ranked cards with value breakdown, top earning categories, reasoning, warnings, retake flow
+- Card comparison view (inline on results page, no separate route):
+  - Selection checkboxes on score cards (max 3), sticky comparison bar with card thumbnails
+  - Comparison panel with 5 sections: value summary with "Best Value" badge, breakdown grid with green trophy highlighting on winners, context-aware category earnings (dollar values from user spending), quick features (FTF, portal CPP, credit score), transfer partner overlap (same-currency shortcut + Venn-style unique/shared/unique)
+  - Comparison utilities (`lib/recommend/compare-utils.ts`): `getWinner()` with $1 tie threshold, `computeTransferOverlap()` using transfer-partners.json
+  - `allEarnings` field on `ScoredCard` pipes all 6 category earnings through (not just top 3)
+  - Signup spend requirement row with achievability flag based on user's monthly spend
 - Server action returns quiz data for client-side scoring
 - Catalog data audited: portal rates separated from direct earning, signup bonuses verified against current offers
 
@@ -166,8 +172,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Priority 2 scoring engine + issuer rule checking are built. Remaining P2 work:
-- Card comparison view (side-by-side 2-3 cards)
+Priority 2 scoring engine, issuer rules, and card comparison view are built. Remaining P2 work:
 - Card review pages (10-15, SEO-optimized) for affiliate applications
 - "Best cards for X" comparison articles
 - Affiliate link infrastructure (FTC disclosure, click tracking)
@@ -198,12 +203,12 @@ wayloft/
 │   │   │   ├── cards/              # Card grid, card item, picker, bonus progress, credit tracker, etc.
 │   │   │   ├── dashboard/          # Actions widget, points portfolio, expiration alerts, 5/24 counter
 │   │   │   ├── nav/                # App sidebar
-│   │   │   ├── recommend/          # Quiz wizard, steps, results, score card
+│   │   │   ├── recommend/          # Quiz wizard, steps, results, score card, comparison bar + panel
 │   │   │   └── ui/                 # shadcn components
 │   │   ├── lib/
 │   │   │   ├── auth/               # get-user.ts, require-user.ts
 │   │   │   ├── cards/              # catalog.ts, issuer-colors.ts
-│   │   │   ├── recommend/          # engine.ts, types.ts, issuer-rules.ts
+│   │   │   ├── recommend/          # engine.ts, types.ts, issuer-rules.ts, compare-utils.ts
 │   │   │   └── supabase/           # server.ts, client.ts, middleware.ts
 │   │   └── middleware.ts           # Supabase auth session refresh
 │   ├── extension/                  # Chrome Extension (stub)

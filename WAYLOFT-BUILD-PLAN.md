@@ -189,8 +189,8 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] Scoring algorithm (weighted by spend, goals, credit score, existing cards) — `lib/recommend/engine.ts`
 - [x] **Bonus value personalizer** — signup bonuses valued by portfolio-aware CPP (gateway card detection) and achievability discount. Goal alignment: 3-tier (+25% strong / 0% neutral / -10% mismatch).
 - [x] Results page with top 5 cards + reasoning — `components/recommend/results.tsx`, `score-card.tsx`
-- [x] **Catalog data audit** — portal rates separated from direct earning on CSR/Venture X/Strata Premier, signup bonuses verified against current public offers (CSP, Amex Plat, Strata Premier, WF Autograph updated)
-- [ ] Card comparison view (side-by-side 2-3 cards)
+- [x] **Catalog data audit** — portal rates separated from direct earning on CSR/Venture X/Strata Premier, signup bonuses verified against current public offers
+- [x] Card comparison view (side-by-side 2-3 cards) — inline on results page with selection checkboxes, sticky comparison bar, 5-section panel (value summary, breakdown grid with wins highlighting, context-aware category earnings, quick features, transfer partner overlap)
 - [ ] Card review pages (10-15, SEO-optimized) — prerequisite for affiliate applications
 - [ ] "Best cards for X" comparison articles (3-5)
 - [ ] Affiliate link infrastructure (FTC disclosure, click tracking, UTM params)
@@ -198,10 +198,6 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] 5/24 counter widget (auto-calculated from user_cards)
 - [x] Issuer rule checking in recommendations (7 rules: One Sapphire filter, Chase 5/24, Barclays 6/24, Citi 8/48, Amex lifetime, Marriott cross-issuer, C1 triple pull) + quiz 48mo field + migration 007
 - [ ] Credit health endpoint (/api/user/credit-health)
-
-**Data needed:**
-- Expand `credit-cards.json` to v3.2 schema (pros, cons, ideal_user, best_for expanded)
-- `issuer-rules.json` already exists
 
 ---
 
@@ -281,7 +277,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 2 scoring engine, results UI, dashboard widget, and issuer rule checking are built. Next: card comparison view, card review pages, affiliate infrastructure.**
+**Priority 2 scoring engine, results UI, dashboard widget, issuer rule checking, and card comparison view are built. Next: card review pages, "best cards for X" articles, affiliate infrastructure.**
 
 ---
 
@@ -303,4 +299,4 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 For detailed specs (DB schemas, JSON formats, algorithm details, notification catalog, agent registry):
 - **Full plan:** `WAYLOFT-MASTER-PLAN-V3.md` (consolidated — includes all v3.2 additions)
 
-That document contains the complete SQL, JSON examples, and acceptance criteria for every feature above.
+Those documents contain the complete SQL, JSON examples, and acceptance criteria for every feature above.
