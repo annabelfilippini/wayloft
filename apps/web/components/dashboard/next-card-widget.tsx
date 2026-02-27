@@ -70,6 +70,7 @@ export async function NextCardWidget({
     },
     creditScore: quizRow.credit_score_range ?? "good",
     cardsOpened24mo: quizRow.cards_opened_24mo ?? 0,
+    cardsOpened48mo: quizRow.cards_opened_48mo ?? 0,
     currentCardSlugs: quizRow.current_card_slugs ?? [],
     annualFeeComfort: quizRow.annual_fee_comfort ?? "medium",
     travelGoal: quizRow.travel_goal ?? "maximize_travel",

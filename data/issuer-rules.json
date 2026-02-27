@@ -331,6 +331,31 @@
       },
       "application_rules": [
         {
+          "id": "citi-8-48",
+          "name": "8/48 Rule",
+          "description": "Citi is likely to deny applicants who have opened 8+ new credit card accounts across all issuers in the past 48 months.",
+          "type": "velocity_limit",
+          "enforcement": "hard",
+          "confidence": "likely",
+          "last_verified": "2026-02-27",
+          "affected_cards": [
+            "citi-strata-premier", "citi-custom-cash", "citi-double-cash",
+            "citi-aadvantage-executive", "citi-aadvantage-platinum-select"
+          ],
+          "exempt_cards": [],
+          "parameters": {
+            "max_count": 8,
+            "window_months": 48,
+            "scope": "all_issuers",
+            "counts_from": "account_opened"
+          },
+          "check_function": "checkVelocityAllIssuers",
+          "user_action_if_blocked": "Wait for oldest accounts to age past 48 months.",
+          "sources": ["Doctor of Credit", "r/churning data points"],
+          "actively_changing": false,
+          "notes": "Less rigid than Chase 5/24 but well-documented. Quiz only captures 24-month count, so engine uses that as a lower bound."
+        },
+        {
           "id": "citi-8-65",
           "name": "8/65 Rule",
           "description": "Max 1 Citi card application per 8 days, max 2 per 65 days.",

@@ -8,8 +8,10 @@ import { Shield, ShieldCheck, ShieldAlert, ShieldX } from "lucide-react";
 interface StepCreditProps {
   creditScore: string;
   cardsOpened24mo: number;
+  cardsOpened48mo: number;
   onCreditScoreChange: (value: string) => void;
-  onCardsOpenedChange: (value: number) => void;
+  onCardsOpened24moChange: (value: number) => void;
+  onCardsOpened48moChange: (value: number) => void;
   onNext: () => void;
   onBack: () => void;
 }
@@ -44,8 +46,10 @@ const scoreOptions = [
 export function StepCredit({
   creditScore,
   cardsOpened24mo,
+  cardsOpened48mo,
   onCreditScoreChange,
-  onCardsOpenedChange,
+  onCardsOpened24moChange,
+  onCardsOpened48moChange,
   onNext,
   onBack,
 }: StepCreditProps) {
@@ -89,25 +93,44 @@ export function StepCredit({
         </div>
       </div>
 
-      {/* Cards opened in 24 months */}
-      <div className="space-y-2">
-        <Label htmlFor="cards_opened">
-          Cards opened in the past 24 months
-        </Label>
-        <p className="text-xs text-muted-foreground">
-          This affects eligibility for Chase cards (5/24 rule) and others.
-        </p>
-        <Input
-          id="cards_opened"
-          type="number"
-          min={0}
-          max={15}
-          value={cardsOpened24mo}
-          onChange={(e) =>
-            onCardsOpenedChange(parseInt(e.target.value, 10) || 0)
-          }
-          className="w-20"
-        />
+      {/* Cards opened — 24mo and 48mo */}
+      <div className="space-y-4">
+        <div>
+          <p className="text-sm font-medium">New cards opened</p>
+          <p className="text-xs text-muted-foreground">
+            Affects eligibility rules like Chase 5/24 and Citi 8/48.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="cards_opened_24">Past 2 years</Label>
+            <Input
+              id="cards_opened_24"
+              type="number"
+              min={0}
+              max={20}
+              value={cardsOpened24mo}
+              onChange={(e) =>
+                onCardsOpened24moChange(parseInt(e.target.value, 10) || 0)
+              }
+              className="w-20"
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="cards_opened_48">Past 4 years</Label>
+            <Input
+              id="cards_opened_48"
+              type="number"
+              min={0}
+              max={30}
+              value={cardsOpened48mo}
+              onChange={(e) =>
+                onCardsOpened48moChange(parseInt(e.target.value, 10) || 0)
+              }
+              className="w-20"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Actions */}

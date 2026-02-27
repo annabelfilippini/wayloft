@@ -7,6 +7,18 @@ import type {
   EligibilityWarning,
   CategoryEarning,
 } from "./types";
+import {
+  SAPPHIRE_SLUGS,
+  CHASE_524_MAX,
+  CHASE_524_AFFECTED,
+  BARCLAYS_624_MAX,
+  BARCLAYS_624_AFFECTED,
+  CITI_848_MAX,
+  CITI_848_AFFECTED,
+  AMEX_LIFETIME_AFFECTED,
+  MARRIOTT_CROSS_SLUGS,
+  C1_TRIPLE_PULL_AFFECTED,
+} from "./issuer-rules";
 
 // --- Constants ---
 
@@ -163,6 +175,14 @@ function filterCandidates(
   return catalog.filter((card) => {
     // Exclude already-owned
     if (ownedSet.has(card.slug)) return false;
+
+    // Chase One Sapphire: can't hold both CSR + CSP simultaneously
+    if (SAPPHIRE_SLUGS.has(card.slug)) {
+      const ownsOtherSapphire = quiz.currentCardSlugs.some(
+        (s) => SAPPHIRE_SLUGS.has(s) && s !== card.slug
+      );
+      if (ownsOtherSapphire) return false;
+    }
 
     // Exclude business cards
     if (card.is_business) return false;
@@ -423,13 +443,62 @@ function buildWarnings(
 ): EligibilityWarning[] {
   const warnings: EligibilityWarning[] = [];
 
-  if (
-    quiz.cardsOpened24mo >= 5 &&
-    card.issuer.toLowerCase() === "chase"
-  ) {
+  // Chase 5/24 (data-driven)
+  if (quiz.cardsOpened24mo >= CHASE_524_MAX && CHASE_524_AFFECTED.has(card.slug)) {
     warnings.push({
       type: "five_twenty_four",
-      message: `You've opened ${quiz.cardsOpened24mo} cards in 24 months — Chase may deny this application (5/24 rule).`,
+      severity: "hard",
+      message: `You've opened ${quiz.cardsOpened24mo} cards in 24 months — Chase will likely deny this application (5/24 rule).`,
+    });
+  }
+
+  // Barclays 6/24
+  if (quiz.cardsOpened24mo >= BARCLAYS_624_MAX && BARCLAYS_624_AFFECTED.has(card.slug)) {
+    warnings.push({
+      type: "barclays_six_twenty_four",
+      severity: "hard",
+      message: `You've opened ${quiz.cardsOpened24mo} cards in 24 months — Barclays is likely to deny with 6+ new accounts (6/24 sensitivity).`,
+    });
+  }
+
+  // Citi 8/48
+  if (quiz.cardsOpened48mo >= CITI_848_MAX && CITI_848_AFFECTED.has(card.slug)) {
+    warnings.push({
+      type: "citi_eight_forty_eight",
+      severity: "hard",
+      message: `You've opened ${quiz.cardsOpened48mo} cards in 4 years — Citi is likely to deny with 8+ new accounts in 48 months (8/48 rule).`,
+    });
+  }
+
+  // Amex once-per-lifetime
+  if (AMEX_LIFETIME_AFFECTED.has(card.slug)) {
+    warnings.push({
+      type: "amex_lifetime",
+      severity: "info",
+      message: "Amex welcome bonus may not be available if you've previously held this card (once-per-lifetime rule).",
+    });
+  }
+
+  // Marriott cross-issuer
+  if (MARRIOTT_CROSS_SLUGS.has(card.slug)) {
+    const ownsOtherMarriott = quiz.currentCardSlugs.some(
+      (s) => MARRIOTT_CROSS_SLUGS.has(s) && s !== card.slug
+    );
+    if (ownsOtherMarriott) {
+      warnings.push({
+        type: "marriott_cross_issuer",
+        severity: "info",
+        message: "You hold another Marriott card — the signup bonus may be restricted across Chase/Amex (cross-issuer rule).",
+      });
+    }
+  }
+
+  // Capital One triple pull
+  if (C1_TRIPLE_PULL_AFFECTED.has(card.slug)) {
+    warnings.push({
+      type: "capital_one_triple_pull",
+      severity: "info",
+      message: "Capital One often pulls all 3 credit bureaus per application — plan accordingly if inquiry-sensitive.",
     });
   }
 

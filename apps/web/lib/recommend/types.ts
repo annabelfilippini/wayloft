@@ -11,6 +11,7 @@ export interface QuizInput {
   };
   creditScore: "excellent" | "good" | "fair" | "poor";
   cardsOpened24mo: number;
+  cardsOpened48mo: number;
   currentCardSlugs: string[];
   annualFeeComfort: "none" | "low" | "medium" | "high";
   travelGoal: "maximize_travel" | "cashback" | "hotel_stays" | "airline_status";
@@ -25,8 +26,18 @@ export interface ScoreBreakdown {
   firstYearValue: number;
 }
 
+export type WarningSeverity = "hard" | "info";
+export type WarningType =
+  | "five_twenty_four"
+  | "barclays_six_twenty_four"
+  | "amex_lifetime"
+  | "marriott_cross_issuer"
+  | "citi_eight_forty_eight"
+  | "capital_one_triple_pull";
+
 export interface EligibilityWarning {
-  type: "five_twenty_four";
+  type: WarningType;
+  severity: WarningSeverity;
   message: string;
 }
 

@@ -13,7 +13,7 @@ export default async function RecommendPage() {
   const { data: existingQuiz } = await supabase
     .from("card_quiz_responses")
     .select(
-      "monthly_dining_spend, monthly_travel_spend, monthly_grocery_spend, monthly_gas_spend, monthly_streaming_spend, monthly_other_spend, credit_score_range, cards_opened_24mo, current_card_slugs, annual_fee_comfort, travel_goal"
+      "monthly_dining_spend, monthly_travel_spend, monthly_grocery_spend, monthly_gas_spend, monthly_streaming_spend, monthly_other_spend, credit_score_range, cards_opened_24mo, cards_opened_48mo, current_card_slugs, annual_fee_comfort, travel_goal"
     )
     .eq("user_id", user.id)
     .single();

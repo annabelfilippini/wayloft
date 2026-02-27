@@ -27,6 +27,7 @@ export interface QuizResponse {
   monthly_other_spend: number | null;
   credit_score_range: string | null;
   cards_opened_24mo: number | null;
+  cards_opened_48mo: number | null;
   current_card_slugs: string[] | null;
   annual_fee_comfort: string | null;
   travel_goal: string | null;
@@ -61,6 +62,9 @@ export function QuizWizard({
   const [cardsOpened24mo, setCardsOpened24mo] = useState(
     existingResponse?.cards_opened_24mo ?? 0
   );
+  const [cardsOpened48mo, setCardsOpened48mo] = useState(
+    existingResponse?.cards_opened_48mo ?? 0
+  );
 
   // Pre-populate from existing quiz response OR user_cards portfolio
   const [selectedCards, setSelectedCards] = useState<string[]>(
@@ -90,6 +94,7 @@ export function QuizWizard({
       // Credit
       formData.set("credit_score_range", creditScore);
       formData.set("cards_opened_24mo", String(cardsOpened24mo));
+      formData.set("cards_opened_48mo", String(cardsOpened48mo));
 
       // Cards
       for (const slug of selectedCards) {
@@ -121,6 +126,7 @@ export function QuizWizard({
         },
         creditScore: (creditScore || "good") as QuizInput["creditScore"],
         cardsOpened24mo,
+        cardsOpened48mo: Math.max(cardsOpened48mo, cardsOpened24mo),
         currentCardSlugs: selectedCards,
         annualFeeComfort: (annualFeeComfort ||
           "medium") as QuizInput["annualFeeComfort"],
@@ -188,8 +194,10 @@ export function QuizWizard({
         <StepCredit
           creditScore={creditScore}
           cardsOpened24mo={cardsOpened24mo}
+          cardsOpened48mo={cardsOpened48mo}
           onCreditScoreChange={setCreditScore}
-          onCardsOpenedChange={setCardsOpened24mo}
+          onCardsOpened24moChange={setCardsOpened24mo}
+          onCardsOpened48moChange={setCardsOpened48mo}
           onNext={() => setStep(2)}
           onBack={() => setStep(0)}
         />
@@ -221,6 +229,7 @@ export function QuizWizard({
           spending={spending}
           creditScore={creditScore}
           cardsOpened24mo={cardsOpened24mo}
+          cardsOpened48mo={cardsOpened48mo}
           currentCardSlugs={selectedCards}
           annualFeeComfort={annualFeeComfort}
           travelGoal={travelGoal}

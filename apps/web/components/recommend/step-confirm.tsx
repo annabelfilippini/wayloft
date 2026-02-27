@@ -7,6 +7,7 @@ interface StepConfirmProps {
   spending: Record<string, number>;
   creditScore: string;
   cardsOpened24mo: number;
+  cardsOpened48mo: number;
   currentCardSlugs: string[];
   annualFeeComfort: string;
   travelGoal: string;
@@ -51,6 +52,7 @@ export function StepConfirm({
   spending,
   creditScore,
   cardsOpened24mo,
+  cardsOpened48mo,
   currentCardSlugs,
   annualFeeComfort,
   travelGoal,
@@ -115,8 +117,12 @@ export function StepConfirm({
             <span>{creditScoreLabels[creditScore] ?? "Not set"}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Cards opened (24mo)</span>
+            <span className="text-muted-foreground">Cards opened (2 yrs)</span>
             <span>{cardsOpened24mo}</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Cards opened (4 yrs)</span>
+            <span>{cardsOpened48mo}</span>
           </div>
         </div>
       </div>

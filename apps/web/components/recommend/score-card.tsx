@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
-import { AlertTriangle, ExternalLink, TrendingUp } from "lucide-react";
+import { AlertTriangle, ExternalLink, Info, TrendingUp } from "lucide-react";
 import type { ScoredCard } from "@/lib/recommend/types";
 
 interface ScoreCardProps {
@@ -56,13 +56,21 @@ export function ScoreCard({ result }: ScoreCardProps) {
             </span>
           </div>
 
-          {/* 5/24 warning */}
+          {/* Eligibility warnings */}
           {warnings.map((w) => (
             <div
               key={w.type}
-              className="flex items-start gap-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
+              className={`flex items-start gap-2 rounded-md px-3 py-2 text-xs ${
+                w.severity === "hard"
+                  ? "bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
+                  : "bg-blue-50 text-blue-800 dark:bg-blue-950/40 dark:text-blue-200"
+              }`}
             >
-              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              {w.severity === "hard" ? (
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              ) : (
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              )}
               <span>{w.message}</span>
             </div>
           ))}

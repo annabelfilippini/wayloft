@@ -11,6 +11,7 @@ export interface QuizData {
   monthly_other_spend: number;
   credit_score_range: string;
   cards_opened_24mo: number;
+  cards_opened_48mo: number;
   current_card_slugs: string[];
   annual_fee_comfort: string;
   travel_goal: string;
@@ -42,6 +43,7 @@ export async function submitQuiz(
     monthly_other_spend: Number(formData.get("monthly_other_spend")) || 0,
     credit_score_range: (formData.get("credit_score_range") as string) || "",
     cards_opened_24mo: Number(formData.get("cards_opened_24mo")) || 0,
+    cards_opened_48mo: Number(formData.get("cards_opened_48mo")) || 0,
     current_card_slugs: cardSlugs,
     annual_fee_comfort: (formData.get("annual_fee_comfort") as string) || "",
     travel_goal: (formData.get("travel_goal") as string) || "",
