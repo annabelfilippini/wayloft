@@ -1,6 +1,6 @@
 # Wayloft — Consolidated Build Plan
 
-**Updated:** February 26, 2026
+**Updated:** February 27, 2026
 **Source:** Merged from WAYLOFT-MASTER-PLAN-V3.md + wayloft-master-plan-additions-v3.2.md
 **Purpose:** Single source of truth for what to build next. Check boxes as you go.
 
@@ -196,7 +196,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [ ] Affiliate link infrastructure (FTC disclosure, click tracking, UTM params)
 - [x] "Cards I should get next" dashboard widget
 - [x] 5/24 counter widget (auto-calculated from user_cards)
-- [ ] Issuer rule checking in recommendations (5/24, Amex lifetime, Citi 8/48)
+- [x] Issuer rule checking in recommendations (7 rules: One Sapphire filter, Chase 5/24, Barclays 6/24, Citi 8/48, Amex lifetime, Marriott cross-issuer, C1 triple pull) + quiz 48mo field + migration 007
 - [ ] Credit health endpoint (/api/user/credit-health)
 
 **Data needed:**
@@ -281,7 +281,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 2 scoring engine + results UI are built. Next: card comparison view, card review pages, affiliate infrastructure.**
+**Priority 2 scoring engine, results UI, dashboard widget, and issuer rule checking are built. Next: card comparison view, card review pages, affiliate infrastructure.**
 
 ---
 

@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Feb 26, 2026)
+## Current Status (Feb 27, 2026)
 
-**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, and results UI are built. Scoring engine uses portfolio-aware CPP (accounts for transfer partner gateway cards), 3-tier goal alignment (+25%/neutral/-10%), signup bonus achievability, and credit utilization. Catalog data audited and corrected (portal rates separated, signup bonuses verified). Remaining P2 work: card comparison view, card review pages, affiliate infrastructure, dashboard widget.
+**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, and issuer rule checking are built. Scoring engine uses portfolio-aware CPP (accounts for transfer partner gateway cards), 3-tier goal alignment (+25%/neutral/-10%), signup bonus achievability, and credit utilization. 7 issuer rules wired in from `issuer-rules.json`: Chase One Sapphire (hard filter), Chase 5/24, Barclays 6/24, Citi 8/48, Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull. Quiz collects both 24-month and 48-month card counts for accurate rule checking. Catalog data audited and corrected. Remaining P2 work: card comparison view, card review pages, affiliate infrastructure.
 
 ### What's Built
 
@@ -16,7 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Turborepo monorepo with pnpm workspaces
 - Next.js 16.1.6 app (`apps/web`) with App Router, Tailwind v4, TypeScript
 - shadcn/ui (New York style, Neutral base) — button, card, input, badge, dialog, dropdown-menu, command, progress, separator, skeleton
-- Supabase connected — 6 migrations, 20+ tables with RLS + triggers
+- Supabase connected — 7 migrations, 20+ tables with RLS + triggers
 - Supabase client helpers (server, browser, middleware) via @supabase/ssr
 - GitHub repo: github.com/annabelfilippini/wayloft (private)
 - Vercel: auto-deploys on push to main, env vars set
@@ -139,14 +139,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Card Recommendation Engine (Priority 2 — in progress):**
 - 5-step spending quiz wizard (`components/recommend/`, saves to `card_quiz_responses`)
+- Quiz collects both `cardsOpened24mo` and `cardsOpened48mo` for accurate issuer rule checking
 - Scoring engine (`lib/recommend/engine.ts`): pure function scoring cards by first-year value
   - Formula: ongoing rewards + signup bonus + credits offset + goal bonus - annual fee
   - Portfolio-aware CPP via transfer gateway detection (e.g. CFU gets 2.0 cpp UR when user owns CSR)
   - 3-tier goal alignment: strong (+25%), neutral (0%), mismatch (-10%)
   - Signup bonus achievability discount based on user's total monthly spend
   - Credit utilization at 70% factor
-  - Filters: owned cards, business cards, credit score gate, annual fee comfort
-  - 5/24 warning on Chase cards
+  - Filters: owned cards, business cards, credit score gate, annual fee comfort, Chase One Sapphire exclusion
+- Issuer rule checking (`lib/recommend/issuer-rules.ts`): data-driven from `issuer-rules.json`
+  - Hard filter: Chase One Sapphire (can't hold CSR + CSP simultaneously)
+  - Hard warnings (amber): Chase 5/24, Barclays 6/24, Citi 8/48
+  - Info warnings (blue): Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull
+  - Severity-based styling in score-card.tsx (amber/AlertTriangle vs blue/Info icon)
 - Results UI (`components/recommend/results.tsx`, `score-card.tsx`): ranked cards with value breakdown, top earning categories, reasoning, warnings, retake flow
 - Server action returns quiz data for client-side scoring
 - Catalog data audited: portal rates separated from direct earning, signup bonuses verified against current offers
@@ -156,18 +161,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard page stub with actions widget
 - Route stubs: bonuses, search, settings
 - Community intelligence scan agent + daily cron script
-- 6 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level
+- 7 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo
 - `/ship` slash command (commit + update docs)
 
 ### What's Next
 
-Priority 2 scoring engine is built. Remaining P2 work:
+Priority 2 scoring engine + issuer rule checking are built. Remaining P2 work:
 - Card comparison view (side-by-side 2-3 cards)
 - Card review pages (10-15, SEO-optimized) for affiliate applications
 - "Best cards for X" comparison articles
 - Affiliate link infrastructure (FTC disclosure, click tracking)
-- "Cards I should get next" dashboard widget
-- Issuer rule checking in recommendations (5/24, Amex lifetime, Citi 8/48)
 
 Then:
 - Priority 3: Transfer Bonus Tracker (scrapers, alerts)
@@ -244,6 +247,9 @@ wayloft/
 - `002_issuer_rules_user_data.sql` — issuer rules + user credit profile data
 - `003_statement_credits.sql` — user_credit_usage table + expiring_credits view
 - `004_perk_setup.sql` — user_perk_setup table + unused_perks view
+- `005_payment_due_dates.sql` — user_payment_info table + upcoming_payments/cards_missing_autopay views
+- `006_experience_level.sql` — experience_level column on profiles
+- `007_quiz_cards_opened_48mo.sql` — cards_opened_48mo column on card_quiz_responses
 
 **Key conventions:**
 - UUID primary keys via `gen_random_uuid()`
@@ -279,8 +285,8 @@ pnpm turbo lint         # ESLint
 
 ## Build Order (from master plan)
 
-1. **Auth + Credit Card Portfolio** ← IN PROGRESS
-2. Card Recommendation Engine (spending quiz, scoring, affiliate links)
+1. **Auth + Credit Card Portfolio** ← COMPLETE
+2. **Card Recommendation Engine** (spending quiz, scoring, issuer rules, affiliate links) ← IN PROGRESS
 3. Transfer Bonus Tracker (Python scrapers)
 4. Flight Search via Duffel API
 5. Browser Extension (DOM enrichers, balance capture, crowdsourced data)
