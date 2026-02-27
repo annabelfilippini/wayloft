@@ -194,8 +194,8 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [ ] Card review pages (10-15, SEO-optimized) — prerequisite for affiliate applications
 - [ ] "Best cards for X" comparison articles (3-5)
 - [ ] Affiliate link infrastructure (FTC disclosure, click tracking, UTM params)
-- [ ] "Cards I should get next" dashboard widget
-- [ ] 5/24 counter widget (auto-calculated from user_cards)
+- [x] "Cards I should get next" dashboard widget
+- [x] 5/24 counter widget (auto-calculated from user_cards)
 - [ ] Issuer rule checking in recommendations (5/24, Amex lifetime, Citi 8/48)
 - [ ] Credit health endpoint (/api/user/credit-health)
 

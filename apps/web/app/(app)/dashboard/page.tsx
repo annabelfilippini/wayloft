@@ -6,6 +6,7 @@ import { ActionsWidget } from "@/components/dashboard/actions-widget";
 import { PointsPortfolio } from "@/components/dashboard/points-portfolio";
 import { ExpirationAlerts } from "@/components/dashboard/expiration-alerts";
 import { FiveTwentyFourCounter } from "@/components/dashboard/five-twenty-four-counter";
+import { NextCardWidget } from "@/components/dashboard/next-card-widget";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,6 +103,10 @@ export default async function DashboardPage() {
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
           <FiveTwentyFourCounter userId={user.id} experienceLevel={experienceLevel} />
+        </Suspense>
+
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+          <NextCardWidget userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
 
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
