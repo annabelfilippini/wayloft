@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current Status (Feb 27, 2026)
 
-**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, issuer rule checking, and card comparison view are built. Scoring engine uses portfolio-aware CPP (accounts for transfer partner gateway cards), 3-tier goal alignment (+25%/neutral/-10%), signup bonus achievability, and credit utilization. 7 issuer rules wired in from `issuer-rules.json`: Chase One Sapphire (hard filter), Chase 5/24, Barclays 6/24, Citi 8/48, Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull. Quiz collects both 24-month and 48-month card counts for accurate rule checking. Catalog data audited and corrected. Remaining P2 work: card review pages, affiliate infrastructure.
+**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, issuer rule checking, card comparison view, and SEO card review pages are built. 54 statically generated card review pages at `/credit-cards/[slug]` with earning rates, transfer partners, perks, credits, related cards, JSON-LD structured data, and dynamic sitemap. Filterable index at `/credit-cards`. Marketing header/footer and affiliate disclosure component ready for reuse. Remaining P2 work: "best cards for X" articles, affiliate link infrastructure (click tracking, UTM params).
 
 ### What's Built
 
@@ -162,6 +162,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Server action returns quiz data for client-side scoring
 - Catalog data audited: portal rates separated from direct earning, signup bonuses verified against current offers
 
+**Card Review Pages (SEO — complete):**
+- 54 statically generated card review pages at `/credit-cards/[slug]` via `generateStaticParams`
+- 10-section review template: hero, affiliate disclosure, quick stats grid, earning rates, transfer partners, perks & benefits, statement credits, editorial review (conditional on `editorial?`), related cards, quiz CTA banner
+- Filterable index page at `/credit-cards` with issuer filter pills + search (`card-catalog-grid.tsx`, client component)
+- Marketing header (`marketing-header.tsx`): sticky, light bg, Cards/Find Your Card/Sign In/Join nav
+- Marketing footer (`marketing-footer.tsx`): logo + copyright
+- Affiliate disclosure component (`affiliate-disclosure.tsx`): FTC-compliant compensation text
+- `CardEditorial` type on `CatalogCard` (tagline, pros, cons, verdict, rating) — editorial content to be written over time
+- `related-cards.ts`: pure scoring function (same currency +3, issuer +2, similar AF +1), returns top 3
+- `json-ld.ts`: `schema.org/CreditCard` structured data, conditionally includes `schema.org/Review` if `editorial?.rating` exists
+- `sitemap.ts`: dynamic sitemap with homepage + index + all 54 card URLs
+- "Cards" link added to landing page nav
+- Layout wraps with marketing header/footer at `(marketing)/credit-cards/layout.tsx`
+
 **Other:**
 - App sidebar navigation (`components/nav/app-sidebar.tsx`)
 - Dashboard page stub with actions widget
@@ -172,10 +186,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Priority 2 scoring engine, issuer rules, and card comparison view are built. Remaining P2 work:
-- Card review pages (10-15, SEO-optimized) for affiliate applications
-- "Best cards for X" comparison articles
-- Affiliate link infrastructure (FTC disclosure, click tracking)
+Priority 2 scoring engine, issuer rules, card comparison view, and card review pages are built. Remaining P2 work:
+- "Best cards for X" comparison articles (3-5)
+- Affiliate link infrastructure (click tracking, UTM params)
+- Editorial content for card reviews (pros, cons, verdict — hand-written over time)
 
 Then:
 - Priority 3: Transfer Bonus Tracker (scrapers, alerts)
@@ -194,20 +208,22 @@ wayloft/
 ├── apps/
 │   ├── web/                        # Next.js 16.1.6 (App Router, Tailwind v4, shadcn/ui)
 │   │   ├── app/
-│   │   │   ├── (marketing)/        # Public: landing, login, signup, password flows
+│   │   │   ├── (marketing)/        # Public: landing, login, signup, password flows, credit-cards/[slug]
 │   │   │   ├── (app)/              # Authenticated: dashboard, cards, recommend, bonuses, search, settings
 │   │   │   ├── actions/            # Server actions (auth.ts, cards.ts, recommend.ts)
+│   │   │   ├── sitemap.ts          # Dynamic sitemap (homepage + 54 card review pages)
 │   │   │   └── auth/callback/      # OAuth callback handler
 │   │   ├── components/
 │   │   │   ├── auth/               # Auth form, OAuth buttons, submit button, user menu
 │   │   │   ├── cards/              # Card grid, card item, picker, bonus progress, credit tracker, etc.
 │   │   │   ├── dashboard/          # Actions widget, points portfolio, expiration alerts, 5/24 counter
+│   │   │   ├── marketing/          # Affiliate disclosure, marketing header/footer, card catalog grid, card review
 │   │   │   ├── nav/                # App sidebar
 │   │   │   ├── recommend/          # Quiz wizard, steps, results, score card, comparison bar + panel
 │   │   │   └── ui/                 # shadcn components
 │   │   ├── lib/
 │   │   │   ├── auth/               # get-user.ts, require-user.ts
-│   │   │   ├── cards/              # catalog.ts, issuer-colors.ts
+│   │   │   ├── cards/              # catalog.ts, issuer-colors.ts, related-cards.ts, json-ld.ts
 │   │   │   ├── recommend/          # engine.ts, types.ts, issuer-rules.ts, compare-utils.ts
 │   │   │   └── supabase/           # server.ts, client.ts, middleware.ts
 │   │   └── middleware.ts           # Supabase auth session refresh

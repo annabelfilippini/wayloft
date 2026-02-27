@@ -191,9 +191,9 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] Results page with top 5 cards + reasoning — `components/recommend/results.tsx`, `score-card.tsx`
 - [x] **Catalog data audit** — portal rates separated from direct earning on CSR/Venture X/Strata Premier, signup bonuses verified against current public offers
 - [x] Card comparison view (side-by-side 2-3 cards) — inline on results page with selection checkboxes, sticky comparison bar, 5-section panel (value summary, breakdown grid with wins highlighting, context-aware category earnings, quick features, transfer partner overlap)
-- [ ] Card review pages (10-15, SEO-optimized) — prerequisite for affiliate applications
+- [x] Card review pages (54 SSG pages at /credit-cards/[slug]) — 10-section template, filterable index, marketing header/footer, affiliate disclosure, JSON-LD, sitemap
 - [ ] "Best cards for X" comparison articles (3-5)
-- [ ] Affiliate link infrastructure (FTC disclosure, click tracking, UTM params)
+- [ ] Affiliate link infrastructure (click tracking, UTM params)
 - [x] "Cards I should get next" dashboard widget
 - [x] 5/24 counter widget (auto-calculated from user_cards)
 - [x] Issuer rule checking in recommendations (7 rules: One Sapphire filter, Chase 5/24, Barclays 6/24, Citi 8/48, Amex lifetime, Marriott cross-issuer, C1 triple pull) + quiz 48mo field + migration 007
@@ -277,7 +277,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 2 scoring engine, results UI, dashboard widget, issuer rule checking, and card comparison view are built. Next: card review pages, "best cards for X" articles, affiliate infrastructure.**
+**Priority 2 scoring engine, results UI, dashboard widget, issuer rule checking, card comparison view, and card review pages are built. Next: "best cards for X" comparison articles, affiliate link infrastructure, then editorial content.**
 
 ---
 
