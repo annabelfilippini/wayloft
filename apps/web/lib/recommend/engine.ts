@@ -233,6 +233,9 @@ function scoreOneCard(quiz: QuizInput, card: CatalogCard): ScoredCard {
     firstYearValue: round2(firstYearValue),
   };
 
+  // Year 2+ value: ongoing rewards + credits - AF (no signup bonus, no goal bonus)
+  const year2Value = round2(ongoing + creditsOffset - annualFee);
+
   // Top 3 earning categories by annual value
   const topEarnings = [...categoryEarnings]
     .filter((c) => c.annualValue > 0)
@@ -246,6 +249,7 @@ function scoreOneCard(quiz: QuizInput, card: CatalogCard): ScoredCard {
     card,
     rank: 0, // set after sorting
     breakdown,
+    year2Value,
     topEarnings,
     allEarnings: categoryEarnings,
     reasoning,

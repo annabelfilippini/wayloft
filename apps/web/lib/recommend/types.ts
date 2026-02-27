@@ -53,6 +53,7 @@ export interface ScoredCard {
   card: CatalogCard;
   rank: number;
   breakdown: ScoreBreakdown;
+  year2Value: number; // ongoing rewards + credits - AF (no signup, no goal bonus)
   topEarnings: CategoryEarning[];
   allEarnings: CategoryEarning[];
   reasoning: string;

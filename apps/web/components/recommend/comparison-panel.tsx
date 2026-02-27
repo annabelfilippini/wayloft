@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
-import { Trophy, X, Info, Check, Plane, Building2 } from "lucide-react";
+import { Trophy, X, Info, Check, Plane, Building2, Lightbulb } from "lucide-react";
 import type { ScoredCard, QuizInput } from "@/lib/recommend/types";
 import { getWinner, computeTransferOverlap } from "@/lib/recommend/compare-utils";
 import type { TransferPartnerInfo } from "@/lib/recommend/compare-utils";
@@ -99,10 +99,26 @@ export function ComparisonPanel({ cards, quizInput, onClose }: ComparisonPanelPr
 // ─── Section 1: Value Summary ───
 
 function ValueSummary({ cards }: { cards: ScoredCard[] }) {
-  const winner = getWinner(
+  const firstYearWinner = getWinner(
     cards.map((c) => ({ slug: c.card.slug, value: c.breakdown.firstYearValue })),
     "highest"
   );
+
+  const year2Winner = getWinner(
+    cards.map((c) => ({ slug: c.card.slug, value: c.year2Value })),
+    "highest"
+  );
+
+  // Divergent winner: first-year winner differs from year 2+ winner
+  const hasDivergentWinner =
+    firstYearWinner && year2Winner && firstYearWinner !== year2Winner;
+
+  const firstYearWinnerCard = hasDivergentWinner
+    ? cards.find((c) => c.card.slug === firstYearWinner)
+    : null;
+  const year2WinnerCard = hasDivergentWinner
+    ? cards.find((c) => c.card.slug === year2Winner)
+    : null;
 
   return (
     <div className="px-4 py-4 sm:px-6">
@@ -126,16 +142,31 @@ function ValueSummary({ cards }: { cards: ScoredCard[] }) {
               <span className="text-2xl font-bold text-primary tabular-nums">
                 {formatDollars(c.breakdown.firstYearValue)}
               </span>
-              {winner === c.card.slug && (
+              {firstYearWinner === c.card.slug && (
                 <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200 text-[10px]">
                   Best Value
                 </Badge>
               )}
             </div>
             <span className="text-xs text-muted-foreground">est. first-year value</span>
+            <p className={`text-sm tabular-nums ${c.year2Value < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+              {formatDollars(c.year2Value)}/yr after year 1
+            </p>
           </div>
         ))}
       </div>
+
+      {hasDivergentWinner && firstYearWinnerCard && year2WinnerCard && (
+        <div className="mt-3 flex items-start gap-2 rounded-md bg-amber-50 dark:bg-amber-950/40 px-3 py-2.5 text-sm text-amber-800 dark:text-amber-200">
+          <Lightbulb className="h-4 w-4 shrink-0 mt-0.5" />
+          <span>
+            {firstYearWinnerCard.card.name} wins in year one, but{" "}
+            {year2WinnerCard.card.name} earns more in year 2+{" "}
+            ({formatDollars(year2WinnerCard.year2Value)}/yr vs{" "}
+            {formatDollars(firstYearWinnerCard.year2Value)}/yr ongoing).
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -251,6 +282,17 @@ function BreakdownGrid({
       winMode: "highest",
     });
 
+    // Year 2+ ongoing
+    r.push({
+      label: "Year 2+ ongoing",
+      values: cards.map((c) => ({
+        slug: c.card.slug,
+        value: c.year2Value,
+        display: `${formatDollars(c.year2Value)}/yr`,
+      })),
+      winMode: "highest",
+    });
+
     return r;
   }, [cards, totalMonthlySpend]);
 
@@ -275,16 +317,18 @@ function BreakdownGrid({
       {rows.map((row) => {
         const winner = getWinner(row.values, row.winMode);
         const isNetRow = row.label === "Net first-year value";
+        const isYear2Row = row.label === "Year 2+ ongoing";
+        const isSummaryRow = isNetRow || isYear2Row;
 
         return (
           <div key={row.label}>
-            <p className={`text-xs text-muted-foreground mb-1 ${isNetRow ? "font-semibold text-foreground border-t pt-2" : ""}`}>
+            <p className={`text-xs text-muted-foreground mb-1 ${isNetRow ? "font-semibold text-foreground border-t pt-2" : ""} ${isYear2Row ? "font-semibold text-foreground" : ""}`}>
               {row.label}
             </p>
             <div className={`grid gap-2 ${colClass}`}>
               {row.values.map((v) => (
                 <WinnerCell key={v.slug} isWinner={winner === v.slug}>
-                  <span className={`text-sm tabular-nums ${isNetRow ? "font-bold text-primary" : "font-medium"}`}>
+                  <span className={`text-sm tabular-nums ${isSummaryRow ? "font-bold text-primary" : "font-medium"} ${isYear2Row && v.value < 0 ? "text-destructive" : ""}`}>
                     {v.display}
                   </span>
                   {v.subtext && (

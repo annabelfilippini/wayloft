@@ -73,13 +73,18 @@ export function ScoreCard({ result, isSelected, onToggleSelect, selectionDisable
           </div>
 
           {/* First-year value — big number */}
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-primary tabular-nums">
-              {formatDollars(breakdown.firstYearValue)}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              est. first-year value
-            </span>
+          <div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-primary tabular-nums">
+                {formatDollars(breakdown.firstYearValue)}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                est. first-year value
+              </span>
+            </div>
+            <p className={`text-sm tabular-nums ${result.year2Value < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+              {formatDollars(result.year2Value)}/yr ongoing (year 2+)
+            </p>
           </div>
 
           {/* Eligibility warnings */}
