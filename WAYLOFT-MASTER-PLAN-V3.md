@@ -1,9 +1,21 @@
 # Wayloft — Master Business Development Plan
 
-**Version:** 3.4
-**Updated:** February 23, 2026
-**Status:** Phase 1, Loop 1 core complete + Loop 1.5 Spending Optimizer complete + UX polish pass complete + Statement Credit Tracker complete. Remaining Loop 1 features (payment tracker, AF decision helper, education layer, profile/settings) then Loop 2 (Card Recommendation Engine).
+**Version:** 3.5
+**Updated:** February 27, 2026
+**Status:** Phase 1, Loop 1 fully complete (all Priority 1 features shipped: credit tracker, perks, AF helper, payment tracker, experience levels, education layer). Loop 1.5 Spending Optimizer complete. UX polish pass complete. Loop 2 (Card Recommendation Engine) in progress — spending quiz, scoring engine, results UI, issuer rule checking (7 rules), 5/24 counter, and dashboard widget are built. Remaining P2: card comparison view, card review pages, affiliate infrastructure.
 **Owner:** Tom Filippini
+
+---
+
+## What Changed in v3.4 → v3.5
+
+**v3.5 changes (February 27, 2026):**
+- **Loop 1 fully complete:** All Priority 1 features shipped — Perks & Benefits Reference (1B), AF Decision Helper (1C), Payment Due Date Tracker (1D), Experience Level Selector (1E), Education Layer (1F). See build plan for details.
+- **Card Recommendation Engine (Priority 2) — in progress:** 5-step spending quiz, scoring engine (first-year value formula with portfolio-aware CPP, goal alignment, achievability discount), results UI with ranked cards, value breakdowns, and reasoning. Dashboard "Cards to Consider" widget and Chase 5/24 counter widget built.
+- **Issuer rule checking:** 7 rules wired from `issuer-rules.json` — Chase One Sapphire (hard filter), Chase 5/24, Barclays 6/24, Citi 8/48 (hard warnings), Amex once-per-lifetime, Marriott cross-issuer, Capital One triple pull (info warnings). Quiz collects both 24-month and 48-month card counts.
+- **New migrations:** 005 (payment due dates), 006 (experience level), 007 (quiz cards_opened_48mo).
+- **v3.2 additions consolidated:** All additions from `wayloft-master-plan-additions-v3.2.md` are now fully inlined into this document. The separate v3.2 file is archived.
+- **Next.js version updated:** 15 → 16.1.6 throughout.
 
 ---
 
@@ -148,7 +160,7 @@ This is the core strategic change in v3.0. Every data source Wayloft needs has a
 ### Frontend
 | Layer | Choice | Why |
 |-------|--------|-----|
-| Framework | **Next.js 15 (App Router)** | SSR for SEO. API routes eliminate separate backend. |
+| Framework | **Next.js 16 (App Router)** | SSR for SEO. API routes eliminate separate backend. |
 | Styling | **Tailwind CSS v4** | Utility-first. |
 | Components | **shadcn/ui** | Accessible, customizable. |
 | State | **TanStack Query + Zustand** | Server state + client state. |
@@ -199,7 +211,7 @@ This is the core strategic change in v3.0. Every data source Wayloft needs has a
 ```
 wayloft/
 ├── apps/
-│   ├── web/                    # Next.js 15 (App Router)
+│   ├── web/                    # Next.js 16 (App Router)
 │   │   ├── app/
 │   │   │   ├── (marketing)/    # Public pages (landing, blog, pricing)
 │   │   │   ├── (app)/          # Authenticated app pages
@@ -1579,7 +1591,7 @@ Embedded Knowledge: JSON schema validation, data source URLs for verification, d
 
 | Date | Decision | Chosen | Rationale |
 |------|----------|--------|-----------|
-| 2026-02-16 | Frontend framework | Next.js 15 | SSR for SEO, unified stack |
+| 2026-02-16 | Frontend framework | Next.js 16 | SSR for SEO, unified stack |
 | 2026-02-16 | Background jobs | Trigger.dev | TS-native, managed, free tier |
 | 2026-02-16 | Automation approach | Agents + Skills + Sub-agents | Maximize leverage |
 | 2026-02-17 | Build priority | **Credit Cards → Flights → Semi-Private** | Cards are core identity + primary revenue (affiliates) |

@@ -190,32 +190,34 @@ wayloft/
 │   ├── web/                        # Next.js 16.1.6 (App Router, Tailwind v4, shadcn/ui)
 │   │   ├── app/
 │   │   │   ├── (marketing)/        # Public: landing, login, signup, password flows
-│   │   │   ├── (app)/              # Authenticated: dashboard, cards, bonuses, search, settings
-│   │   │   ├── actions/            # Server actions (auth.ts, cards.ts)
+│   │   │   ├── (app)/              # Authenticated: dashboard, cards, recommend, bonuses, search, settings
+│   │   │   ├── actions/            # Server actions (auth.ts, cards.ts, recommend.ts)
 │   │   │   └── auth/callback/      # OAuth callback handler
 │   │   ├── components/
 │   │   │   ├── auth/               # Auth form, OAuth buttons, submit button, user menu
 │   │   │   ├── cards/              # Card grid, card item, picker, bonus progress, credit tracker, etc.
-│   │   │   ├── dashboard/          # Actions widget, points portfolio, expiration alerts
+│   │   │   ├── dashboard/          # Actions widget, points portfolio, expiration alerts, 5/24 counter
 │   │   │   ├── nav/                # App sidebar
+│   │   │   ├── recommend/          # Quiz wizard, steps, results, score card
 │   │   │   └── ui/                 # shadcn components
 │   │   ├── lib/
 │   │   │   ├── auth/               # get-user.ts, require-user.ts
 │   │   │   ├── cards/              # catalog.ts, issuer-colors.ts
+│   │   │   ├── recommend/          # engine.ts, types.ts, issuer-rules.ts
 │   │   │   └── supabase/           # server.ts, client.ts, middleware.ts
 │   │   └── middleware.ts           # Supabase auth session refresh
 │   ├── extension/                  # Chrome Extension (stub)
 │   └── workers/                    # Cloudflare Workers (stub)
 ├── packages/
 │   ├── shared/                     # Types, constants (@wayloft/shared)
-│   ├── db/                         # Supabase client + 3 migrations (@wayloft/db)
+│   ├── db/                         # Supabase client + 7 migrations (@wayloft/db)
 │   └── email/                      # React Email templates stub (@wayloft/email)
 ├── scrapers/                       # Python scraper stubs (bonuses, semi_private)
 ├── data/                           # credit-cards.json, transfer-partners.json, issuer-rules.json
 ├── Research/                       # 13 completed P0 research reports
 ├── scripts/                        # daily-community-scan.sh
 ├── .github/workflows/ci.yml       # CI: lint, type-check, build
-├── WAYLOFT-MASTER-PLAN-V3.md      # Full business plan + timeline
+├── WAYLOFT-MASTER-PLAN-V3.md      # Full business plan + timeline (consolidated, includes v3.2 additions)
 ├── turbo.json
 ├── tsconfig.base.json
 ├── pnpm-workspace.yaml
@@ -257,7 +259,7 @@ wayloft/
 - RLS on all tables; user-owns-their-data policies
 - `updated_at` auto-managed by `set_updated_at()` trigger
 - `user_cards` auto-populated from catalog on insert (trigger: `auto_populate_card_fields()`)
-- Views `upcoming_card_actions`, `expiring_points`, and `expiring_credits` power dashboard widgets
+- Views `upcoming_card_actions`, `expiring_points`, `expiring_credits`, `upcoming_payments`, `cards_missing_autopay`, `unused_perks` power dashboard widgets
 
 **Connection:** Supabase JS client only (IPv6-only, no direct DB connection). Env vars in `apps/web/.env.local`.
 

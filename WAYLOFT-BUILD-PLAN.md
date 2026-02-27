@@ -1,7 +1,7 @@
 # Wayloft — Consolidated Build Plan
 
 **Updated:** February 27, 2026
-**Source:** Merged from WAYLOFT-MASTER-PLAN-V3.md + wayloft-master-plan-additions-v3.2.md
+**Source:** Derived from WAYLOFT-MASTER-PLAN-V3.md (consolidated)
 **Purpose:** Single source of truth for what to build next. Check boxes as you go.
 
 ---
@@ -12,7 +12,7 @@ Everything below is built and functional in the codebase.
 
 ### Infrastructure (Phase 0)
 - [x] Turborepo monorepo, Next.js 16, Tailwind v4, shadcn/ui
-- [x] Supabase (16+ tables, 4 migrations, RLS, triggers, views)
+- [x] Supabase (20+ tables, 7 migrations, RLS, triggers, views)
 - [x] Supabase Auth (email + Google OAuth)
 - [x] Vercel auto-deploy, GitHub Actions CI
 - [x] Brand identity (Instrument Serif + DM Sans, navy/amber palette)
@@ -23,7 +23,7 @@ Everything below is built and functional in the codebase.
 - [x] Google OAuth with callback
 - [x] Server actions, middleware, user menu
 
-### Card Portfolio (Loop 1 — partial)
+### Card Portfolio (Loop 1 — complete)
 - [x] Card picker search with fuzzy matching
 - [x] Add card dialog (2-field UX: slug + date)
 - [x] Card grid with issuer-colored art placeholders
@@ -301,7 +301,6 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 ## Reference
 
 For detailed specs (DB schemas, JSON formats, algorithm details, notification catalog, agent registry):
-- **Full plan:** `WAYLOFT-MASTER-PLAN-V3.md`
-- **v3.2 additions:** `wayloft-master-plan-additions-v3.2.md`
+- **Full plan:** `WAYLOFT-MASTER-PLAN-V3.md` (consolidated — includes all v3.2 additions)
 
-Those documents contain the complete SQL, JSON examples, and acceptance criteria for every feature above.
+That document contains the complete SQL, JSON examples, and acceptance criteria for every feature above.
