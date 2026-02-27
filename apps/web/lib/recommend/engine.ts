@@ -28,7 +28,7 @@ const GOAL_MISMATCH_PENALTY = -0.1;
 const TOP_RESULTS = 5;
 
 /** Map quiz spending keys → catalog earning_rate keys */
-const SPENDING_CATEGORY_MAP: Record<
+export const SPENDING_CATEGORY_MAP: Record<
   string,
   { catalogKeys: string[]; displayName: string }
 > = {
@@ -247,6 +247,7 @@ function scoreOneCard(quiz: QuizInput, card: CatalogCard): ScoredCard {
     rank: 0, // set after sorting
     breakdown,
     topEarnings,
+    allEarnings: categoryEarnings,
     reasoning,
     warnings,
   };

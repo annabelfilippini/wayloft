@@ -54,6 +54,7 @@ export interface ScoredCard {
   rank: number;
   breakdown: ScoreBreakdown;
   topEarnings: CategoryEarning[];
+  allEarnings: CategoryEarning[];
   reasoning: string;
   warnings: EligibilityWarning[];
 }

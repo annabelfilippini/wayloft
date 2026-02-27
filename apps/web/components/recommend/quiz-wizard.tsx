@@ -44,6 +44,7 @@ export function QuizWizard({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [step, setStep] = useState(0);
   const [scored, setScored] = useState<ScoredCard[] | null>(null);
+  const [quizInputState, setQuizInputState] = useState<QuizInput | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Initialize from existing response or defaults
@@ -134,6 +135,7 @@ export function QuizWizard({
           "maximize_travel") as QuizInput["travelGoal"],
       };
 
+      setQuizInputState(quizInput);
       const results = scoreCards(quizInput, catalog);
       console.log("[recommend] scoreCards returned", results.length, "results");
       if (results.length === 0) {
@@ -150,13 +152,14 @@ export function QuizWizard({
 
   function handleRetake() {
     setScored(null);
+    setQuizInputState(null);
     setIsSubmitted(false);
     setStep(0);
   }
 
   // Show results if scoring is done
-  if (scored) {
-    return <Results results={scored} onRetake={handleRetake} />;
+  if (scored && quizInputState) {
+    return <Results results={scored} quizInput={quizInputState} onRetake={handleRetake} />;
   }
 
   return (

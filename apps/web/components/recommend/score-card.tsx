@@ -2,11 +2,14 @@
 
 import { Badge } from "@/components/ui/badge";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
-import { AlertTriangle, ExternalLink, Info, TrendingUp } from "lucide-react";
+import { AlertTriangle, Check, ExternalLink, Info, Square, TrendingUp } from "lucide-react";
 import type { ScoredCard } from "@/lib/recommend/types";
 
 interface ScoreCardProps {
   result: ScoredCard;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
+  selectionDisabled?: boolean;
 }
 
 function formatDollars(n: number): string {
@@ -14,11 +17,11 @@ function formatDollars(n: number): string {
   return `-$${Math.round(Math.abs(n)).toLocaleString()}`;
 }
 
-export function ScoreCard({ result }: ScoreCardProps) {
+export function ScoreCard({ result, isSelected, onToggleSelect, selectionDisabled }: ScoreCardProps) {
   const { card, rank, breakdown, topEarnings, reasoning, warnings } = result;
 
   return (
-    <div className="rounded-lg border bg-card p-4 sm:p-6">
+    <div className={`rounded-lg border bg-card p-4 sm:p-6 transition-shadow ${isSelected ? "ring-2 ring-primary/40" : ""}`}>
       <div className="flex gap-4">
         {/* Rank badge */}
         <div className="flex flex-col items-center gap-2">
@@ -37,13 +40,36 @@ export function ScoreCard({ result }: ScoreCardProps) {
         {/* Card info */}
         <div className="min-w-0 flex-1 space-y-3">
           {/* Header */}
-          <div>
-            <h3 className="text-base font-semibold leading-tight">
-              {card.name}
-            </h3>
-            <p className="text-xs text-muted-foreground capitalize">
-              {card.issuer.replace("_", " ")}
-            </p>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="text-base font-semibold leading-tight">
+                {card.name}
+              </h3>
+              <p className="text-xs text-muted-foreground capitalize">
+                {card.issuer.replace("_", " ")}
+              </p>
+            </div>
+            {onToggleSelect && (
+              <button
+                type="button"
+                onClick={onToggleSelect}
+                disabled={selectionDisabled && !isSelected}
+                className={`shrink-0 flex h-6 w-6 items-center justify-center rounded border transition-colors ${
+                  isSelected
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : selectionDisabled
+                      ? "border-muted-foreground/30 text-muted-foreground/30 cursor-not-allowed"
+                      : "border-muted-foreground/40 text-muted-foreground hover:border-primary hover:text-primary"
+                }`}
+                title={selectionDisabled && !isSelected ? "Max 3 cards" : isSelected ? "Deselect" : "Select to compare"}
+              >
+                {isSelected ? (
+                  <Check className="h-3.5 w-3.5" />
+                ) : (
+                  <Square className="h-3.5 w-3.5" />
+                )}
+              </button>
+            )}
           </div>
 
           {/* First-year value — big number */}
