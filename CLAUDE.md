@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Feb 24, 2026)
+## Current Status (Feb 26, 2026)
 
-**Phase 1, Loop 1 (Auth + Card Portfolio) — complete.** Phase 0 foundation is complete. Auth system, card portfolio, spending optimizer, dashboard, and onboarding are built. UX polish pass (Priority 0) complete. Priorities 1A (Statement Credits), 1B (Perks & Benefits), 1C (AF Decision Helper), 1D (Payment Tracker), 1E (Experience Levels), and 1F (Education Layer) all complete. Loop 1 done — moving to Loop 2 (Card Recommendation Engine).
+**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, and results UI are built. Scoring engine uses portfolio-aware CPP (accounts for transfer partner gateway cards), 3-tier goal alignment (+25%/neutral/-10%), signup bonus achievability, and credit utilization. Catalog data audited and corrected (portal rates separated, signup bonuses verified). Remaining P2 work: card comparison view, card review pages, affiliate infrastructure, dashboard widget.
 
 ### What's Built
 
@@ -137,17 +137,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Duffel API deep dive, AwardWallet evaluation
 - All reports in `Research/`
 
+**Card Recommendation Engine (Priority 2 — in progress):**
+- 5-step spending quiz wizard (`components/recommend/`, saves to `card_quiz_responses`)
+- Scoring engine (`lib/recommend/engine.ts`): pure function scoring cards by first-year value
+  - Formula: ongoing rewards + signup bonus + credits offset + goal bonus - annual fee
+  - Portfolio-aware CPP via transfer gateway detection (e.g. CFU gets 2.0 cpp UR when user owns CSR)
+  - 3-tier goal alignment: strong (+25%), neutral (0%), mismatch (-10%)
+  - Signup bonus achievability discount based on user's total monthly spend
+  - Credit utilization at 70% factor
+  - Filters: owned cards, business cards, credit score gate, annual fee comfort
+  - 5/24 warning on Chase cards
+- Results UI (`components/recommend/results.tsx`, `score-card.tsx`): ranked cards with value breakdown, top earning categories, reasoning, warnings, retake flow
+- Server action returns quiz data for client-side scoring
+- Catalog data audited: portal rates separated from direct earning, signup bonuses verified against current offers
+
 **Other:**
 - App sidebar navigation (`components/nav/app-sidebar.tsx`)
 - Dashboard page stub with actions widget
 - Route stubs: bonuses, search, settings
 - Community intelligence scan agent + daily cron script
 - 6 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level
+- `/ship` slash command (commit + update docs)
 
 ### What's Next
 
-Loop 1 complete. Next priorities:
-- Priority 2: Card Recommendation Engine (spending quiz, scoring, affiliate links)
+Priority 2 scoring engine is built. Remaining P2 work:
+- Card comparison view (side-by-side 2-3 cards)
+- Card review pages (10-15, SEO-optimized) for affiliate applications
+- "Best cards for X" comparison articles
+- Affiliate link infrastructure (FTC disclosure, click tracking)
+- "Cards I should get next" dashboard widget
+- Issuer rule checking in recommendations (5/24, Amex lifetime, Citi 8/48)
+
+Then:
 - Priority 3: Transfer Bonus Tracker (scrapers, alerts)
 - Priority 4: Flight Search via Duffel
 

@@ -7,7 +7,10 @@ import { StepCredit } from "./step-credit";
 import { StepCards } from "./step-cards";
 import { StepPreferences } from "./step-preferences";
 import { StepConfirm } from "./step-confirm";
+import { Results } from "./results";
 import { submitQuiz } from "@/app/actions/recommend";
+import { scoreCards } from "@/lib/recommend/engine";
+import type { QuizInput, ScoredCard } from "@/lib/recommend/types";
 
 interface QuizWizardProps {
   catalog: CatalogCard[];
@@ -39,6 +42,8 @@ export function QuizWizard({
   const [isPending, setIsPending] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [step, setStep] = useState(0);
+  const [scored, setScored] = useState<ScoredCard[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Initialize from existing response or defaults
   const [spending, setSpending] = useState<Record<string, number>>({
@@ -73,6 +78,7 @@ export function QuizWizard({
 
   async function handleSubmit() {
     setIsPending(true);
+    setError(null);
     try {
       const formData = new FormData();
 
@@ -95,16 +101,67 @@ export function QuizWizard({
       formData.set("travel_goal", travelGoal);
 
       const result = await submitQuiz(formData);
-      if (result.success) {
-        setIsSubmitted(true);
+
+      if ("error" in result) {
+        setError(result.error);
+        return;
       }
+
+      setIsSubmitted(true);
+
+      // Build QuizInput and run scoring client-side
+      const quizInput: QuizInput = {
+        spending: {
+          dining: spending.monthly_dining_spend ?? 0,
+          travel: spending.monthly_travel_spend ?? 0,
+          groceries: spending.monthly_grocery_spend ?? 0,
+          gas: spending.monthly_gas_spend ?? 0,
+          streaming: spending.monthly_streaming_spend ?? 0,
+          other: spending.monthly_other_spend ?? 0,
+        },
+        creditScore: (creditScore || "good") as QuizInput["creditScore"],
+        cardsOpened24mo,
+        currentCardSlugs: selectedCards,
+        annualFeeComfort: (annualFeeComfort ||
+          "medium") as QuizInput["annualFeeComfort"],
+        travelGoal: (travelGoal ||
+          "maximize_travel") as QuizInput["travelGoal"],
+      };
+
+      const results = scoreCards(quizInput, catalog);
+      console.log("[recommend] scoreCards returned", results.length, "results");
+      if (results.length === 0) {
+        console.log("[recommend] all cards filtered — quiz input:", quizInput);
+      }
+      setScored(results);
+    } catch (err) {
+      console.error("[recommend] handleSubmit error:", err);
+      setError("Something went wrong. Check the browser console for details.");
     } finally {
       setIsPending(false);
     }
   }
 
+  function handleRetake() {
+    setScored(null);
+    setIsSubmitted(false);
+    setStep(0);
+  }
+
+  // Show results if scoring is done
+  if (scored) {
+    return <Results results={scored} onRetake={handleRetake} />;
+  }
+
   return (
     <div>
+      {/* Error banner */}
+      {error && (
+        <div className="mb-4 rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
       {/* Progress bar */}
       {!isSubmitted && (
         <div className="mb-8 flex items-center gap-2">

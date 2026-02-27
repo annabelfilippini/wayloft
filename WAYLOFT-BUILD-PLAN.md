@@ -1,6 +1,6 @@
 # Wayloft — Consolidated Build Plan
 
-**Updated:** February 24, 2026
+**Updated:** February 26, 2026
 **Source:** Merged from WAYLOFT-MASTER-PLAN-V3.md + wayloft-master-plan-additions-v3.2.md
 **Purpose:** Single source of truth for what to build next. Check boxes as you go.
 
@@ -186,9 +186,10 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 **Why:** Primary monetization feature (affiliate revenue = 55-65% of revenue).
 
 - [x] 5-step spending quiz wizard (route: `/recommend`, saves to `card_quiz_responses`)
-- [ ] Scoring algorithm (weighted by spend, goals, credit score, existing cards)
-- [ ] **Bonus value personalizer** — rank signup bonuses by how valuable they are *for this user* based on their spending patterns and travel goals, not just raw point count. "80K UR is worth more to you than 100K Hilton because you fly 6x/year and rarely stay at Hiltons."
-- [ ] Results page with top 5 cards + reasoning
+- [x] Scoring algorithm (weighted by spend, goals, credit score, existing cards) — `lib/recommend/engine.ts`
+- [x] **Bonus value personalizer** — signup bonuses valued by portfolio-aware CPP (gateway card detection) and achievability discount. Goal alignment: 3-tier (+25% strong / 0% neutral / -10% mismatch).
+- [x] Results page with top 5 cards + reasoning — `components/recommend/results.tsx`, `score-card.tsx`
+- [x] **Catalog data audit** — portal rates separated from direct earning on CSR/Venture X/Strata Premier, signup bonuses verified against current public offers (CSP, Amex Plat, Strata Premier, WF Autograph updated)
 - [ ] Card comparison view (side-by-side 2-3 cards)
 - [ ] Card review pages (10-15, SEO-optimized) — prerequisite for affiliate applications
 - [ ] "Best cards for X" comparison articles (3-5)
@@ -280,7 +281,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 1A–1F are done. Loop 1 is complete. Next up: Priority 2 (Card Recommendation Engine).**
+**Priority 2 scoring engine + results UI are built. Next: card comparison view, card review pages, affiliate infrastructure.**
 
 ---
 

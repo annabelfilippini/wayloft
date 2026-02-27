@@ -12,8 +12,9 @@
       "timeframe_months": 3
     },
     "earning_rates": {
-      "flights": 4,
-      "hotels": 4,
+      "brand_portal": 8,
+      "flights": 3,
+      "hotels": 3,
       "dining": 3,
       "travel": 1,
       "streaming": 1,
@@ -278,8 +279,8 @@
     "network": "visa",
     "annual_fee_cents": 9500,
     "signup_bonus": {
-      "points": 60000,
-      "spend_requirement_cents": 400000,
+      "points": 75000,
+      "spend_requirement_cents": 500000,
       "timeframe_months": 3
     },
     "earning_rates": {
@@ -481,8 +482,8 @@
     "network": "amex",
     "annual_fee_cents": 89500,
     "signup_bonus": {
-      "points": 150000,
-      "spend_requirement_cents": 800000,
+      "points": 175000,
+      "spend_requirement_cents": 1200000,
       "timeframe_months": 6
     },
     "earning_rates": {
@@ -1167,7 +1168,7 @@
     "network": "mastercard",
     "annual_fee_cents": 9500,
     "signup_bonus": {
-      "points": 75000,
+      "points": 60000,
       "spend_requirement_cents": 400000,
       "timeframe_months": 3
     },
@@ -1176,9 +1177,10 @@
       "dining": 3,
       "groceries": 3,
       "gas": 3,
-      "flights": 10,
-      "hotels": 10,
-      "car_rentals": 10,
+      "flights": 3,
+      "hotels": 3,
+      "car_rentals": 3,
+      "brand_portal": 10,
       "other": 1
     },
     "earning_caps": [],
@@ -1315,9 +1317,9 @@
     },
     "earning_rates": {
       "brand_portal": 10,
-      "flights": 5,
-      "hotels": 5,
-      "car_rentals": 5,
+      "flights": 2,
+      "hotels": 2,
+      "car_rentals": 2,
       "dining": 2,
       "groceries": 2,
       "gas": 2,
@@ -2014,7 +2016,7 @@
     },
     "earning_rates": {
       "internet_cable_phone": 5,
-      "advertising": 5,
+      "office_supplies": 5,
       "gas": 2,
       "dining": 2,
       "other": 1
@@ -2400,8 +2402,8 @@
     "earning_rates": {
       "brand_portal": 10,
       "flights": 5,
-      "car_rentals": 10,
-      "hotels": 10,
+      "car_rentals": 2,
+      "hotels": 2,
       "other": 2
     },
     "earning_caps": [],
@@ -2836,8 +2838,8 @@
     "network": "visa",
     "annual_fee_cents": 0,
     "signup_bonus": {
-      "points": 30000,
-      "spend_requirement_cents": 150000,
+      "points": 20000,
+      "spend_requirement_cents": 100000,
       "timeframe_months": 3
     },
     "earning_rates": {
