@@ -45,6 +45,9 @@ export default function MarketingPage() {
           Wayloft
         </span>
         <div className="flex items-center gap-6 text-[13px] text-white/40 md:gap-8">
+          <Link href="/credit-cards" className="hidden transition-colors hover:text-white/70 md:block">
+            Cards
+          </Link>
           <Link href="#features" className="hidden transition-colors hover:text-white/70 md:block">
             Features
           </Link>

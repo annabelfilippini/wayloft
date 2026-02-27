@@ -99,6 +99,17 @@ export interface UserPaymentInfo {
   updated_at: string;
 }
 
+// ── Card Editorial (SEO review pages) ──
+
+export interface CardEditorial {
+  tagline: string;
+  pros: string[];
+  cons: string[];
+  verdict: string;
+  rating?: number; // 1-5, triggers schema.org/Review
+  updated_at?: string; // ISO date
+}
+
 // ── AF Decision Helper ──
 
 export interface DowngradeOption {
@@ -152,6 +163,7 @@ export interface CatalogCard {
   payment_info?: CatalogPaymentInfo;
   is_business: boolean;
   foreign_transaction_fee: boolean;
+  editorial?: CardEditorial;
 }
 
 // Matches the user_cards DB table row
