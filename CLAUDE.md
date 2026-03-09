@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Feb 27, 2026)
+## Current Status (Mar 9, 2026)
 
-**Loop 2 (Card Recommendation Engine) — in progress.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, issuer rule checking, card comparison view, and SEO card review pages are built. 54 statically generated card review pages at `/credit-cards/[slug]` with earning rates, transfer partners, perks, credits, related cards, JSON-LD structured data, and dynamic sitemap. Filterable index at `/credit-cards`. Marketing header/footer and affiliate disclosure component ready for reuse. Remaining P2 work: "best cards for X" articles, affiliate link infrastructure (click tracking, UTM params).
+**Loop 2 (Card Recommendation Engine) — nearly complete.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, issuer rule checking, card comparison view, SEO card review pages, "best cards for X" comparison articles, and affiliate link tracking are all built. 54 statically generated card review pages + 5 best-for articles. Affiliate clicks tracked to DB with UTM params on all "Apply Now" buttons. Remaining P2 work: editorial content for card reviews (hand-written over time), credit health endpoint.
 
 ### What's Built
 
@@ -162,6 +162,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Server action returns quiz data for client-side scoring
 - Catalog data audited: portal rates separated from direct earning, signup bonuses verified against current offers
 
+**"Best Cards for X" Articles (SEO — complete):**
+- 5 statically generated comparison articles at `/credit-cards/best-for/[category]` via `generateStaticParams`
+- Categories: dining, travel, cash-back, no-annual-fee, hotels
+- `BestForArticle` component: comparison table, ranked card breakdowns with earning rates + perks, category nav pills, quiz CTA
+- Category definitions + card selection logic in `lib/cards/best-for.ts`
+- Category nav pills for cross-navigation between articles
+- "Best Cards" link added to marketing header
+
+**Affiliate Link Infrastructure (complete):**
+- `lib/affiliate.ts`: `buildAffiliateUrl()` appends UTM params (source, medium, campaign, content, term/rank)
+- `app/actions/affiliate.ts`: `trackAffiliateClick()` server action writes to `affiliate_clicks` table (works for logged-in and anonymous users)
+- `components/marketing/affiliate-link.tsx`: client component with button/link variants, fire-and-forget click tracking
+- Wired into card review pages (`sourcePage="card-review"`), recommendation score cards (`sourcePage="recommendation"`), and best-for articles (`sourcePage="best-for"`)
+- Ready for affiliate network onboarding — swap URLs in `buildAffiliateUrl()` when CardRatings/CJ/FlexOffers are live
+
 **Card Review Pages (SEO — complete):**
 - 54 statically generated card review pages at `/credit-cards/[slug]` via `generateStaticParams`
 - 10-section review template: hero, affiliate disclosure, quick stats grid, earning rates, transfer partners, perks & benefits, statement credits, editorial review (conditional on `editorial?`), related cards, quiz CTA banner
@@ -172,7 +187,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `CardEditorial` type on `CatalogCard` (tagline, pros, cons, verdict, rating) — editorial content to be written over time
 - `related-cards.ts`: pure scoring function (same currency +3, issuer +2, similar AF +1), returns top 3
 - `json-ld.ts`: `schema.org/CreditCard` structured data, conditionally includes `schema.org/Review` if `editorial?.rating` exists
-- `sitemap.ts`: dynamic sitemap with homepage + index + all 54 card URLs
+- `sitemap.ts`: dynamic sitemap with homepage + index + 54 card URLs + 5 best-for URLs
 - "Cards" link added to landing page nav
 - Layout wraps with marketing header/footer at `(marketing)/credit-cards/layout.tsx`
 
@@ -186,10 +201,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Priority 2 scoring engine, issuer rules, card comparison view, and card review pages are built. Remaining P2 work:
-- "Best cards for X" comparison articles (3-5)
-- Affiliate link infrastructure (click tracking, UTM params)
+Priority 2 is nearly complete. Remaining:
 - Editorial content for card reviews (pros, cons, verdict — hand-written over time)
+- Credit health endpoint (`/api/user/credit-health`)
 
 Then:
 - Priority 3: Transfer Bonus Tracker (scrapers, alerts)

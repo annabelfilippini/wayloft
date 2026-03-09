@@ -192,8 +192,8 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] **Catalog data audit** — portal rates separated from direct earning on CSR/Venture X/Strata Premier, signup bonuses verified against current public offers
 - [x] Card comparison view (side-by-side 2-3 cards) — inline on results page with selection checkboxes, sticky comparison bar, 5-section panel (value summary, breakdown grid with wins highlighting, context-aware category earnings, quick features, transfer partner overlap)
 - [x] Card review pages (54 SSG pages at /credit-cards/[slug]) — 10-section template, filterable index, marketing header/footer, affiliate disclosure, JSON-LD, sitemap
-- [ ] "Best cards for X" comparison articles (3-5)
-- [ ] Affiliate link infrastructure (click tracking, UTM params)
+- [x] "Best cards for X" comparison articles (5 categories: dining, travel, cash-back, no-annual-fee, hotels) — SSG at `/credit-cards/best-for/[category]`, comparison table + ranked breakdowns + category nav pills
+- [x] Affiliate link infrastructure — `AffiliateLink` component with UTM params + `trackAffiliateClick` server action → `affiliate_clicks` table, wired into card reviews, recommendations, and best-for articles
 - [x] "Cards I should get next" dashboard widget
 - [x] 5/24 counter widget (auto-calculated from user_cards)
 - [x] Issuer rule checking in recommendations (7 rules: One Sapphire filter, Chase 5/24, Barclays 6/24, Citi 8/48, Amex lifetime, Marriott cross-issuer, C1 triple pull) + quiz 48mo field + migration 007
@@ -277,7 +277,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 2 scoring engine, results UI, dashboard widget, issuer rule checking, card comparison view, and card review pages are built. Next: "best cards for X" comparison articles, affiliate link infrastructure, then editorial content.**
+**Priority 2 nearly complete. Best-for articles and affiliate link tracking shipped (Mar 9). Remaining P2: editorial content for card reviews (ongoing), credit health endpoint. Then Priority 3 (Transfer Bonus Tracker).**
 
 ---
 
