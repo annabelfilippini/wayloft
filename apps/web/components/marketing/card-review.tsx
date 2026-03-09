@@ -2,13 +2,13 @@ import Link from "next/link";
 import type { CatalogCard } from "@wayloft/shared";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
 import { AffiliateDisclosure } from "./affiliate-disclosure";
+import { AffiliateLink } from "./affiliate-link";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Plane,
   Building2,
   Clock,
-  ExternalLink,
   CheckCircle2,
   XCircle,
   Star,
@@ -113,15 +113,11 @@ export function CardReview({
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
             {card.application_url && (
-              <a
-                href={card.application_url}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
-              >
-                Apply Now
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
+              <AffiliateLink
+                applicationUrl={card.application_url}
+                cardSlug={card.slug}
+                sourcePage="card-review"
+              />
             )}
             <Link
               href="/credit-cards"

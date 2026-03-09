@@ -18,6 +18,12 @@ export function MarketingHeader() {
             Cards
           </Link>
           <Link
+            href="/credit-cards/best-for/travel"
+            className="hidden transition-colors hover:text-foreground md:block"
+          >
+            Best Cards
+          </Link>
+          <Link
             href="/recommend"
             className="hidden transition-colors hover:text-foreground sm:block"
           >

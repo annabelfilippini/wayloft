@@ -2,7 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
-import { AlertTriangle, Check, ExternalLink, Info, Square, TrendingUp } from "lucide-react";
+import { AffiliateLink } from "@/components/marketing/affiliate-link";
+import { AlertTriangle, Check, Info, Square, TrendingUp } from "lucide-react";
 import type { ScoredCard } from "@/lib/recommend/types";
 
 interface ScoreCardProps {
@@ -167,15 +168,14 @@ export function ScoreCard({ result, isSelected, onToggleSelect, selectionDisable
 
       {/* Learn more */}
       {card.application_url && (
-        <a
-          href={card.application_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-        >
-          Learn More
-          <ExternalLink className="h-3 w-3" />
-        </a>
+        <AffiliateLink
+          applicationUrl={card.application_url}
+          cardSlug={card.slug}
+          sourcePage="recommendation"
+          rank={rank}
+          label="Learn More"
+          variant="link"
+        />
       )}
     </div>
   );
