@@ -198,7 +198,7 @@ export interface CardAction {
   card_name: string;
   card_slug: string;
   issuer: string;
-  type: "signup_spend" | "annual_fee" | "credit_expiring" | "perk_setup" | "payment_due";
+  type: "signup_spend" | "annual_fee" | "credit_expiring" | "perk_setup" | "payment_due" | "transfer_bonus";
   urgency: "critical" | "warning" | "info";
   days_remaining?: number;
   spend_remaining_cents?: number;
@@ -254,6 +254,37 @@ export interface FiveTwentyFourStatus {
     source: "portfolio" | "external";
     agesOutDate: string;
   }>;
+}
+
+// ── Transfer Bonuses ──
+
+export interface TransferBonus {
+  id: string;
+  bank: string;
+  currency: string;
+  partner: string;
+  partner_code: string;
+  partner_type: "airline" | "hotel";
+  bonus_percentage: number;
+  start_date: string | null;
+  end_date: string | null;
+  source_url: string | null;
+  is_active: boolean;
+  scraped_at: string;
+  created_at: string;
+}
+
+export interface TransferBonusHistory {
+  id: string;
+  bank: string;
+  currency: string;
+  partner: string;
+  partner_code: string;
+  bonus_percentage: number;
+  start_date: string;
+  end_date: string;
+  duration_days: number;
+  created_at: string;
 }
 
 // Legacy alias — keep for backward compat

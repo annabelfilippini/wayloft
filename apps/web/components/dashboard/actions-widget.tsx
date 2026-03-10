@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import type { CardAction, ExperienceLevel } from "@wayloft/shared";
+import type { CardAction, ExperienceLevel, TransferBonus } from "@wayloft/shared";
 import { isBeginnerOrBelow } from "@/lib/experience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCardBySlug } from "@/lib/cards/catalog";
+import { BANK_DISPLAY_NAMES } from "@/lib/bonuses/utils";
 
 interface ActionsWidgetProps {
   userId: string;
@@ -70,9 +71,22 @@ interface MissingAutopay {
   reason: "no_payment_info" | "no_autopay";
 }
 
+interface EndingSoonBonus {
+  id: string;
+  bank: string;
+  currency: string;
+  partner: string;
+  partner_code: string;
+  partner_type: string;
+  bonus_percentage: number;
+  end_date: string;
+  days_remaining: number;
+  urgency: "critical" | "warning" | "info";
+}
+
 interface UnifiedAction {
   key: string;
-  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup" | "payment_due";
+  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup" | "payment_due" | "transfer_bonus";
   title: string;
   subtitle: string;
   urgency: "critical" | "warning" | "info" | "ok";
@@ -101,6 +115,7 @@ const typeLabels: Record<string, string> = {
   credit_expiring: "Credit",
   perk_setup: "Perk",
   payment_due: "Payment",
+  transfer_bonus: "Transfer",
 };
 
 const beginnerTypeLabels: Record<string, string> = {
@@ -111,8 +126,8 @@ const beginnerTypeLabels: Record<string, string> = {
 export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetProps) {
   const supabase = await createClient();
 
-  // Fetch card actions, expiring points, expiring credits, unused perks, and payment data in parallel
-  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes, upcomingPaymentsRes, missingAutopayRes] = await Promise.all([
+  // Fetch card actions, expiring points, expiring credits, unused perks, payment data, user cards, and ending-soon bonuses in parallel
+  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes, upcomingPaymentsRes, missingAutopayRes, userCardsRes, endingSoonBonusesRes] = await Promise.all([
     supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
     supabase.from("expiring_points").select("*").eq("user_id", userId),
     supabase
@@ -139,6 +154,14 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
       .select("*")
       .eq("user_id", userId)
       .limit(3),
+    supabase
+      .from("user_cards")
+      .select("currency")
+      .eq("user_id", userId)
+      .eq("status", "active"),
+    supabase
+      .from("active_transfer_bonuses_ending_soon")
+      .select("*"),
   ]);
 
   const actions: UnifiedAction[] = [];
@@ -262,6 +285,26 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
       daysRemaining: null,
       href: `/cards/${ma.user_card_id}`,
     });
+  }
+
+  // Process transfer bonuses ending soon (filtered to user's currencies)
+  const userCurrencies = new Set(
+    (userCardsRes.data ?? []).map((c: { currency: string }) => c.currency)
+  );
+  const endingSoonBonuses = (endingSoonBonusesRes.data ?? []) as EndingSoonBonus[];
+  for (const tb of endingSoonBonuses) {
+    if (userCurrencies.size === 0 || userCurrencies.has(tb.currency)) {
+      const bankName = BANK_DISPLAY_NAMES[tb.bank] ?? tb.bank;
+      actions.push({
+        key: `transfer-${tb.id}`,
+        type: "transfer_bonus",
+        title: `${bankName} → ${tb.partner}`,
+        subtitle: `+${tb.bonus_percentage}% transfer bonus — ${tb.days_remaining} days left`,
+        urgency: tb.urgency,
+        daysRemaining: tb.days_remaining,
+        href: "/bonuses",
+      });
+    }
   }
 
   // Sort by urgency then days remaining
