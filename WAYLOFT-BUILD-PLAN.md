@@ -203,14 +203,20 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ### Priority 3: Loop 3 — Transfer Bonus Tracker (Weeks 5-6)
 
-- [ ] Python base scraper class (fetch, parse, store, diff detection)
-- [ ] Chase, Amex, Citi, Capital One, Bilt scrapers
-- [ ] Scheduling (Trigger.dev, 3x daily)
-- [ ] Bonuses page (filterable by user's cards)
-- [ ] BonusCard component
-- [ ] Historical bonus view
-- [ ] Diff detection → alert dispatch (email + push)
-- [ ] "What this means for your portfolio" personalization
+- [x] TransferBonus + TransferBonusHistory types in @wayloft/shared
+- [x] Server actions: getActiveBonuses, getActiveBonusesForUser, getBonusHistory
+- [x] Seed data (10 bonuses across 5 banks) via SQL
+- [x] Bonuses page (filterable by user's cards, My Bonuses / All Bonuses tabs)
+- [x] BonusCard component (urgency badges, days remaining, portfolio personalization)
+- [x] BonusFilters component (bank pills, partner type, sort)
+- [x] Dashboard integration: ending-soon bonuses in unified action items (migration 008 view)
+- [x] Scraper pipeline (Node.js + cheerio, NOT Python): 2 sources (Frequent Miler + Doctor of Credit), normalize against transfer-partners.json, validate, diff, upsert
+- [x] Admin Supabase client (service role for scraper writes)
+- [x] Cron API route with CRON_SECRET auth, idempotency check, expiration cleanup
+- [x] Vercel Cron config (daily 6 AM ET)
+- [ ] Historical bonus view with pattern analysis
+- [ ] Scraper parser tuning against live HTML
+- [ ] Diff detection → alert dispatch (email + push) — deferred to notification infra
 
 ---
 
@@ -277,7 +283,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 2 nearly complete. Best-for articles and affiliate link tracking shipped (Mar 9). Remaining P2: editorial content for card reviews (ongoing), credit health endpoint. Then Priority 3 (Transfer Bonus Tracker).**
+**Priority 3 transfer bonus tracker mostly shipped (Mar 10). Bonuses page, dashboard integration, scraper + Vercel cron all live. Remaining: historical bonus view, parser tuning against live HTML. Then Priority 4 (Flight Search via Duffel).**
 
 ---
 

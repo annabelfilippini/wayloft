@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Mar 9, 2026)
+## Current Status (Mar 10, 2026)
 
-**Loop 2 (Card Recommendation Engine) — nearly complete.** Loop 1 complete. Spending quiz, scoring algorithm, results UI, issuer rule checking, card comparison view, SEO card review pages, "best cards for X" comparison articles, and affiliate link tracking are all built. 54 statically generated card review pages + 5 best-for articles. Affiliate clicks tracked to DB with UTM params on all "Apply Now" buttons. Remaining P2 work: editorial content for card reviews (hand-written over time), credit health endpoint.
+**Loop 3 (Transfer Bonus Tracker) — in progress.** Loop 2 nearly complete (editorial content + credit health endpoint remain). Transfer bonus tracker shipped: bonuses page with filters/urgency badges/portfolio personalization, dashboard integration, daily scraper via Vercel Cron (Frequent Miler + Doctor of Credit), admin Supabase client, seed data. Remaining P3 work: historical bonus view with pattern analysis, scraper parser tuning against live HTML.
 
 ### What's Built
 
@@ -191,23 +191,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - "Cards" link added to landing page nav
 - Layout wraps with marketing header/footer at `(marketing)/credit-cards/layout.tsx`
 
+**Transfer Bonus Tracker (Priority 3 — in progress):**
+- Bonuses page at `/bonuses` with bank/partner type filters, urgency badges, portfolio personalization
+- `BonusCard` component with days-remaining countdown, urgency coloring (red <48hrs, amber <7 days)
+- `BonusFilters` client component with bank pills, partner type filter, sort options
+- Server actions: `getActiveBonuses()`, `getActiveBonusesForUser()`, `getBonusHistory()`
+- `lib/bonuses/utils.ts`: `getUserCurrencies()`, `getBonusUrgency()`, `enrichBonusWithBalance()` portfolio personalization
+- Dashboard integration: ending-soon bonuses (≤14 days) appear in unified action items feed
+- Migration 008: `active_transfer_bonuses_ending_soon` view
+- Scraper pipeline (`lib/bonuses/scraper.ts`): 2 sources (Frequent Miler + Doctor of Credit), 3 parse strategies each, bank/partner name resolution against `transfer-partners.json`, validation (bonus % 1-200, known bank, known partner_code), diff engine, upsert with ON CONFLICT
+- Admin Supabase client (`lib/supabase/admin.ts`): service role key for scraper writes
+- Cron API route (`/api/cron/scrape-bonuses`): CRON_SECRET auth, 4hr idempotency, expiration cleanup, detailed per-source status logging
+- `vercel.json` cron config: daily at 6 AM ET (11:00 UTC)
+- Seed data: 10 transfer bonuses across 5 banks (`data/transfer-bonus-seed.sql`)
+- `TransferBonus` and `TransferBonusHistory` types in @wayloft/shared
+
 **Other:**
 - App sidebar navigation (`components/nav/app-sidebar.tsx`)
 - Dashboard page stub with actions widget
-- Route stubs: bonuses, search, settings
+- Route stubs: search, settings
 - Community intelligence scan agent + daily cron script
-- 7 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo
+- 8 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views
 - `/ship` slash command (commit + update docs)
 
 ### What's Next
 
-Priority 2 is nearly complete. Remaining:
-- Editorial content for card reviews (pros, cons, verdict — hand-written over time)
+Priority 3 remaining:
+- Historical bonus view with pattern analysis ("Chase runs Hyatt bonuses ~quarterly")
+- Scraper parser tuning against live HTML (parsers will need adjustment)
+
+Priority 2 remaining (ongoing):
+- Editorial content for card reviews (hand-written over time)
 - Credit health endpoint (`/api/user/credit-health`)
 
 Then:
-- Priority 3: Transfer Bonus Tracker (scrapers, alerts)
 - Priority 4: Flight Search via Duffel
+- Priority 5: Browser Extension
 
 ### Week 2 gaps (can be done anytime)
 - ToS / Privacy Policy (Termly)
