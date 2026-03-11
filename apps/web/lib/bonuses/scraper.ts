@@ -15,8 +15,8 @@ export interface ScrapedBonus {
 
 interface ScraperSource {
   name: string;
-  url: string;
-  parse: (html: string) => ScrapedBonus[];
+  urls: string[];
+  parse: (html: string, url: string) => ScrapedBonus[];
 }
 
 interface NormalizedBonus {
@@ -51,10 +51,21 @@ export interface ApplyResult {
 
 // ── Constants ──
 
-const FREQUENT_MILER_URL =
-  "https://frequentmiler.com/transfer-bonus-tracker/";
-const DOCTOR_OF_CREDIT_URL =
-  "https://www.doctorofcredit.com/transfer-bonuses/";
+// Frequent Miler consolidated current bonuses page
+const FM_URL = "https://frequentmiler.com/current-point-transfer-bonuses/";
+
+// Doctor of Credit per-bank "complete list" pages with Current Promotions sections
+const DOC_CHASE_URL =
+  "https://www.doctorofcredit.com/a-complete-list-of-previous-current-chase-ultimate-rewards-points-transfer-bonuses/";
+const DOC_AMEX_URL =
+  "https://www.doctorofcredit.com/complete-list-of-american-express-membership-rewards-transfer-bonuses/";
+const DOC_CITI_URL =
+  "https://www.doctorofcredit.com/a-complete-list-of-previous-current-citi-thankyou-point-transfer-bonuses/";
+// Capital One and Bilt don't have consolidated pages — use tag pages
+const DOC_C1_TAG_URL =
+  "https://www.doctorofcredit.com/tag/capital-one-transfer-bonuses/";
+const DOC_BILT_TAG_URL =
+  "https://www.doctorofcredit.com/tag/bilt-transfer-bonuses/";
 
 const FETCH_TIMEOUT_MS = 15_000;
 const MAX_RESPONSE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -119,15 +130,89 @@ for (const [, currencyData] of Object.entries(
     ...currencyData.transfer_partners.airlines,
     ...currencyData.transfer_partners.hotels,
   ]) {
-    // Multiple entries per name (e.g. "British Airways Avios" maps to "BA")
+    // Full name match
     nameToCodeMap.set(p.partner.toLowerCase(), p.code);
-    // Also index shortened versions
+    // Shortened versions for partial matching
     const shortName = p.partner.split(" ")[0].toLowerCase();
     if (!nameToCodeMap.has(shortName)) {
       nameToCodeMap.set(shortName, p.code);
     }
+    // Also add without common suffixes
+    for (const suffix of [
+      " avios",
+      " flying club",
+      " mileage club",
+      " mileageplus",
+      " rapid rewards",
+      " krisflyer",
+      " skywards",
+      " flying blue",
+      " trueblue",
+      " asia miles",
+      " frequent flyer",
+      " lifemiles",
+      " aerclub",
+      " guest",
+      " hawaiianmiles",
+      " one rewards",
+      " bonvoy",
+      " honors",
+      " privileges",
+      " rewards",
+      " live limitless",
+      " miles&smiles",
+      " privilege club",
+    ]) {
+      const stripped = p.partner.toLowerCase().replace(suffix, "").trim();
+      if (stripped && !nameToCodeMap.has(stripped)) {
+        nameToCodeMap.set(stripped, p.code);
+      }
+    }
   }
 }
+
+// Additional common aliases not covered above
+const partnerAliases: Map<string, string> = new Map([
+  ["hyatt", "HYATT"],
+  ["world of hyatt", "HYATT"],
+  ["ihg", "IHG"],
+  ["marriott", "MARRIOTT"],
+  ["hilton", "HILTON"],
+  ["wyndham", "WYNDHAM"],
+  ["choice", "CHOICE"],
+  ["accor", "ACCOR"],
+  ["united", "UA"],
+  ["southwest", "WN"],
+  ["british airways", "BA"],
+  ["avios", "BA"],
+  ["aeroplan", "AC"],
+  ["air canada", "AC"],
+  ["singapore", "SQ"],
+  ["emirates", "EK"],
+  ["flying blue", "AF"],
+  ["air france", "AF"],
+  ["klm", "AF"],
+  ["airfrance", "AF"],
+  ["airfrance/klm", "AF"],
+  ["iberia", "IB"],
+  ["virgin atlantic", "VS"],
+  ["virgin", "VS"],
+  ["jetblue", "B6"],
+  ["delta", "DL"],
+  ["ana", "NH"],
+  ["cathay", "CX"],
+  ["cathay pacific", "CX"],
+  ["qantas", "QF"],
+  ["avianca", "AV"],
+  ["lifemiles", "AV"],
+  ["aer lingus", "EI"],
+  ["etihad", "EY"],
+  ["hawaiian", "HA"],
+  ["turkish", "TK"],
+  ["qatar", "QR"],
+  ["japan airlines", "JL"],
+  ["jal", "JL"],
+]);
 
 // Bank name aliases → internal bank code
 const bankAliases: Map<string, KnownBank> = new Map([
@@ -143,9 +228,11 @@ const bankAliases: Map<string, KnownBank> = new Map([
   ["citi", "citi"],
   ["citi thankyou", "citi"],
   ["thankyou points", "citi"],
+  ["thankyou", "citi"],
   ["typ", "citi"],
   ["capital one", "capital_one"],
   ["capital one miles", "capital_one"],
+  ["capitalone", "capital_one"],
   ["c1", "capital_one"],
   ["bilt", "bilt"],
   ["bilt rewards", "bilt"],
@@ -195,23 +282,40 @@ async function safeFetch(url: string): Promise<string> {
 
 function resolveBank(rawBank: string): KnownBank | null {
   const normalized = rawBank.trim().toLowerCase();
-  return bankAliases.get(normalized) ?? null;
+  // Direct match
+  const direct = bankAliases.get(normalized);
+  if (direct) return direct;
+  // Substring match
+  for (const [alias, bank] of bankAliases) {
+    if (normalized.includes(alias)) return bank;
+  }
+  return null;
 }
 
 // ── Partner code resolution ──
 
 function resolvePartnerCode(rawPartner: string): string | null {
-  const normalized = rawPartner.trim().toLowerCase();
+  const trimmed = rawPartner.trim();
+  const normalized = trimmed.toLowerCase();
 
   // Direct code match (e.g. "BA", "HYATT")
-  const upper = rawPartner.trim().toUpperCase();
+  const upper = trimmed.toUpperCase();
   if (partnerCodeSet.has(upper)) return upper;
 
-  // Full name match
+  // Check partner aliases first (more specific)
+  const fromAlias = partnerAliases.get(normalized);
+  if (fromAlias) return fromAlias;
+
+  // Full name match from transfer-partners.json
   const fromName = nameToCodeMap.get(normalized);
   if (fromName) return fromName;
 
-  // Partial name match: try matching against known partner names
+  // Partial name match: try matching against known partner names & aliases
+  for (const [alias, code] of partnerAliases) {
+    if (normalized.includes(alias) || alias.includes(normalized)) {
+      return code;
+    }
+  }
   for (const [name, code] of nameToCodeMap) {
     if (normalized.includes(name) || name.includes(normalized)) {
       return code;
@@ -224,7 +328,7 @@ function resolvePartnerCode(rawPartner: string): string | null {
 // ── Parse bonus percentage ──
 
 function parseBonusPercentage(raw: string): number | null {
-  // Match patterns like "30%", "+30%", "30% bonus", "30"
+  // Match patterns like "30%", "+30%", "30% bonus", "30% transfer bonus"
   const match = raw.match(/(\d+)\s*%/);
   if (match) return parseInt(match[1]);
 
@@ -240,17 +344,17 @@ function parseBonusPercentage(raw: string): number | null {
 function parseEndDate(raw: string): string | null {
   if (!raw || raw.trim().toLowerCase() === "ongoing") return null;
 
-  // Try various date formats
   const cleaned = raw.trim();
 
-  // "MM/DD/YYYY" or "M/D/YYYY"
-  const slashMatch = cleaned.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  // "MM/DD/YYYY" or "M/D/YYYY" or "MM/DD/YY"
+  const slashMatch = cleaned.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
   if (slashMatch) {
     const [, m, d, y] = slashMatch;
-    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    const year = y.length === 2 ? `20${y}` : y;
+    return `${year}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
   }
 
-  // "Month DD, YYYY" or "Month DD YYYY"
+  // "Month DD, YYYY" or "Month DD YYYY" or "Mon DD, YYYY"
   const months: Record<string, string> = {
     january: "01", february: "02", march: "03", april: "04",
     may: "05", june: "06", july: "07", august: "08",
@@ -259,9 +363,7 @@ function parseEndDate(raw: string): string | null {
     jun: "06", jul: "07", aug: "08", sep: "09",
     oct: "10", nov: "11", dec: "12",
   };
-  const namedMatch = cleaned.match(
-    /(\w+)\s+(\d{1,2}),?\s*(\d{4})/i
-  );
+  const namedMatch = cleaned.match(/(\w+)\s+(\d{1,2}),?\s*(\d{4})/i);
   if (namedMatch) {
     const monthStr = namedMatch[1].toLowerCase();
     const mm = months[monthStr];
@@ -280,16 +382,18 @@ function parseEndDate(raw: string): string | null {
 // ── Source Parsers ──
 
 /**
- * Frequent Miler parser.
- * Looks for HTML tables with transfer bonus data. The actual structure
- * will need adjustment once we see the live HTML, but this covers
- * common patterns: tables, structured divs, and list items.
+ * Frequent Miler: frequentmiler.com/current-point-transfer-bonuses/
+ *
+ * Consolidated page with all current bonuses. Structure varies but typically:
+ * - Tables with columns: Program/Bank, Partner, Bonus %, End Date
+ * - Or structured sections with headings per bank
+ * - Or list items with bonus details
  */
-function parseFrequentMiler(html: string): ScrapedBonus[] {
+function parseFrequentMiler(html: string, url: string): ScrapedBonus[] {
   const $ = cheerio.load(html);
   const bonuses: ScrapedBonus[] = [];
 
-  // Strategy 1: Look for tables with transfer bonus data
+  // Strategy 1: Tables — FM often uses tables for transfer bonuses
   $("table").each((_, table) => {
     const headers: string[] = [];
     $(table)
@@ -298,42 +402,63 @@ function parseFrequentMiler(html: string): ScrapedBonus[] {
         headers.push($(th).text().trim().toLowerCase());
       });
 
-    // Need at least columns that look like: program/bank, partner, bonus%
+    // Need columns that look like: program/bank, partner, bonus
     const hasBankCol = headers.some(
       (h) =>
         h.includes("program") ||
         h.includes("bank") ||
         h.includes("currency") ||
-        h.includes("issuer")
+        h.includes("issuer") ||
+        h.includes("from")
     );
     const hasPartnerCol = headers.some(
-      (h) => h.includes("partner") || h.includes("airline") || h.includes("hotel")
+      (h) =>
+        h.includes("partner") ||
+        h.includes("airline") ||
+        h.includes("hotel") ||
+        h.includes("to")
     );
     const hasBonusCol = headers.some(
-      (h) => h.includes("bonus") || h.includes("%") || h.includes("percent")
+      (h) =>
+        h.includes("bonus") ||
+        h.includes("%") ||
+        h.includes("percent") ||
+        h.includes("rate")
     );
 
     if (!hasBankCol && !hasPartnerCol) return;
 
-    // Find column indices
     const bankIdx = headers.findIndex(
       (h) =>
         h.includes("program") ||
         h.includes("bank") ||
         h.includes("currency") ||
-        h.includes("issuer")
+        h.includes("issuer") ||
+        h.includes("from")
     );
     const partnerIdx = headers.findIndex(
-      (h) => h.includes("partner") || h.includes("airline") || h.includes("hotel")
+      (h) =>
+        h.includes("partner") ||
+        h.includes("airline") ||
+        h.includes("hotel") ||
+        h.includes("to")
     );
     const bonusIdx = hasBonusCol
       ? headers.findIndex(
-          (h) => h.includes("bonus") || h.includes("%") || h.includes("percent")
+          (h) =>
+            h.includes("bonus") ||
+            h.includes("%") ||
+            h.includes("percent") ||
+            h.includes("rate")
         )
       : -1;
     const dateIdx = headers.findIndex(
       (h) =>
-        h.includes("end") || h.includes("expir") || h.includes("date") || h.includes("through")
+        h.includes("end") ||
+        h.includes("expir") ||
+        h.includes("date") ||
+        h.includes("through") ||
+        h.includes("until")
     );
 
     $(table)
@@ -343,160 +468,8 @@ function parseFrequentMiler(html: string): ScrapedBonus[] {
         if (cells.length < 2) return;
 
         const bankText = bankIdx >= 0 ? $(cells[bankIdx]).text() : "";
-        const partnerText = partnerIdx >= 0 ? $(cells[partnerIdx]).text() : "";
-        const bonusText =
-          bonusIdx >= 0
-            ? $(cells[bonusIdx]).text()
-            : // If no explicit bonus column, scan all cells for percentage
-              cells
-                .toArray()
-                .map((c) => $(c).text())
-                .find((t) => t.includes("%")) ?? "";
-        const dateText = dateIdx >= 0 ? $(cells[dateIdx]).text() : "";
-
-        const bank = resolveBank(bankText);
-        const partnerCode = resolvePartnerCode(partnerText);
-        const pct = parseBonusPercentage(bonusText);
-
-        if (bank && partnerCode && pct) {
-          bonuses.push({
-            bank,
-            partner: partnerText.trim(),
-            partner_code: partnerCode,
-            bonus_percentage: pct,
-            end_date: parseEndDate(dateText),
-            source_url: FREQUENT_MILER_URL,
-          });
-        }
-      });
-  });
-
-  // Strategy 2: Look for card-style layouts with bonus info
-  if (bonuses.length === 0) {
-    $(
-      ".transfer-bonus, .bonus-card, [class*='bonus'], [class*='transfer']"
-    ).each((_, el) => {
-      const text = $(el).text();
-      const bankMatch = text.match(
-        /(?:chase|amex|american express|citi|capital one|bilt)/i
-      );
-      const pctMatch = text.match(/(\d+)\s*%/);
-
-      if (bankMatch && pctMatch) {
-        const bank = resolveBank(bankMatch[0]);
-        const pct = parseInt(pctMatch[1]);
-
-        // Try to find partner name in the same element
-        const partnerEl = $(el).find(
-          "a, .partner, [class*='partner'], strong, b"
-        );
-        const partnerText = partnerEl.length > 0 ? partnerEl.first().text() : "";
-        const partnerCode = resolvePartnerCode(partnerText);
-
-        // Look for date
-        const dateMatch = text.match(
-          /(?:through|until|ends?|expires?)\s*:?\s*(.+?)(?:\.|$)/i
-        );
-        const endDate = dateMatch ? parseEndDate(dateMatch[1]) : null;
-
-        if (bank && partnerCode && pct) {
-          bonuses.push({
-            bank,
-            partner: partnerText.trim(),
-            partner_code: partnerCode,
-            bonus_percentage: pct,
-            end_date: endDate,
-            source_url: FREQUENT_MILER_URL,
-          });
-        }
-      }
-    });
-  }
-
-  // Strategy 3: Scan list items
-  if (bonuses.length === 0) {
-    $("li, .entry-content p").each((_, el) => {
-      const text = $(el).text();
-      // Pattern: "Bank → Partner: XX% bonus through Date"
-      const match = text.match(
-        /(?:chase|amex|american express|citi|capital one|bilt)\s*(?:→|->|to|:)\s*(.+?)\s*(?::|–|-)\s*(\d+)\s*%/i
-      );
-      if (match) {
-        const bankPart = text.match(
-          /(?:chase|amex|american express|citi|capital one|bilt)/i
-        );
-        const bank = bankPart ? resolveBank(bankPart[0]) : null;
-        const partnerCode = resolvePartnerCode(match[1]);
-        const pct = parseInt(match[2]);
-        const dateMatch = text.match(
-          /(?:through|until|ends?|expires?)\s*:?\s*(.+?)(?:\.|$)/i
-        );
-
-        if (bank && partnerCode && pct) {
-          bonuses.push({
-            bank,
-            partner: match[1].trim(),
-            partner_code: partnerCode,
-            bonus_percentage: pct,
-            end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
-            source_url: FREQUENT_MILER_URL,
-          });
-        }
-      }
-    });
-  }
-
-  return bonuses;
-}
-
-/**
- * Doctor of Credit parser.
- * DoC typically posts transfer bonuses in article format with structured lists.
- */
-function parseDoctorOfCredit(html: string): ScrapedBonus[] {
-  const $ = cheerio.load(html);
-  const bonuses: ScrapedBonus[] = [];
-
-  // Strategy 1: Look for tables (DoC sometimes uses them)
-  $("table").each((_, table) => {
-    const headers: string[] = [];
-    $(table)
-      .find("th, thead td")
-      .each((__, th) => {
-        headers.push($(th).text().trim().toLowerCase());
-      });
-
-    const hasBankCol = headers.some(
-      (h) => h.includes("program") || h.includes("bank") || h.includes("from")
-    );
-    const hasPartnerCol = headers.some(
-      (h) => h.includes("partner") || h.includes("to") || h.includes("airline") || h.includes("hotel")
-    );
-
-    if (!hasBankCol && !hasPartnerCol) return;
-
-    const bankIdx = headers.findIndex(
-      (h) => h.includes("program") || h.includes("bank") || h.includes("from")
-    );
-    const partnerIdx = headers.findIndex(
-      (h) =>
-        h.includes("partner") || h.includes("to") || h.includes("airline") || h.includes("hotel")
-    );
-    const bonusIdx = headers.findIndex(
-      (h) => h.includes("bonus") || h.includes("%")
-    );
-    const dateIdx = headers.findIndex(
-      (h) => h.includes("end") || h.includes("expir") || h.includes("date")
-    );
-
-    $(table)
-      .find("tbody tr, tr")
-      .each((__, row) => {
-        const cells = $(row).find("td");
-        if (cells.length < 2) return;
-
-        const bankText = bankIdx >= 0 ? $(cells[bankIdx]).text() : "";
-        const partnerText = partnerIdx >= 0 ? $(cells[partnerIdx]).text() : "";
+        const partnerText =
+          partnerIdx >= 0 ? $(cells[partnerIdx]).text() : "";
         const bonusText =
           bonusIdx >= 0
             ? $(cells[bonusIdx]).text()
@@ -517,111 +490,409 @@ function parseDoctorOfCredit(html: string): ScrapedBonus[] {
             partner_code: partnerCode,
             bonus_percentage: pct,
             end_date: parseEndDate(dateText),
-            source_url: DOCTOR_OF_CREDIT_URL,
+            source_url: url,
           });
         }
       });
   });
 
-  // Strategy 2: Post content with structured bonus mentions
-  if (bonuses.length === 0) {
-    const contentSelectors = [
-      ".entry-content",
-      ".post-content",
-      "article",
-      ".content",
-    ];
-    const contentEl = $(contentSelectors.join(", ")).first();
+  if (bonuses.length > 0) return bonuses;
 
-    if (contentEl.length) {
-      // Look for list items or paragraphs with bonus info
-      contentEl.find("li, p, strong").each((_, el) => {
+  // Strategy 2: Sections by bank with list items or paragraphs
+  // FM sometimes groups by bank under headings
+  const bankRegex =
+    /\b(chase|amex|american express|citi|capital one|bilt)\b/i;
+
+  $("h2, h3, h4").each((_, heading) => {
+    const hText = $(heading).text();
+    const bankMatch = hText.match(bankRegex);
+    if (!bankMatch) return;
+
+    const bank = resolveBank(bankMatch[0]);
+    if (!bank) return;
+
+    // Scan siblings after this heading
+    let sibling = $(heading).next();
+    let scanned = 0;
+    while (sibling.length && scanned < 20) {
+      const tag = sibling.prop("tagName")?.toLowerCase();
+      if (tag && ["h2", "h3", "h4"].includes(tag)) break;
+
+      // Check list items and paragraphs within this sibling
+      const elements =
+        tag === "ul" || tag === "ol"
+          ? sibling.find("li")
+          : sibling.is("p, li, div")
+            ? sibling
+            : sibling.find("p, li");
+
+      elements.each((__, el) => {
         const text = $(el).text();
-        const pctMatch = text.match(/(\d+)\s*%/);
-        if (!pctMatch) return;
+        const pct = parseBonusPercentage(text);
+        if (!pct) return;
 
-        const bankMatch = text.match(
-          /(?:chase|amex|american express|citi|capital one|bilt)/i
-        );
-        if (!bankMatch) return;
-
-        const bank = resolveBank(bankMatch[0]);
-        const pct = parseInt(pctMatch[1]);
-
-        // Try to find partner in the same text
-        // Common pattern: "Chase → British Airways: 30% bonus through March 31"
-        const afterBank = text.slice(
-          text.indexOf(bankMatch[0]) + bankMatch[0].length
-        );
-        const words = afterBank.split(/[:\-–→>]+/);
-        const potentialPartner = words[0]?.trim();
-        const partnerCode = potentialPartner
-          ? resolvePartnerCode(potentialPartner)
-          : null;
-
-        const dateMatch = text.match(
-          /(?:through|until|ends?|expires?)\s*:?\s*(.+?)(?:\.|,|$)/i
-        );
-
-        if (bank && partnerCode && pct) {
-          bonuses.push({
-            bank,
-            partner: potentialPartner ?? "",
-            partner_code: partnerCode,
-            bonus_percentage: pct,
-            end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
-            source_url: DOCTOR_OF_CREDIT_URL,
-          });
+        // Find partner in text
+        let foundCode: string | null = null;
+        for (const [alias, code] of partnerAliases) {
+          if (text.toLowerCase().includes(alias)) {
+            foundCode = code;
+            break;
+          }
         }
-      });
-    }
-  }
-
-  // Strategy 3: Headings + following content
-  if (bonuses.length === 0) {
-    $("h2, h3, h4").each((_, heading) => {
-      const hText = $(heading).text();
-      const bankMatch = hText.match(
-        /(?:chase|amex|american express|citi|capital one|bilt)/i
-      );
-      if (!bankMatch) return;
-
-      const bank = resolveBank(bankMatch[0]);
-      if (!bank) return;
-
-      // Scan sibling elements after the heading
-      let sibling = $(heading).next();
-      let scanned = 0;
-      while (sibling.length && scanned < 10) {
-        const tag = sibling.prop("tagName")?.toLowerCase();
-        if (tag && ["h2", "h3", "h4"].includes(tag)) break;
-
-        const text = sibling.text();
-        const pctMatch = text.match(/(\d+)\s*%/);
-        if (pctMatch) {
-          const pct = parseInt(pctMatch[1]);
-          // Find partner names in this block
+        if (!foundCode) {
           for (const [name, code] of nameToCodeMap) {
             if (text.toLowerCase().includes(name)) {
-              const dateMatch = text.match(
-                /(?:through|until|ends?|expires?)\s*:?\s*(.+?)(?:\.|,|$)/i
-              );
-              bonuses.push({
-                bank,
-                partner: name,
-                partner_code: code,
-                bonus_percentage: pct,
-                end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
-                source_url: DOCTOR_OF_CREDIT_URL,
-              });
+              foundCode = code;
+              break;
             }
           }
         }
+
+        const dateMatch = text.match(
+          /(?:through|until|ends?|expires?|valid until)\s*:?\s*(.+?)(?:\.|,|$)/i
+        );
+
+        if (foundCode) {
+          bonuses.push({
+            bank,
+            partner: text.trim().slice(0, 80),
+            partner_code: foundCode,
+            bonus_percentage: pct,
+            end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
+            source_url: url,
+          });
+        }
+      });
+
+      sibling = sibling.next();
+      scanned++;
+    }
+  });
+
+  if (bonuses.length > 0) return bonuses;
+
+  // Strategy 3: Scan all list items and paragraphs with percentage + bank pattern
+  // Pattern: "Bank: XX% Transfer Bonus To Partner (ratio). Valid until Date"
+  // or "Bank → Partner: XX% bonus through Date"
+  const contentEl = $(
+    ".entry-content, .post-content, article, .content, main"
+  ).first();
+  const searchEl = contentEl.length ? contentEl : $("body");
+
+  searchEl.find("li, p").each((_, el) => {
+    const text = $(el).text();
+    const pctMatch = text.match(/(\d+)\s*%/);
+    if (!pctMatch) return;
+
+    const bankMatch = text.match(bankRegex);
+    if (!bankMatch) return;
+
+    const bank = resolveBank(bankMatch[0]);
+    if (!bank) return;
+
+    const pct = parseInt(pctMatch[1]);
+
+    // Extract partner — look for known partner names in the text
+    let foundCode: string | null = null;
+    let foundPartner = "";
+    for (const [alias, code] of partnerAliases) {
+      if (text.toLowerCase().includes(alias)) {
+        foundCode = code;
+        foundPartner = alias;
+        break;
+      }
+    }
+    if (!foundCode) {
+      for (const [name, code] of nameToCodeMap) {
+        if (text.toLowerCase().includes(name)) {
+          foundCode = code;
+          foundPartner = name;
+          break;
+        }
+      }
+    }
+
+    const dateMatch = text.match(
+      /(?:through|until|ends?|expires?|valid until)\s*:?\s*(.+?)(?:\.|,|\)|$)/i
+    );
+
+    if (bank && foundCode && pct) {
+      bonuses.push({
+        bank,
+        partner: foundPartner,
+        partner_code: foundCode,
+        bonus_percentage: pct,
+        end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
+        source_url: url,
+      });
+    }
+  });
+
+  return bonuses;
+}
+
+/**
+ * Doctor of Credit per-bank "Complete List" pages.
+ *
+ * Structure (confirmed from live site):
+ * - "Current Promotions" heading or section near the top
+ * - Bulleted list (ul/li) under "Current Promotions"
+ * - Each item: "[Partner]: [X]% Transfer Bonus To [Partner] ([ratio]). Valid until [date]"
+ * - Or linked text: "Chase Ultimate Rewards: 80% Transfer Bonus To IHG (1:1.8)"
+ * - Historical bonuses below under partner-specific headings
+ *
+ * The bank is known from the URL, so we don't need to parse it from each entry.
+ */
+function parseDoctorOfCreditPerBank(
+  html: string,
+  url: string
+): ScrapedBonus[] {
+  const $ = cheerio.load(html);
+  const bonuses: ScrapedBonus[] = [];
+
+  // Determine which bank this page is for based on the URL
+  let bank: KnownBank | null = null;
+  if (url.includes("chase")) bank = "chase";
+  else if (
+    url.includes("american-express") ||
+    url.includes("membership-rewards")
+  )
+    bank = "amex";
+  else if (url.includes("citi") || url.includes("thankyou"))
+    bank = "citi";
+  else if (url.includes("capital-one")) bank = "capital_one";
+  else if (url.includes("bilt")) bank = "bilt";
+
+  // Strategy 1: Find "Current Promotions" section
+  // Look for headings containing "current" and parse list items after them
+  let foundCurrentSection = false;
+
+  $("h2, h3, h4, strong, b, p").each((_, el) => {
+    const text = $(el).text().toLowerCase();
+    if (
+      text.includes("current promotion") ||
+      text.includes("current bonus") ||
+      text.includes("current transfer")
+    ) {
+      foundCurrentSection = true;
+
+      // Parse list items after this element
+      let sibling = $(el).is("p, strong, b")
+        ? $(el).parent().next()
+        : $(el).next();
+      let scanned = 0;
+
+      while (sibling.length && scanned < 15) {
+        const tag = sibling.prop("tagName")?.toLowerCase();
+        // Stop at next heading (historical section)
+        if (tag && ["h2", "h3", "h4"].includes(tag)) break;
+
+        const listItems =
+          tag === "ul" || tag === "ol" ? sibling.find("li") : sibling;
+
+        listItems.each((__, li) => {
+          const itemText = $(li).text();
+          parseDocEntryText(itemText, bank, url, bonuses);
+        });
+
         sibling = sibling.next();
         scanned++;
       }
+    }
+  });
+
+  if (bonuses.length > 0) return bonuses;
+
+  // Strategy 2: If no "Current Promotions" heading found,
+  // scan all list items in the content area for active-looking entries
+  const contentEl = $(
+    ".entry-content, .post-content, article, .content"
+  ).first();
+  if (!contentEl.length) return bonuses;
+
+  // Look for entries that DON'T have "[Expired]" and DO have a percentage
+  contentEl.find("li").each((_, li) => {
+    const text = $(li).text();
+    if (text.toLowerCase().includes("[expired]")) return;
+    if (text.toLowerCase().includes("expired")) return;
+    if (!text.match(/\d+\s*%/)) return;
+
+    parseDocEntryText(text, bank, url, bonuses);
+  });
+
+  // Strategy 3: Paragraphs in content
+  if (bonuses.length === 0) {
+    contentEl.find("p").each((_, p) => {
+      const text = $(p).text();
+      if (text.toLowerCase().includes("[expired]")) return;
+      if (!text.match(/\d+\s*%/)) return;
+
+      parseDocEntryText(text, bank, url, bonuses);
     });
   }
+
+  return bonuses;
+}
+
+/**
+ * Parse a single DoC entry text line.
+ *
+ * Common formats:
+ * - "Chase Ultimate Rewards: 80% Transfer Bonus To IHG (1:1.8). Valid until 1/15/24"
+ * - "40% To Virgin Atlantic. Valid until 12/31/24"
+ * - "25% To JetBlue (250:250). Valid until 12/31/24"
+ * - "30% Transfer Bonus To Wyndham (1:1.3)"
+ */
+function parseDocEntryText(
+  text: string,
+  knownBank: KnownBank | null,
+  sourceUrl: string,
+  bonuses: ScrapedBonus[]
+): void {
+  const pct = parseBonusPercentage(text);
+  if (!pct) return;
+
+  // Determine bank — either from the known URL context or parse from text
+  let bank = knownBank;
+  if (!bank) {
+    const bankMatch = text.match(
+      /\b(chase|amex|american express|citi|capital one|bilt)\b/i
+    );
+    if (bankMatch) bank = resolveBank(bankMatch[0]);
+  }
+  if (!bank) return;
+
+  // Extract partner name — look for "To [Partner]" pattern first (DoC standard)
+  let partnerCode: string | null = null;
+
+  // Pattern: "XX% Transfer Bonus To [Partner]" or "XX% To [Partner]"
+  const toMatch = text.match(/\d+\s*%\s*(?:transfer\s+bonus\s+)?to\s+(.+?)(?:\s*\(|\.|\s*,\s*valid|\s*$)/i);
+  if (toMatch) {
+    partnerCode = resolvePartnerCode(toMatch[1].trim());
+  }
+
+  // Fallback: scan text for any known partner name
+  if (!partnerCode) {
+    for (const [alias, code] of partnerAliases) {
+      if (text.toLowerCase().includes(alias)) {
+        partnerCode = code;
+        break;
+      }
+    }
+  }
+  if (!partnerCode) {
+    for (const [name, code] of nameToCodeMap) {
+      if (text.toLowerCase().includes(name)) {
+        partnerCode = code;
+        break;
+      }
+    }
+  }
+
+  if (!partnerCode) return;
+
+  // Extract end date
+  const dateMatch = text.match(
+    /(?:valid\s+until|through|until|ends?\s*:?|expires?\s*:?)\s*(.+?)(?:\.|,|\)|$)/i
+  );
+  const endDate = dateMatch ? parseEndDate(dateMatch[1]) : null;
+
+  bonuses.push({
+    bank,
+    partner: text.trim().slice(0, 80),
+    partner_code: partnerCode,
+    bonus_percentage: pct,
+    end_date: endDate,
+    source_url: sourceUrl,
+  });
+}
+
+/**
+ * Doctor of Credit tag page parser (for Capital One and Bilt).
+ *
+ * Tag pages show a list of blog posts with titles and excerpts.
+ * Structure: <article class="vce-post"> with title, date, excerpt.
+ *
+ * Post titles follow patterns like:
+ * - "Chase Ultimate Rewards: 30% Transfer Bonus To Wyndham (1:1.3)"
+ * - "Capital One Transfer Bonus: 30% To Preferred Hotels & Resorts"
+ * - "Bilt Rent Day (March 2026): Up To 125% Bonus To Japan Airlines (JAL)"
+ *
+ * We parse the title + excerpt for bonus details, only if NOT marked [Expired].
+ */
+function parseDoctorOfCreditTagPage(
+  html: string,
+  url: string
+): ScrapedBonus[] {
+  const $ = cheerio.load(html);
+  const bonuses: ScrapedBonus[] = [];
+
+  // Determine bank from URL
+  let knownBank: KnownBank | null = null;
+  if (url.includes("capital-one")) knownBank = "capital_one";
+  else if (url.includes("bilt")) knownBank = "bilt";
+
+  // Parse each article/post entry
+  $("article, .vce-post, .post").each((_, article) => {
+    const titleEl = $(article).find("h2 a, h3 a, .entry-title a").first();
+    const title = titleEl.text().trim();
+
+    // Skip expired posts
+    if (title.toLowerCase().startsWith("[expired]")) return;
+    if (title.toLowerCase().includes("expired")) return;
+
+    // Try to extract bonus from title
+    const pct = parseBonusPercentage(title);
+    if (!pct) return;
+
+    let bank: KnownBank | null = knownBank;
+    if (!bank) {
+      const bankMatch = title.match(
+        /\b(chase|amex|american express|citi|capital one|bilt)\b/i
+      );
+      if (bankMatch) bank = resolveBank(bankMatch[0]);
+    }
+    if (!bank) return;
+
+    // Extract partner from title
+    let partnerCode: string | null = null;
+
+    // "XX% Transfer Bonus To [Partner]" or "XX% To [Partner]" or "XX% Bonus To [Partner]"
+    const toMatch = title.match(
+      /\d+\s*%\s*(?:transfer\s+)?(?:bonus\s+)?to\s+(.+?)(?:\s*\(|$)/i
+    );
+    if (toMatch) {
+      partnerCode = resolvePartnerCode(toMatch[1].trim());
+    }
+
+    // Fallback: scan title for known partners
+    if (!partnerCode) {
+      for (const [alias, code] of partnerAliases) {
+        if (title.toLowerCase().includes(alias)) {
+          partnerCode = code;
+          break;
+        }
+      }
+    }
+
+    if (!partnerCode) return;
+
+    // Try to extract date from excerpt
+    const excerpt =
+      $(article).find(".entry-excerpt, .entry-summary, p").first().text() ?? "";
+    const dateMatch = (title + " " + excerpt).match(
+      /(?:valid\s+until|through|until|ends?\s*:?|expires?\s*:?)\s*(.+?)(?:\.|,|\)|$)/i
+    );
+
+    bonuses.push({
+      bank,
+      partner: title.slice(0, 80),
+      partner_code: partnerCode,
+      bonus_percentage: pct,
+      end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
+      source_url: url,
+    });
+  });
 
   return bonuses;
 }
@@ -631,13 +902,18 @@ function parseDoctorOfCredit(html: string): ScrapedBonus[] {
 const sources: ScraperSource[] = [
   {
     name: "frequent_miler",
-    url: FREQUENT_MILER_URL,
+    urls: [FM_URL],
     parse: parseFrequentMiler,
   },
   {
-    name: "doctor_of_credit",
-    url: DOCTOR_OF_CREDIT_URL,
-    parse: parseDoctorOfCredit,
+    name: "doc_per_bank",
+    urls: [DOC_CHASE_URL, DOC_AMEX_URL, DOC_CITI_URL],
+    parse: parseDoctorOfCreditPerBank,
+  },
+  {
+    name: "doc_tag_pages",
+    urls: [DOC_C1_TAG_URL, DOC_BILT_TAG_URL],
+    parse: parseDoctorOfCreditTagPage,
   },
 ];
 
@@ -656,7 +932,7 @@ function normalize(
     // Validate bank
     if (!KNOWN_BANKS.includes(bank as KnownBank)) {
       console.warn(
-        `[scraper] VALIDATION REJECT: unknown bank "${bonus.bank}" for partner ${bonus.partner_code}`
+        `[scraper] REJECT: unknown bank "${bonus.bank}" for partner ${bonus.partner_code}`
       );
       continue;
     }
@@ -664,7 +940,7 @@ function normalize(
     // Validate partner_code exists in transfer-partners.json
     if (!partnerCodeSet.has(bonus.partner_code)) {
       console.warn(
-        `[scraper] VALIDATION REJECT: unknown partner_code "${bonus.partner_code}" (partner: "${bonus.partner}")`
+        `[scraper] REJECT: unknown partner_code "${bonus.partner_code}" (partner: "${bonus.partner}")`
       );
       continue;
     }
@@ -672,7 +948,7 @@ function normalize(
     // Validate bonus percentage range
     if (bonus.bonus_percentage < 1 || bonus.bonus_percentage > 200) {
       console.warn(
-        `[scraper] VALIDATION REJECT: bonus_percentage ${bonus.bonus_percentage} out of range for ${bank}→${bonus.partner_code}`
+        `[scraper] REJECT: bonus_percentage ${bonus.bonus_percentage} out of range for ${bank}→${bonus.partner_code}`
       );
       continue;
     }
@@ -682,7 +958,7 @@ function normalize(
     const partnerInfo = partnerLookup.get(lookupKey);
     if (!partnerInfo) {
       console.warn(
-        `[scraper] VALIDATION REJECT: ${bank} does not transfer to ${bonus.partner_code}`
+        `[scraper] REJECT: ${bank} does not transfer to ${bonus.partner_code}`
       );
       continue;
     }
@@ -785,7 +1061,9 @@ export async function applyChanges(
       }
     );
     if (error) {
-      errors.push(`INSERT ${bonus.bank}→${bonus.partner_code}: ${error.message}`);
+      errors.push(
+        `INSERT ${bonus.bank}→${bonus.partner_code}: ${error.message}`
+      );
     } else {
       inserted++;
     }
@@ -847,40 +1125,58 @@ export async function scrapeAllSources(): Promise<{
   const allBonuses: ScrapedBonus[] = [];
 
   for (const source of sources) {
-    try {
-      console.log(`[scraper] Fetching ${source.name}: ${source.url}`);
-      const html = await safeFetch(source.url);
-      console.log(
-        `[scraper] ${source.name}: received ${html.length} chars`
-      );
+    let totalParsed = 0;
+    const warnings: string[] = [];
 
-      const parsed = source.parse(html);
-      console.log(
-        `[scraper] ${source.name}: parsed ${parsed.length} bonuses`
-      );
+    for (const url of source.urls) {
+      try {
+        console.log(`[scraper] Fetching ${source.name}: ${url}`);
+        const html = await safeFetch(url);
+        console.log(
+          `[scraper] ${source.name} (${url}): received ${html.length} chars`
+        );
 
-      if (parsed.length === 0) {
-        const warning = `PARSE FAILURE: ${source.name} returned 0 bonuses — HTML structure may have changed`;
-        console.warn(`[scraper] ${warning}`);
-        sourceResults[source.name] = {
-          status: "parse_failure",
-          bonusesFound: 0,
-          warning,
-        };
-      } else {
-        sourceResults[source.name] = {
-          status: "ok",
-          bonusesFound: parsed.length,
-        };
+        const parsed = source.parse(html, url);
+        console.log(
+          `[scraper] ${source.name} (${url}): parsed ${parsed.length} bonuses`
+        );
+
+        if (parsed.length === 0) {
+          warnings.push(
+            `${url}: 0 bonuses parsed — HTML structure may have changed`
+          );
+        }
+
+        totalParsed += parsed.length;
         allBonuses.push(...parsed);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error(
+          `[scraper] FETCH FAILURE for ${source.name} (${url}): ${msg}`
+        );
+        warnings.push(`${url}: fetch failed — ${msg}`);
       }
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error(`[scraper] FETCH FAILURE for ${source.name}: ${msg}`);
+    }
+
+    if (totalParsed > 0) {
+      sourceResults[source.name] = {
+        status: "ok",
+        bonusesFound: totalParsed,
+        ...(warnings.length > 0 && {
+          warning: warnings.join("; "),
+        }),
+      };
+    } else if (warnings.some((w) => w.includes("fetch failed"))) {
       sourceResults[source.name] = {
         status: "fetch_failure",
         bonusesFound: 0,
-        warning: `Fetch failed: ${msg}`,
+        warning: warnings.join("; "),
+      };
+    } else {
+      sourceResults[source.name] = {
+        status: "parse_failure",
+        bonusesFound: 0,
+        warning: warnings.join("; "),
       };
     }
   }

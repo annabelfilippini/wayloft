@@ -197,7 +197,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] "Cards I should get next" dashboard widget
 - [x] 5/24 counter widget (auto-calculated from user_cards)
 - [x] Issuer rule checking in recommendations (7 rules: One Sapphire filter, Chase 5/24, Barclays 6/24, Citi 8/48, Amex lifetime, Marriott cross-issuer, C1 triple pull) + quiz 48mo field + migration 007
-- [ ] Credit health endpoint (/api/user/credit-health)
+- [x] Credit health endpoint (/api/user/credit-health)
 
 ---
 
@@ -214,8 +214,8 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] Admin Supabase client (service role for scraper writes)
 - [x] Cron API route with CRON_SECRET auth, idempotency check, expiration cleanup
 - [x] Vercel Cron config (daily 6 AM ET)
-- [ ] Historical bonus view with pattern analysis
-- [ ] Scraper parser tuning against live HTML
+- [x] Historical bonus view with pattern analysis
+- [x] Scraper parser tuning against live HTML
 - [ ] Diff detection → alert dispatch (email + push) — deferred to notification infra
 
 ---
@@ -283,7 +283,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Priority 3 transfer bonus tracker mostly shipped (Mar 10). Bonuses page, dashboard integration, scraper + Vercel cron all live. Remaining: historical bonus view, parser tuning against live HTML. Then Priority 4 (Flight Search via Duffel).**
+**P2 closed, P3 closed (Mar 11). All core features shipped. Scraper rewritten with correct URLs (FM consolidated page + DoC per-bank pages + tag pages for C1/Bilt), 3 parse strategies per source tuned to live HTML. Diff detection → alert dispatch deferred to notification infra. Next: Priority 4 (Flight Search via Duffel).**
 
 ---
 

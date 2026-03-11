@@ -256,6 +256,36 @@ export interface FiveTwentyFourStatus {
   }>;
 }
 
+// ── Credit Health ──
+
+export type VelocityWarningSeverity = "info" | "warning" | "critical";
+
+export interface VelocityWarning {
+  issuer: string;
+  rule: string;
+  description: string;
+  severity: VelocityWarningSeverity;
+  currentCount: number;
+  maxCount: number;
+  windowMonths: number;
+}
+
+export interface CreditHealth {
+  fiveTwentyFour: FiveTwentyFourStatus;
+  velocityWarnings: VelocityWarning[];
+  recentApplications: {
+    last30Days: number;
+    last90Days: number;
+    last6Months: number;
+  };
+  recommendedSpacing: string | null;
+  nextCardFallsOff: {
+    name: string;
+    date: string;
+    daysUntil: number;
+  } | null;
+}
+
 // ── Transfer Bonuses ──
 
 export interface TransferBonus {
@@ -285,6 +315,22 @@ export interface TransferBonusHistory {
   end_date: string;
   duration_days: number;
   created_at: string;
+}
+
+export interface BonusPattern {
+  bank: string;
+  currency: string;
+  partner: string;
+  partnerCode: string;
+  occurrences: number;
+  avgBonusPercentage: number;
+  minBonusPercentage: number;
+  maxBonusPercentage: number;
+  avgFrequencyDays: number;
+  frequencyLabel: string; // "~quarterly", "~2x/year", etc.
+  lastSeen: string; // ISO date
+  daysSinceLastSeen: number;
+  confidenceNote: string | null; // "Limited history" if < 4 data points
 }
 
 // Legacy alias — keep for backward compat

@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Mar 10, 2026)
+## Current Status (Mar 11, 2026)
 
-**Loop 3 (Transfer Bonus Tracker) — in progress.** Loop 2 nearly complete (editorial content + credit health endpoint remain). Transfer bonus tracker shipped: bonuses page with filters/urgency badges/portfolio personalization, dashboard integration, daily scraper via Vercel Cron (Frequent Miler + Doctor of Credit), admin Supabase client, seed data. Remaining P3 work: historical bonus view with pattern analysis, scraper parser tuning against live HTML.
+**Loop 3 (Transfer Bonus Tracker) — complete.** Loop 2 complete (credit health endpoint shipped, editorial content ongoing). Transfer bonus tracker fully shipped: bonuses page with filters/urgency badges/portfolio personalization, dashboard integration, daily scraper via Vercel Cron, admin Supabase client, seed data, historical bonus view with pattern analysis (15 transfer pairs seeded), scraper tuned against live HTML (correct URLs, 3 source groups, per-bank DoC pages + FM consolidated page + tag pages for C1/Bilt).
 
 ### What's Built
 
@@ -199,12 +199,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `lib/bonuses/utils.ts`: `getUserCurrencies()`, `getBonusUrgency()`, `enrichBonusWithBalance()` portfolio personalization
 - Dashboard integration: ending-soon bonuses (≤14 days) appear in unified action items feed
 - Migration 008: `active_transfer_bonuses_ending_soon` view
-- Scraper pipeline (`lib/bonuses/scraper.ts`): 2 sources (Frequent Miler + Doctor of Credit), 3 parse strategies each, bank/partner name resolution against `transfer-partners.json`, validation (bonus % 1-200, known bank, known partner_code), diff engine, upsert with ON CONFLICT
+- Scraper pipeline (`lib/bonuses/scraper.ts`): 3 source groups — Frequent Miler consolidated page (`/current-point-transfer-bonuses/`), Doctor of Credit per-bank "Complete List" pages (Chase/Amex/Citi with "Current Promotions" section parsing), DoC tag pages for Capital One + Bilt (post title parsing). 3 parse strategies per FM (tables → heading sections → content scan), per-bank DoC parser (current promotions heading → non-expired list items → paragraph scan), tag page parser (article titles with `[Expired]` filtering). Bank/partner name resolution with extended alias maps, validation (bonus % 1-200, known bank, known partner_code, bank-partner relationship check), diff engine, upsert with ON CONFLICT
 - Admin Supabase client (`lib/supabase/admin.ts`): service role key for scraper writes
 - Cron API route (`/api/cron/scrape-bonuses`): CRON_SECRET auth, 4hr idempotency, expiration cleanup, detailed per-source status logging
 - `vercel.json` cron config: daily at 6 AM ET (11:00 UTC)
 - Seed data: 10 transfer bonuses across 5 banks (`data/transfer-bonus-seed.sql`)
-- `TransferBonus` and `TransferBonusHistory` types in @wayloft/shared
+- `TransferBonus`, `TransferBonusHistory`, and `BonusPattern` types in @wayloft/shared
+- Historical bonus view: "History" tab on bonuses page with pattern analysis cards (frequency, typical bonus %, overdue detection, expandable past-bonus timeline)
+- `analyzePatterns()` in `lib/bonuses/utils.ts`: groups history by bank+partner, computes frequency labels, confidence notes for limited data
+- Seed data: `data/transfer-bonus-history-seed.sql` with ~80 historical records for 15 transfer pairs across 5 banks (2024-2026)
+- Credit health endpoint: `getCreditHealth()` server action + `GET /api/user/credit-health` — 5/24 status, velocity warnings (Chase 5/24, Barclays 6/24, Citi 8/48, general velocity), recent application counts, recommended spacing, next card to fall off
+- `CreditHealth` + `VelocityWarning` types in @wayloft/shared
 
 **Other:**
 - App sidebar navigation (`components/nav/app-sidebar.tsx`)
@@ -216,13 +221,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Priority 3 remaining:
-- Historical bonus view with pattern analysis ("Chase runs Hyatt bonuses ~quarterly")
-- Scraper parser tuning against live HTML (parsers will need adjustment)
-
-Priority 2 remaining (ongoing):
+Ongoing:
 - Editorial content for card reviews (hand-written over time)
-- Credit health endpoint (`/api/user/credit-health`)
 
 Then:
 - Priority 4: Flight Search via Duffel

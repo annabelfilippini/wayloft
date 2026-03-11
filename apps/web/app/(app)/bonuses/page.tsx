@@ -2,18 +2,19 @@ import { Suspense } from "react";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { BonusFilters } from "@/components/bonuses/bonus-filters";
+import { BonusHistory } from "@/components/bonuses/bonus-history";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Zap, Clock } from "lucide-react";
-import type { TransferBonus, LoyaltyBalance } from "@wayloft/shared";
-import { getUserCurrencies, formatBonusDate } from "@/lib/bonuses/utils";
+import type { TransferBonus, TransferBonusHistory, LoyaltyBalance } from "@wayloft/shared";
+import { getUserCurrencies, formatBonusDate, analyzePatterns } from "@/lib/bonuses/utils";
 
 async function BonusesContent() {
   const user = await requireUser();
   const supabase = await createClient();
 
-  // Fetch user cards, balances, and all active bonuses in parallel
-  const [cardsRes, balancesRes, bonusesRes] = await Promise.all([
+  // Fetch user cards, balances, active bonuses, and history in parallel
+  const [cardsRes, balancesRes, bonusesRes, historyRes] = await Promise.all([
     supabase
       .from("user_cards")
       .select("currency")
@@ -29,11 +30,18 @@ async function BonusesContent() {
       .eq("is_active", true)
       .gte("end_date", new Date().toISOString().split("T")[0])
       .order("end_date", { ascending: true }),
+    supabase
+      .from("transfer_bonus_history")
+      .select("*")
+      .order("end_date", { ascending: false })
+      .limit(200),
   ]);
 
   const userCards = cardsRes.data ?? [];
   const balances = (balancesRes.data ?? []) as Pick<LoyaltyBalance, "program_code" | "balance" | "currency">[];
   const allBonuses = (bonusesRes.data ?? []) as TransferBonus[];
+  const bonusHistory = (historyRes.data ?? []) as TransferBonusHistory[];
+  const patterns = analyzePatterns(bonusHistory);
 
   // Filter bonuses to user's currencies
   const userCurrencies = getUserCurrencies(userCards as { currency: string }[]);
@@ -45,7 +53,7 @@ async function BonusesContent() {
     return b.scraped_at > latest ? b.scraped_at : latest;
   }, null);
 
-  if (allBonuses.length === 0) {
+  if (allBonuses.length === 0 && patterns.length === 0) {
     return (
       <div className="mt-8 flex flex-col items-center justify-center rounded-lg border py-16 text-center">
         <Zap className="h-10 w-10 text-muted-foreground" />
@@ -84,6 +92,9 @@ async function BonusesContent() {
           <TabsTrigger value="all">
             All Bonuses ({allBonuses.length})
           </TabsTrigger>
+          <TabsTrigger value="history">
+            History{patterns.length > 0 && ` (${patterns.length})`}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="my">
@@ -104,6 +115,12 @@ async function BonusesContent() {
         <TabsContent value="all">
           <div className="mt-2">
             <BonusFilters bonuses={allBonuses} balances={balances} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="history">
+          <div className="mt-2">
+            <BonusHistory history={bonusHistory} patterns={patterns} />
           </div>
         </TabsContent>
       </Tabs>
