@@ -227,13 +227,14 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 #### 3.5A. Database Backup Strategy
 - [x] Automated Supabase pg_dump to Cloudflare R2 (daily via GitHub Actions)
 - [x] Document restore procedure (`docs/database-backup-restore.md`)
-- [ ] Set up GitHub Secrets + R2 bucket (requires manual dashboard steps — see docs)
-- [ ] Verify backup integrity (trigger manual run, test restore)
+- [x] Set up GitHub Secrets + R2 bucket (Cloudflare R2 + 5 GitHub secrets configured)
+- [x] Verify backup integrity (manual run passed Mar 11)
+- [ ] Test restore from backup (do once when convenient)
 
 #### 3.5B. Card Review Editorial Content (10-15 cards)
-- [ ] Write editorial content (tagline, pros, cons, verdict, rating) for top 10-15 cards
-- [ ] Priority cards: CSR, Amex Platinum, Amex Gold, CSP, CFU, CFF, Venture X, Savor One, Citi Double Cash, Citi Custom Cash, Marriott Bonvoy Boundless, IHG Premier, Delta SkyMiles Gold, Bilt
-- [ ] Apply to affiliate networks (CardRatings, CJ, FlexOffers) once 15+ reviews are live
+- [x] Write editorial content (tagline, pros, cons, verdict, rating) for 15 cards
+- [x] Cards completed: CSR (5/5), CSP (5/5), CFU (4/5), CFF (4/5), Amex Platinum (4/5), Amex Gold (5/5), Venture X (5/5), SavorOne (4/5), Citi Strata Premier (4/5), Citi Custom Cash (4/5), Citi Double Cash (4/5), Bilt Blue (4/5), IHG Premier (4/5), Delta Gold (3/5), Marriott Bonvoy Boundless (4/5)
+- [ ] Apply to affiliate networks (CardRatings, CJ, FlexOffers) — 15 reviews now live
 
 #### 3.5C. Additional Best-For Articles
 - [ ] Identify high-traffic categories beyond current 5 (dining, travel, cash-back, no-annual-fee, hotels)
