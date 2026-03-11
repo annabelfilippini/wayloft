@@ -220,7 +220,32 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ---
 
+### Priority 3.5: Infrastructure Hardening + Card Content (pre-flight prep)
+
+**Why:** Database backups are the #1 vulnerability in the stack. Editorial card content is the prerequisite for affiliate network applications (primary revenue). Both unblock more value than flight search right now.
+
+#### 3.5A. Database Backup Strategy
+- [x] Automated Supabase pg_dump to Cloudflare R2 (daily via GitHub Actions)
+- [x] Document restore procedure (`docs/database-backup-restore.md`)
+- [ ] Set up GitHub Secrets + R2 bucket (requires manual dashboard steps — see docs)
+- [ ] Verify backup integrity (trigger manual run, test restore)
+
+#### 3.5B. Card Review Editorial Content (10-15 cards)
+- [ ] Write editorial content (tagline, pros, cons, verdict, rating) for top 10-15 cards
+- [ ] Priority cards: CSR, Amex Platinum, Amex Gold, CSP, CFU, CFF, Venture X, Savor One, Citi Double Cash, Citi Custom Cash, Marriott Bonvoy Boundless, IHG Premier, Delta SkyMiles Gold, Bilt
+- [ ] Apply to affiliate networks (CardRatings, CJ, FlexOffers) once 15+ reviews are live
+
+#### 3.5C. Additional Best-For Articles
+- [ ] Identify high-traffic categories beyond current 5 (dining, travel, cash-back, no-annual-fee, hotels)
+- [ ] Candidates: groceries, gas, business, balance-transfer, first-card, points-transfer
+
+---
+
 ### Priority 4: Loop 4 — Flight Search via Duffel (Weeks 5-7)
+
+**Status: DEFERRED.** Dependency audit (Mar 11) confirmed Duffel is the right API (no accreditation, free searches, ~0.5%/booking, Managed Content model). Duffel is validated — this is a sequencing decision, not a rejection. Card content + affiliate revenue is higher leverage right now. Come back to this after P3.5 and affiliate network onboarding.
+
+**Owner:** [Sister — TBD]
 
 - [ ] Duffel API integration (sandbox → live)
 - [ ] Search form (AirportInput, DatePicker, passengers, cabin)
@@ -283,7 +308,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**P2 closed, P3 closed (Mar 11). All core features shipped. Scraper rewritten with correct URLs (FM consolidated page + DoC per-bank pages + tag pages for C1/Bilt), 3 parse strategies per source tuned to live HTML. Diff detection → alert dispatch deferred to notification infra. Next: Priority 4 (Flight Search via Duffel).**
+**P2 closed, P3 closed (Mar 11). Dependency audit confirmed Duffel is validated but deferred — card content + affiliate revenue is higher leverage. Flight search assigned to sister. Next: Priority 3.5A (database backups to R2) → 3.5B (editorial card reviews for 10-15 top cards) → 3.5C (more best-for articles) → affiliate network applications.**
 
 ---
 

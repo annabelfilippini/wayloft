@@ -1,0 +1,53 @@
+name: Database Backup
+
+on:
+  schedule:
+    # Daily at 5 AM UTC (1 AM ET)
+    - cron: '0 5 * * *'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  backup:
+    name: Backup Supabase Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Create backup directory
+        run: mkdir -p backups
+
+      - name: Dump roles
+        run: supabase db dump --db-url "${{ secrets.SUPABASE_DB_URL }}" -f backups/roles.sql --role-only
+
+      - name: Dump schema
+        run: supabase db dump --db-url "${{ secrets.SUPABASE_DB_URL }}" -f backups/schema.sql
+
+      - name: Dump data
+        run: supabase db dump --db-url "${{ secrets.SUPABASE_DB_URL }}" -f backups/data.sql --data-only --use-copy
+
+      - name: Compress backup
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d_%H%M%S")
+          tar -czf "backups/wayloft-backup-${TIMESTAMP}.tar.gz" -C backups roles.sql schema.sql data.sql
+          echo "BACKUP_FILE=wayloft-backup-${TIMESTAMP}.tar.gz" >> $GITHUB_ENV
+          echo "BACKUP_DATE=$(date -u +"%Y/%m/%d")" >> $GITHUB_ENV
+
+      - name: Upload to Cloudflare R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.CF_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.CF_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.CF_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.CF_BUCKET }}
+          source-dir: backups/${{ env.BACKUP_FILE }}
+          destination-dir: db-backups/${{ env.BACKUP_DATE }}/
+
+      - name: Verify upload
+        run: |
+          echo "Backup uploaded: db-backups/${{ env.BACKUP_DATE }}/${{ env.BACKUP_FILE }}"
+          ls -lh backups/

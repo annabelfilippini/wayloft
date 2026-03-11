@@ -221,11 +221,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Ongoing:
-- Editorial content for card reviews (hand-written over time)
+Priority 3.5 (current):
+- 3.5A: Database backup strategy (automated pg_dump to Cloudflare R2)
+- 3.5B: Editorial card reviews for top 10-15 cards (affiliate network application prerequisite)
+- 3.5C: Additional best-for articles (groceries, gas, business, etc.)
+- Then: Apply to affiliate networks (CardRatings, CJ, FlexOffers)
 
-Then:
-- Priority 4: Flight Search via Duffel
+Deferred:
+- Priority 4: Flight Search via Duffel (validated, assigned to sister)
 - Priority 5: Browser Extension
 
 ### Week 2 gaps (can be done anytime)
