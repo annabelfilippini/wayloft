@@ -18,18 +18,22 @@ import { CardPickerSearch } from "./card-picker-search";
 
 interface AddCardDialogProps {
   catalog: CatalogCard[];
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 type ActionState = { error?: string; success?: boolean };
 
-export function AddCardDialog({ catalog }: AddCardDialogProps) {
-  const [open, setOpen] = useState(false);
+export function AddCardDialog({ catalog, open: controlledOpen, onOpenChange: controlledOnOpenChange }: AddCardDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
   const [selected, setSelected] = useState<CatalogCard | null>(null);
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
     async (_prev, formData) => {
       const result = await addCard(formData);
       if (result.success) {
-        setOpen(false);
+        handleOpenChange(false);
         setSelected(null);
       }
       return result;
@@ -38,7 +42,11 @@ export function AddCardDialog({ catalog }: AddCardDialogProps) {
   );
 
   function handleOpenChange(next: boolean) {
-    setOpen(next);
+    if (isControlled) {
+      controlledOnOpenChange?.(next);
+    } else {
+      setInternalOpen(next);
+    }
     if (!next) {
       setSelected(null);
     }
@@ -46,12 +54,14 @@ export function AddCardDialog({ catalog }: AddCardDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Card
-        </Button>
-      </DialogTrigger>
+      {!isControlled && (
+        <DialogTrigger asChild>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Card
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>

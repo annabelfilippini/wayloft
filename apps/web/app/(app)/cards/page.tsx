@@ -1,10 +1,36 @@
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
-import { getAllCards } from "@/lib/cards/catalog";
+import { getAllCards, getCardBySlug } from "@/lib/cards/catalog";
 import type { UserCard } from "@wayloft/shared";
 import { CardGrid } from "@/components/cards/card-grid";
 import { EmptyState } from "@/components/cards/empty-state";
-import { AddCardDialog } from "@/components/cards/add-card-dialog";
+import { AddCardDropdown } from "@/components/cards/add-card-dropdown";
+
+function computePortfolioSummary(cards: UserCard[]) {
+  let totalAF = 0;
+  let totalCredits = 0;
+
+  for (const uc of cards) {
+    totalAF += uc.annual_fee_cents / 100;
+    const cat = getCardBySlug(uc.card_slug);
+    if (cat?.credits) {
+      for (const credit of cat.credits) {
+        const annual =
+          credit.period === "monthly"
+            ? credit.amount_cents * 12
+            : credit.period === "quarterly"
+              ? credit.amount_cents * 4
+              : credit.period === "semi_annual"
+                ? credit.amount_cents * 2
+                : credit.amount_cents;
+        totalCredits += annual / 100;
+      }
+    }
+  }
+
+  const effectiveCost = totalAF - totalCredits;
+  return { totalAF, totalCredits, effectiveCost };
+}
 
 export default async function CardsPage() {
   const user = await requireUser();
@@ -19,6 +45,7 @@ export default async function CardsPage() {
 
   const cards = (userCards ?? []) as UserCard[];
   const catalog = getAllCards();
+  const summary = cards.length > 0 ? computePortfolioSummary(cards) : null;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
@@ -28,8 +55,19 @@ export default async function CardsPage() {
           <p className="text-sm text-muted-foreground">
             {cards.length} card{cards.length !== 1 ? "s" : ""} in your portfolio
           </p>
+          {summary && (
+            <p className="text-xs text-muted-foreground">
+              Total annual fees: ${summary.totalAF.toLocaleString()}/yr
+              {summary.totalCredits > 0 && (
+                <>
+                  {" · "}Total credits: ${summary.totalCredits.toLocaleString()}/yr
+                  {" · "}Effective cost: ${summary.effectiveCost.toLocaleString()}/yr
+                </>
+              )}
+            </p>
+          )}
         </div>
-        <AddCardDialog catalog={catalog} />
+        <AddCardDropdown catalog={catalog} />
       </div>
 
       <div className="mt-6">

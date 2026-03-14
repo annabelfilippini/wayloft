@@ -115,6 +115,9 @@ export async function NextCardWidget({
             See all
           </Link>
         </div>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Based on your spending profile and current portfolio
+        </p>
 
         <div className="mt-4 space-y-3">
           {top2.map((result) => {
@@ -161,15 +164,12 @@ export async function NextCardWidget({
                     </>
                   )}
 
-                  {/* Advanced: link to full results */}
-                  {advanced && (
-                    <Link
-                      href="/recommend"
-                      className="mt-1 inline-block text-xs text-primary hover:underline"
-                    >
-                      View full breakdown
-                    </Link>
-                  )}
+                  <Link
+                    href="/recommend"
+                    className="mt-1 inline-block text-xs text-primary hover:underline"
+                  >
+                    {advanced ? "View full breakdown" : "See why"}
+                  </Link>
                 </div>
               </div>
             );

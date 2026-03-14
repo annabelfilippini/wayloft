@@ -319,6 +319,40 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
 
   const labels = isBeginnerOrBelow(experienceLevel) ? beginnerTypeLabels : typeLabels;
 
+  // Split into urgent (critical/warning AND <=7 days) vs recommended
+  const urgentActions = actions.filter(
+    (a) =>
+      (a.urgency === "critical" || a.urgency === "warning") &&
+      a.daysRemaining !== null &&
+      a.daysRemaining <= 7
+  );
+  const recommendedActions = actions.filter(
+    (a) => !urgentActions.includes(a)
+  );
+
+  const urgentDisplay = urgentActions.slice(0, 5);
+  const recommendedDisplay = recommendedActions.slice(0, 5);
+
+  function renderAction(action: UnifiedAction, accent?: boolean) {
+    return (
+      <Link
+        key={action.key}
+        href={action.href}
+        className={`flex items-start justify-between gap-3 rounded-md p-2 -mx-1 hover:bg-muted/50 transition-colors ${
+          accent ? "border-l-2 border-red-500 pl-3" : ""
+        }`}
+      >
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">{action.title}</p>
+          <p className="text-xs text-muted-foreground">{action.subtitle}</p>
+        </div>
+        <Badge variant={urgencyColors[action.urgency] ?? "outline"}>
+          {labels[action.type] ?? action.type}
+        </Badge>
+      </Link>
+    );
+  }
+
   return (
     <Card>
       <CardContent className="pt-6">
@@ -331,27 +365,46 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
             View all cards
           </Link>
         </div>
-        <div className="mt-3 space-y-3">
-          {actions.map((action) => (
-            <Link
-              key={action.key}
-              href={action.href}
-              className="flex items-start justify-between gap-3 rounded-md p-1 -mx-1 hover:bg-muted/50 transition-colors"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{action.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {action.subtitle}
-                </p>
-              </div>
-              <Badge
-                variant={urgencyColors[action.urgency] ?? "outline"}
+
+        {urgentDisplay.length > 0 && (
+          <div className="mt-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400">
+              Urgent
+            </p>
+            <div className="mt-2 space-y-2">
+              {urgentDisplay.map((a) => renderAction(a, true))}
+            </div>
+            {urgentActions.length > 5 && (
+              <Link
+                href="/cards"
+                className="mt-1 block text-xs text-muted-foreground hover:text-foreground"
               >
-                {labels[action.type] ?? action.type}
-              </Badge>
-            </Link>
-          ))}
-        </div>
+                View all {urgentActions.length} items
+              </Link>
+            )}
+          </div>
+        )}
+
+        {recommendedDisplay.length > 0 && (
+          <div className={urgentDisplay.length > 0 ? "mt-4" : "mt-3"}>
+            {urgentDisplay.length > 0 && (
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Recommended
+              </p>
+            )}
+            <div className="mt-2 space-y-2">
+              {recommendedDisplay.map((a) => renderAction(a))}
+            </div>
+            {recommendedActions.length > 5 && (
+              <Link
+                href="/cards"
+                className="mt-1 block text-xs text-muted-foreground hover:text-foreground"
+              >
+                View all {recommendedActions.length} items
+              </Link>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

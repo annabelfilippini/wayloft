@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { BonusFilters } from "@/components/bonuses/bonus-filters";
 import { BonusHistory } from "@/components/bonuses/bonus-history";
+import { BonusExplainer } from "@/components/bonuses/bonus-explainer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Zap, Clock } from "lucide-react";
@@ -135,6 +136,10 @@ export default function BonusesPage() {
       <p className="text-sm text-muted-foreground">
         Active transfer bonus promotions across Chase, Amex, Citi, Capital One, and Bilt.
       </p>
+
+      <div className="mt-4">
+        <BonusExplainer />
+      </div>
 
       <Suspense fallback={<Skeleton className="mt-8 h-64 w-full rounded-lg" />}>
         <BonusesContent />

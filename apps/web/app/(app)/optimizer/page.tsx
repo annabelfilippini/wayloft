@@ -5,6 +5,7 @@ import { generateWalletGuide } from "@/lib/optimizer/engine";
 import type { UserCard, ExperienceLevel } from "@wayloft/shared";
 import { WalletGuide } from "@/components/optimizer/wallet-guide";
 import { EmptyOptimizer } from "@/components/optimizer/empty-optimizer";
+import { CopyCheatSheet } from "@/components/optimizer/copy-cheat-sheet";
 
 export default async function OptimizerPage() {
   const user = await requireUser();
@@ -50,12 +51,15 @@ export default async function OptimizerPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <div>
-        <h1 className="text-2xl font-bold">Spending Optimizer</h1>
-        <p className="text-sm text-muted-foreground">
-          {cards.length} card{cards.length !== 1 ? "s" : ""} &middot; Best card
-          for every category
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Spending Optimizer</h1>
+          <p className="text-sm text-muted-foreground">
+            {cards.length} card{cards.length !== 1 ? "s" : ""} &middot; Best card
+            for every category
+          </p>
+        </div>
+        <CopyCheatSheet guide={guide} />
       </div>
       <div className="mt-6">
         <WalletGuide guide={guide} catalog={catalog} experienceLevel={experienceLevel} />

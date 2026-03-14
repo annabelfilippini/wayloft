@@ -21,7 +21,7 @@ const navLinks = [
   { href: "/optimizer", label: "Optimizer", icon: Wallet },
   { href: "/recommend", label: "Find a Card", icon: Compass },
   { href: "/bonuses", label: "Bonuses", icon: ArrowLeftRight },
-  { href: "/credit-cards", label: "Cards", icon: Newspaper },
+  { href: "/credit-cards", label: "Reviews", icon: Newspaper },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
