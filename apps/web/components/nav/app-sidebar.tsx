@@ -6,9 +6,9 @@ import {
   LayoutDashboard,
   CreditCard,
   Wallet,
-  Sparkles,
+  Compass,
   ArrowLeftRight,
-  Search,
+  Newspaper,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -19,9 +19,9 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/cards", label: "My Cards", icon: CreditCard },
   { href: "/optimizer", label: "Optimizer", icon: Wallet },
-  { href: "/recommend", label: "Recommend", icon: Sparkles },
+  { href: "/recommend", label: "Find a Card", icon: Compass },
   { href: "/bonuses", label: "Bonuses", icon: ArrowLeftRight },
-  { href: "/search", label: "Search", icon: Search },
+  { href: "/credit-cards", label: "Cards", icon: Newspaper },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

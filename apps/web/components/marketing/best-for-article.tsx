@@ -127,7 +127,7 @@ export function BestForArticle({
                         <Badge
                           key={tag}
                           variant="secondary"
-                          className="bg-amber-100 text-amber-800 text-[10px]"
+                          className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 text-[10px]"
                         >
                           {tag}
                         </Badge>
@@ -208,7 +208,7 @@ function CardBreakdown({
         <div className="flex-1">
           <div className="flex items-center gap-3">
             {rank === 1 && (
-              <span className="flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+              <span className="flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-900/30 px-2.5 py-0.5 text-xs font-semibold text-amber-800 dark:text-amber-400">
                 <Trophy className="h-3 w-3" />
                 Top Pick
               </span>

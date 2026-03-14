@@ -438,7 +438,7 @@ export function CardReview({
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="mb-2 text-sm font-semibold text-green-700">
+                <h3 className="mb-2 text-sm font-semibold text-green-700 dark:text-green-400">
                   Pros
                 </h3>
                 <ul className="space-y-1.5">
@@ -454,7 +454,7 @@ export function CardReview({
                 </ul>
               </div>
               <div>
-                <h3 className="mb-2 text-sm font-semibold text-red-700">
+                <h3 className="mb-2 text-sm font-semibold text-red-700 dark:text-red-400">
                   Cons
                 </h3>
                 <ul className="space-y-1.5">
