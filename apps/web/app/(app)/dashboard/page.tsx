@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BonusSpotlight } from "@/components/dashboard/bonus-spotlight";
 import { ActionsWidget } from "@/components/dashboard/actions-widget";
 import { QuickOptimizer } from "@/components/dashboard/quick-optimizer";
+import { DashboardTips } from "@/components/dashboard/dashboard-tips";
 import { NextCardWidget } from "@/components/dashboard/next-card-widget";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -58,9 +59,12 @@ export default async function DashboardPage() {
               <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
             </Suspense>
           </div>
-          <div className="lg:col-span-2">
+          <div className="space-y-6 lg:col-span-2">
             <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
               <QuickOptimizer userId={user.id} />
+            </Suspense>
+            <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+              <DashboardTips userId={user.id} />
             </Suspense>
           </div>
         </div>
