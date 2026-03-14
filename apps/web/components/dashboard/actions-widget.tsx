@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import type { CardAction, ExperienceLevel, TransferBonus } from "@wayloft/shared";
+import type { CardAction, ExperienceLevel } from "@wayloft/shared";
 import { isBeginnerOrBelow } from "@/lib/experience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getCardBySlug } from "@/lib/cards/catalog";
-import { BANK_DISPLAY_NAMES } from "@/lib/bonuses/utils";
 
 interface ActionsWidgetProps {
   userId: string;
@@ -71,35 +70,15 @@ interface MissingAutopay {
   reason: "no_payment_info" | "no_autopay";
 }
 
-interface EndingSoonBonus {
-  id: string;
-  bank: string;
-  currency: string;
-  partner: string;
-  partner_code: string;
-  partner_type: string;
-  bonus_percentage: number;
-  end_date: string;
-  days_remaining: number;
-  urgency: "critical" | "warning" | "info";
-}
-
 interface UnifiedAction {
   key: string;
-  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup" | "payment_due" | "transfer_bonus";
+  type: "signup_spend" | "annual_fee" | "points_expiring" | "credit_expiring" | "perk_setup" | "payment_due";
   title: string;
   subtitle: string;
   urgency: "critical" | "warning" | "info" | "ok";
   daysRemaining: number | null;
   href: string;
 }
-
-const urgencyColors: Record<string, "destructive" | "secondary" | "outline"> = {
-  critical: "destructive",
-  warning: "secondary",
-  info: "outline",
-  ok: "outline",
-};
 
 const urgencyOrder: Record<string, number> = {
   critical: 0,
@@ -115,7 +94,6 @@ const typeLabels: Record<string, string> = {
   credit_expiring: "Credit",
   perk_setup: "Perk",
   payment_due: "Payment",
-  transfer_bonus: "Transfer",
 };
 
 const beginnerTypeLabels: Record<string, string> = {
@@ -123,11 +101,27 @@ const beginnerTypeLabels: Record<string, string> = {
   annual_fee: "Fee",
 };
 
+/** Color-coded left border by action type */
+const typeBorderColors: Record<string, string> = {
+  points_expiring: "border-l-red-500",
+  credit_expiring: "border-l-red-500",
+  signup_spend: "border-l-orange-500",
+  annual_fee: "border-l-amber-500",
+  perk_setup: "border-l-green-500",
+  payment_due: "border-l-blue-500",
+};
+
+const urgencyBadgeVariants: Record<string, "destructive" | "secondary" | "outline"> = {
+  critical: "destructive",
+  warning: "secondary",
+  info: "outline",
+  ok: "outline",
+};
+
 export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetProps) {
   const supabase = await createClient();
 
-  // Fetch card actions, expiring points, expiring credits, unused perks, payment data, user cards, and ending-soon bonuses in parallel
-  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes, upcomingPaymentsRes, missingAutopayRes, userCardsRes, endingSoonBonusesRes] = await Promise.all([
+  const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes, upcomingPaymentsRes, missingAutopayRes] = await Promise.all([
     supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
     supabase.from("expiring_points").select("*").eq("user_id", userId),
     supabase
@@ -154,19 +148,11 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
       .select("*")
       .eq("user_id", userId)
       .limit(3),
-    supabase
-      .from("user_cards")
-      .select("currency")
-      .eq("user_id", userId)
-      .eq("status", "active"),
-    supabase
-      .from("active_transfer_bonuses_ending_soon")
-      .select("*"),
   ]);
 
   const actions: UnifiedAction[] = [];
 
-  // Process card actions
+  // Card actions
   const rows = cardActionsRes.data ?? [];
   for (const row of rows) {
     if (row.signup_action) {
@@ -207,7 +193,7 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     }
   }
 
-  // Process expiring points
+  // Expiring points
   const expiring = (expiringRes.data ?? []) as ExpiringPoint[];
   for (const ep of expiring) {
     actions.push({
@@ -223,7 +209,7 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     });
   }
 
-  // Process expiring credits
+  // Expiring credits
   const expiringCredits = (expiringCreditsRes.data ?? []) as ExpiringCredit[];
   for (const ec of expiringCredits) {
     actions.push({
@@ -237,7 +223,7 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     });
   }
 
-  // Process unused perks
+  // Unused perks
   const unusedPerks = (unusedPerksRes.data ?? []) as UnusedPerk[];
   for (const up of unusedPerks) {
     const valueDollars = Math.round(up.estimated_annual_value_cents / 100);
@@ -246,13 +232,13 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
       type: "perk_setup",
       title: up.card_name,
       subtitle: `${up.perk_name} — set up to save ~$${valueDollars}/yr`,
-      urgency: up.urgency === "warning" ? "info" : "info",
+      urgency: "info",
       daysRemaining: null,
       href: `/cards/${up.user_card_id}`,
     });
   }
 
-  // Process upcoming payments (no autopay, due within 14 days)
+  // Upcoming payments
   const upcomingPayments = (upcomingPaymentsRes.data ?? []) as UpcomingPayment[];
   for (const up of upcomingPayments) {
     const catalogCard = up.card_slug ? getCardBySlug(up.card_slug) : undefined;
@@ -269,10 +255,9 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     });
   }
 
-  // Process cards missing autopay
+  // Missing autopay
   const missingAutopay = (missingAutopayRes.data ?? []) as MissingAutopay[];
   for (const ma of missingAutopay) {
-    // Skip if we already have an upcoming payment action for this card
     if (upcomingPayments.some((up) => up.user_card_id === ma.user_card_id)) continue;
     actions.push({
       key: `autopay-${ma.user_card_id}`,
@@ -287,30 +272,9 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     });
   }
 
-  // Process transfer bonuses ending soon (filtered to user's currencies)
-  const userCurrencies = new Set(
-    (userCardsRes.data ?? []).map((c: { currency: string }) => c.currency)
-  );
-  const endingSoonBonuses = (endingSoonBonusesRes.data ?? []) as EndingSoonBonus[];
-  for (const tb of endingSoonBonuses) {
-    if (userCurrencies.size === 0 || userCurrencies.has(tb.currency)) {
-      const bankName = BANK_DISPLAY_NAMES[tb.bank] ?? tb.bank;
-      actions.push({
-        key: `transfer-${tb.id}`,
-        type: "transfer_bonus",
-        title: `${bankName} → ${tb.partner}`,
-        subtitle: `+${tb.bonus_percentage}% transfer bonus — ${tb.days_remaining} days left`,
-        urgency: tb.urgency,
-        daysRemaining: tb.days_remaining,
-        href: "/bonuses",
-      });
-    }
-  }
-
   // Sort by urgency then days remaining
   actions.sort((a, b) => {
-    const urgDiff =
-      (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
+    const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
     if (urgDiff !== 0) return urgDiff;
     return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
   });
@@ -319,92 +283,38 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
 
   const labels = isBeginnerOrBelow(experienceLevel) ? beginnerTypeLabels : typeLabels;
 
-  // Split into urgent (critical/warning AND <=7 days) vs recommended
-  const urgentActions = actions.filter(
-    (a) =>
-      (a.urgency === "critical" || a.urgency === "warning") &&
-      a.daysRemaining !== null &&
-      a.daysRemaining <= 7
-  );
-  const recommendedActions = actions.filter(
-    (a) => !urgentActions.includes(a)
-  );
-
-  const urgentDisplay = urgentActions.slice(0, 5);
-  const recommendedDisplay = recommendedActions.slice(0, 5);
-
-  function renderAction(action: UnifiedAction, accent?: boolean) {
-    return (
-      <Link
-        key={action.key}
-        href={action.href}
-        className={`flex items-start justify-between gap-3 rounded-md p-2 -mx-1 hover:bg-muted/50 transition-colors ${
-          accent ? "border-l-2 border-red-500 pl-3" : ""
-        }`}
-      >
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{action.title}</p>
-          <p className="text-xs text-muted-foreground">{action.subtitle}</p>
-        </div>
-        <Badge variant={urgencyColors[action.urgency] ?? "outline"}>
-          {labels[action.type] ?? action.type}
-        </Badge>
-      </Link>
-    );
-  }
-
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <Card className="h-fit">
+      <CardContent className="p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Action Items</h2>
-          <Link
-            href="/cards"
-            className="text-xs text-muted-foreground hover:text-foreground"
-          >
-            View all cards
-          </Link>
+          <h3 className="text-sm font-semibold">Action Items</h3>
+          <span className="text-xs text-muted-foreground">{actions.length}</span>
         </div>
 
-        {urgentDisplay.length > 0 && (
-          <div className="mt-3">
-            <p className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400">
-              Urgent
-            </p>
-            <div className="mt-2 space-y-2">
-              {urgentDisplay.map((a) => renderAction(a, true))}
-            </div>
-            {urgentActions.length > 5 && (
-              <Link
-                href="/cards"
-                className="mt-1 block text-xs text-muted-foreground hover:text-foreground"
+        <div className="mt-3 max-h-[400px] space-y-1.5 overflow-y-auto">
+          {actions.map((action) => (
+            <Link
+              key={action.key}
+              href={action.href}
+              className={`flex items-start justify-between gap-2 rounded-md border-l-2 p-2 transition-colors hover:bg-muted/50 ${
+                typeBorderColors[action.type] ?? "border-l-muted"
+              }`}
+            >
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-medium">{action.title}</p>
+                <p className="text-[11px] leading-tight text-muted-foreground">
+                  {action.subtitle}
+                </p>
+              </div>
+              <Badge
+                variant={urgencyBadgeVariants[action.urgency] ?? "outline"}
+                className="shrink-0 text-[10px]"
               >
-                View all {urgentActions.length} items
-              </Link>
-            )}
-          </div>
-        )}
-
-        {recommendedDisplay.length > 0 && (
-          <div className={urgentDisplay.length > 0 ? "mt-4" : "mt-3"}>
-            {urgentDisplay.length > 0 && (
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Recommended
-              </p>
-            )}
-            <div className="mt-2 space-y-2">
-              {recommendedDisplay.map((a) => renderAction(a))}
-            </div>
-            {recommendedActions.length > 5 && (
-              <Link
-                href="/cards"
-                className="mt-1 block text-xs text-muted-foreground hover:text-foreground"
-              >
-                View all {recommendedActions.length} items
-              </Link>
-            )}
-          </div>
-        )}
+                {labels[action.type] ?? action.type}
+              </Badge>
+            </Link>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

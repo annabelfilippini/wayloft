@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCards, getCardBySlug } from "@/lib/cards/catalog";
@@ -5,6 +6,8 @@ import type { UserCard } from "@wayloft/shared";
 import { CardGrid } from "@/components/cards/card-grid";
 import { EmptyState } from "@/components/cards/empty-state";
 import { AddCardDropdown } from "@/components/cards/add-card-dropdown";
+import { CompactFiveTwentyFour } from "@/components/dashboard/compact-five-twenty-four";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function computePortfolioSummary(cards: UserCard[]) {
   let totalAF = 0;
@@ -69,6 +72,14 @@ export default async function CardsPage() {
         </div>
         <AddCardDropdown catalog={catalog} />
       </div>
+
+      {cards.length > 0 && (
+        <div className="mt-4">
+          <Suspense fallback={<Skeleton className="h-12 w-full rounded-lg" />}>
+            <CompactFiveTwentyFour userId={user.id} />
+          </Suspense>
+        </div>
+      )}
 
       <div className="mt-6">
         {cards.length === 0 ? (

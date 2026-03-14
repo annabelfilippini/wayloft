@@ -2,9 +2,9 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
-import { TopStats } from "@/components/dashboard/top-stats";
+import { BonusSpotlight } from "@/components/dashboard/bonus-spotlight";
 import { ActionsWidget } from "@/components/dashboard/actions-widget";
-import { CompactFiveTwentyFour } from "@/components/dashboard/compact-five-twenty-four";
+import { QuickOptimizer } from "@/components/dashboard/quick-optimizer";
 import { NextCardWidget } from "@/components/dashboard/next-card-widget";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -46,18 +46,26 @@ export default async function DashboardPage() {
       </p>
 
       <div className="mt-6 space-y-6">
-        <Suspense fallback={<Skeleton className="h-24 w-full rounded-lg" />}>
-          <TopStats userId={user.id} />
+        {/* Hero: Transfer Bonus Spotlight — full width */}
+        <Suspense fallback={<Skeleton className="h-40 w-full rounded-lg" />}>
+          <BonusSpotlight userId={user.id} />
         </Suspense>
 
-        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
-          <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
-        </Suspense>
+        {/* Two-column: Actions (left, wider) | Optimizer cheat sheet (right) */}
+        <div className="grid gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-3">
+            <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
+              <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
+            </Suspense>
+          </div>
+          <div className="lg:col-span-2">
+            <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
+              <QuickOptimizer userId={user.id} />
+            </Suspense>
+          </div>
+        </div>
 
-        <Suspense fallback={<Skeleton className="h-12 w-full rounded-lg" />}>
-          <CompactFiveTwentyFour userId={user.id} />
-        </Suspense>
-
+        {/* Bottom: Cards to Consider — full width */}
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
           <NextCardWidget userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
