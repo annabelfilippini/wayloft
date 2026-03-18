@@ -272,8 +272,8 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
-              <h3 className="text-sm font-semibold">Deadlines &amp; Reminders</h3>
+              <AlertTriangle className="h-5 w-5 text-amber-500" />
+              <h3 className="text-lg font-bold">Deadlines &amp; Reminders</h3>
               <span className="text-xs text-muted-foreground">({deadlines.length})</span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -295,8 +295,8 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Gift className="h-4 w-4 text-green-500" />
-              <h3 className="text-sm font-semibold">Perks to Activate</h3>
+              <Gift className="h-5 w-5 text-green-500" />
+              <h3 className="text-lg font-bold">Perks to Activate</h3>
               <span className="text-xs text-muted-foreground">({perkActions.length})</span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -318,8 +318,8 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-blue-500" />
-              <h3 className="text-sm font-semibold">Payments</h3>
+              <CreditCard className="h-5 w-5 text-blue-500" />
+              <h3 className="text-lg font-bold">Payments</h3>
               <span className="text-xs text-muted-foreground">({paymentActions.length})</span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
