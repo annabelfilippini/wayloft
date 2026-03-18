@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
+import { CardStrip } from "@/components/dashboard/card-strip";
 import { BonusSpotlight } from "@/components/dashboard/bonus-spotlight";
 import { ActionsWidget } from "@/components/dashboard/actions-widget";
 import { QuickOptimizer } from "@/components/dashboard/quick-optimizer";
@@ -46,8 +47,18 @@ export default async function DashboardPage() {
         Welcome back, {user.user_metadata?.full_name || user.email}
       </p>
 
-      {/* === Section 1: Opportunities === */}
+      {/* === Section 0: My Cards === */}
       <section className="mt-8">
+        <SectionDivider label="My Cards" />
+        <div className="mt-4">
+          <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+            <CardStrip userId={user.id} />
+          </Suspense>
+        </div>
+      </section>
+
+      {/* === Section 1: Opportunities === */}
+      <section className="mt-10">
         <SectionDivider label="Opportunities" />
         <div className="mt-4">
           <Suspense fallback={<Skeleton className="h-40 w-full rounded-lg" />}>
