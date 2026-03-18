@@ -66,9 +66,18 @@ export async function POST(request: Request) {
       searchParams: params,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Flight search failed";
-    console.error("Flight search error:", message);
+    console.error("Flight search error:", error);
+    let message = "Flight search failed";
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    // Surface Duffel API errors
+    if (typeof error === "object" && error !== null && "errors" in error) {
+      const duffelErrors = (error as { errors: Array<{ message: string }> }).errors;
+      if (duffelErrors?.[0]?.message) {
+        message = duffelErrors[0].message;
+      }
+    }
     return Response.json({ error: message }, { status: 500 });
   }
 }

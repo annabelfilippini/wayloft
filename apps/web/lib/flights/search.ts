@@ -1,9 +1,16 @@
-import "server-only";
 import { Duffel } from "@duffel/api";
 
-const duffel = new Duffel({
-  token: process.env.DUFFEL_API_KEY!,
-});
+let _duffel: Duffel | null = null;
+
+function getDuffel(): Duffel {
+  if (!_duffel) {
+    if (!process.env.DUFFEL_API_KEY) {
+      throw new Error("DUFFEL_API_KEY is not set");
+    }
+    _duffel = new Duffel({ token: process.env.DUFFEL_API_KEY });
+  }
+  return _duffel;
+}
 
 export interface FlightSearchParams {
   origin: string;
@@ -74,6 +81,8 @@ export async function searchFlights(
     { length: params.passengers },
     () => ({ type: "adult" as const })
   );
+
+  const duffel = getDuffel();
 
   const offerRequest = await duffel.offerRequests.create({
     slices,
