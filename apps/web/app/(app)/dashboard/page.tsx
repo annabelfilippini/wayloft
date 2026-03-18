@@ -49,7 +49,7 @@ export default async function DashboardPage() {
       <div className="mt-6 space-y-6">
         {/* Hero: Transfer Bonus Spotlight — full width */}
         <Suspense fallback={<Skeleton className="h-40 w-full rounded-lg" />}>
-          <BonusSpotlight userId={user.id} />
+          <BonusSpotlight userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
 
         {/* Two-column: Actions (left, wider) | Optimizer cheat sheet (right) */}
