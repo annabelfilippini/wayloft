@@ -1,8 +1,8 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
-import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
-import type { UserCard, CatalogCard } from "@wayloft/shared";
+import { CardDeck } from "@/components/dashboard/card-deck";
+import type { UserCard } from "@wayloft/shared";
+import type { CardData } from "@/components/dashboard/card-deck";
 
 interface CardStripProps {
   userId: string;
@@ -13,11 +13,6 @@ interface PaymentInfo {
   next_due_date: string;
   days_until_due: number;
   autopay_enabled: boolean;
-}
-
-interface UnusedPerkCount {
-  user_card_id: string;
-  count: number;
 }
 
 export async function CardStrip({ userId }: CardStripProps) {
@@ -36,7 +31,7 @@ export async function CardStrip({ userId }: CardStripProps) {
       .eq("user_id", userId),
     supabase
       .from("unused_perks")
-      .select("user_card_id")
+      .select("user_card_id, perk_name, estimated_annual_value_cents")
       .eq("user_id", userId)
       .eq("status", "not_started"),
   ]);
@@ -45,114 +40,51 @@ export async function CardStrip({ userId }: CardStripProps) {
   if (userCards.length === 0) return null;
 
   const payments = (paymentsRes.data ?? []) as PaymentInfo[];
-  const unusedPerks = (perksRes.data ?? []) as { user_card_id: string }[];
+  const unusedPerks = (perksRes.data ?? []) as {
+    user_card_id: string;
+    perk_name: string;
+    estimated_annual_value_cents: number;
+  }[];
 
-  // Count unused perks per card
-  const perkCounts = new Map<string, number>();
-  for (const p of unusedPerks) {
-    perkCounts.set(p.user_card_id, (perkCounts.get(p.user_card_id) ?? 0) + 1);
+  // Build serializable card data for client component
+  const cards: CardData[] = [];
+
+  for (const uc of userCards) {
+    const catalog = getCardBySlug(uc.card_slug);
+    if (!catalog) continue;
+
+    const payment = payments.find((p) => p.user_card_id === uc.id);
+    const cardPerks = unusedPerks
+      .filter((p) => p.user_card_id === uc.id)
+      .map((p) => ({
+        name: p.perk_name,
+        valueCents: p.estimated_annual_value_cents,
+      }));
+
+    let bonusPercent: number | null = null;
+    if (!uc.signup_bonus_met && uc.signup_spend_deadline && uc.signup_spend_requirement_cents) {
+      bonusPercent = Math.min(
+        100,
+        Math.round((uc.signup_spend_progress_cents / uc.signup_spend_requirement_cents) * 100)
+      );
+    }
+
+    cards.push({
+      id: uc.id,
+      issuer: uc.issuer,
+      network: catalog.network,
+      name: catalog.name,
+      annualFeeCents: catalog.annual_fee_cents,
+      bonusPercent,
+      payment: payment
+        ? {
+            daysUntilDue: payment.days_until_due,
+            autopayEnabled: payment.autopay_enabled,
+          }
+        : null,
+      perks: cardPerks,
+    });
   }
 
-  // Index payments by card
-  const paymentMap = new Map<string, PaymentInfo>();
-  for (const p of payments) {
-    paymentMap.set(p.user_card_id, p);
-  }
-
-  return (
-    <div className="flex gap-4 overflow-x-auto pb-2">
-      {userCards.map((uc) => {
-        const catalog = getCardBySlug(uc.card_slug);
-        if (!catalog) return null;
-
-        const payment = paymentMap.get(uc.id);
-        const unusedPerkCount = perkCounts.get(uc.id) ?? 0;
-        const hasActiveBonus = !uc.signup_bonus_met && uc.signup_spend_deadline;
-
-        // Bonus progress
-        let bonusPercent: number | null = null;
-        if (hasActiveBonus && uc.signup_spend_requirement_cents) {
-          bonusPercent = Math.min(
-            100,
-            Math.round((uc.signup_spend_progress_cents / uc.signup_spend_requirement_cents) * 100)
-          );
-        }
-
-        return (
-          <Link
-            key={uc.id}
-            href={`/cards/${uc.id}`}
-            className="group flex-none"
-          >
-            <div className="w-44 space-y-2">
-              <CardArtPlaceholder
-                issuer={uc.issuer}
-                network={catalog.network}
-                cardName={catalog.name}
-                className="transition-transform group-hover:scale-[1.02]"
-              />
-              <div className="space-y-0.5 px-0.5">
-                {bonusPercent != null && (
-                  <CardStat
-                    label="Bonus progress"
-                    value={`${bonusPercent}%`}
-                    accent="text-orange-500 dark:text-orange-400"
-                  />
-                )}
-                {payment && (
-                  <CardStat
-                    label="Payment"
-                    value={
-                      payment.autopay_enabled
-                        ? "Autopay on"
-                        : `Due in ${payment.days_until_due}d`
-                    }
-                    accent={
-                      !payment.autopay_enabled && payment.days_until_due <= 7
-                        ? "text-red-500 dark:text-red-400"
-                        : undefined
-                    }
-                  />
-                )}
-                {unusedPerkCount > 0 && (
-                  <CardStat
-                    label="Perks"
-                    value={`${unusedPerkCount} to activate`}
-                    accent="text-green-600 dark:text-green-400"
-                  />
-                )}
-                {!bonusPercent && !payment && unusedPerkCount === 0 && (
-                  <CardStat
-                    label="AF"
-                    value={
-                      catalog.annual_fee_cents === 0
-                        ? "None"
-                        : `$${catalog.annual_fee_cents / 100}/yr`
-                    }
-                  />
-                )}
-              </div>
-            </div>
-          </Link>
-        );
-      })}
-    </div>
-  );
-}
-
-function CardStat({
-  label,
-  value,
-  accent,
-}: {
-  label: string;
-  value: string;
-  accent?: string;
-}) {
-  return (
-    <div className="flex items-center justify-between text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className={accent ?? "font-medium"}>{value}</span>
-    </div>
-  );
+  return <CardDeck cards={cards} />;
 }

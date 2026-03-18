@@ -42,20 +42,12 @@ export default async function DashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-8">
       {showSkipBanner && <SkipBanner />}
 
-      <h1 className="mt-4 text-2xl font-bold">Dashboard</h1>
-      <p className="text-sm text-muted-foreground">
-        Welcome back, {user.user_metadata?.full_name || user.email}
-      </p>
-
-      {/* === Section 0: My Cards === */}
-      <section className="mt-8">
-        <SectionDivider label="My Cards" />
-        <div className="mt-4">
-          <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
-            <CardStrip userId={user.id} />
-          </Suspense>
-        </div>
-      </section>
+      {/* === My Cards deck (replaces dashboard header) === */}
+      <div className="mt-4">
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+          <CardStrip userId={user.id} />
+        </Suspense>
+      </div>
 
       {/* === Section 1: Opportunities === */}
       <section className="mt-10">
