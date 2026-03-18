@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Plane, AlertCircle } from "lucide-react";
 import { SearchForm } from "@/components/flights/search-form";
 import { FlightCard } from "@/components/flights/flight-card";
-import type { EnrichedFlight } from "@/lib/flights/enrich";
+import type { EnrichedFlight } from "@/lib/flights/types";
 
 export default function SearchPage() {
   const [flights, setFlights] = useState<EnrichedFlight[]>([]);

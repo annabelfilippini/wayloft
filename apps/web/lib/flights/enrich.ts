@@ -1,40 +1,9 @@
-import "server-only";
 import type { CatalogCard } from "@wayloft/shared";
-import { getAllCards, getCardBySlug } from "@/lib/cards/catalog";
+import { getAllCards } from "@/lib/cards/catalog";
 import { getCpp } from "@/lib/optimizer/cpp";
-import type { FlightOffer } from "./search";
+import type { FlightOffer, CardRecommendation, EnrichedFlight } from "./types";
 
-export interface CardRecommendation {
-  cardName: string;
-  cardSlug: string;
-  issuer: string;
-  currency: string;
-  multiplier: number;
-  cpp: number;
-  /** Effective cents back per dollar spent */
-  effectiveCents: number;
-  /** Points earned on this purchase */
-  pointsEarned: number;
-  /** Estimated dollar value of points earned */
-  pointsValue: number;
-  /** Portal CPP if booking through travel portal */
-  portalCpp: number | null;
-  /** Points needed if paying via portal */
-  portalPointsCost: number | null;
-  hasForeignTransactionFee: boolean;
-}
-
-export interface EnrichedFlight extends FlightOffer {
-  /** Best card to book this flight, plus alternatives */
-  cardRecommendations: CardRecommendation[];
-  /** Cost in points via best portal option */
-  bestPortalOption: {
-    cardName: string;
-    currency: string;
-    pointsCost: number;
-    portalCpp: number;
-  } | null;
-}
+export type { EnrichedFlight, CardRecommendation };
 
 /**
  * Enriches flight offers with portfolio-specific card recommendations.

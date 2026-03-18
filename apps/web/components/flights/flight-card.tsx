@@ -9,7 +9,7 @@ import {
   CreditCard,
   ArrowRight,
 } from "lucide-react";
-import type { EnrichedFlight } from "@/lib/flights/enrich";
+import type { EnrichedFlight } from "@/lib/flights/types";
 
 interface FlightCardProps {
   flight: EnrichedFlight;

@@ -65,19 +65,19 @@ export async function POST(request: Request) {
       offers: enriched,
       searchParams: params,
     });
-  } catch (error) {
-    console.error("Flight search error:", error);
+  } catch (error: unknown) {
+    console.error("Flight search error:", JSON.stringify(error, Object.getOwnPropertyNames(error as object), 2));
+
     let message = "Flight search failed";
-    if (error instanceof Error) {
-      message = error.message;
+
+    // Duffel SDK wraps errors with .errors array
+    const err = error as Record<string, unknown>;
+    if (Array.isArray(err?.errors) && err.errors[0]?.message) {
+      message = String(err.errors[0].message);
+    } else if (err?.message) {
+      message = String(err.message);
     }
-    // Surface Duffel API errors
-    if (typeof error === "object" && error !== null && "errors" in error) {
-      const duffelErrors = (error as { errors: Array<{ message: string }> }).errors;
-      if (duffelErrors?.[0]?.message) {
-        message = duffelErrors[0].message;
-      }
-    }
+
     return Response.json({ error: message }, { status: 500 });
   }
 }

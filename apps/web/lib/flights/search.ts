@@ -1,4 +1,7 @@
 import { Duffel } from "@duffel/api";
+import type { FlightOffer } from "./types";
+
+export type { FlightOffer };
 
 let _duffel: Duffel | null = null;
 
@@ -19,28 +22,6 @@ export interface FlightSearchParams {
   returnDate?: string;
   passengers: number;
   cabinClass: "economy" | "premium_economy" | "business" | "first";
-}
-
-export interface FlightSlice {
-  origin: string;
-  destination: string;
-  departureTime: string;
-  arrivalTime: string;
-  duration: string;
-  stops: number;
-  airline: string;
-  airlineName: string;
-  flightNumbers: string[];
-  operatingCarriers: string[];
-}
-
-export interface FlightOffer {
-  id: string;
-  totalAmount: string;
-  totalCurrency: string;
-  slices: FlightSlice[];
-  cabinClass: string;
-  baggageIncluded: boolean;
 }
 
 function formatDuration(isoOrMinutes: string): string {

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Search, Loader2, ArrowRightLeft } from "lucide-react";
 import { AirportInput } from "./airport-input";
-import type { EnrichedFlight } from "@/lib/flights/enrich";
+import type { EnrichedFlight } from "@/lib/flights/types";
 
 interface SearchFormProps {
   onResults: (flights: EnrichedFlight[]) => void;
