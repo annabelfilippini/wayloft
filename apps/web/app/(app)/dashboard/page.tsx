@@ -51,12 +51,9 @@ export default async function DashboardPage() {
       </div>
 
       {/* === Ask Wayloft chat === */}
-      <section className="mt-10">
-        <SectionDivider label="Ask Wayloft" />
-        <div className="mt-4">
-          <ChatSection />
-        </div>
-      </section>
+      <div className="mt-10">
+        <ChatSection />
+      </div>
 
       {/* === Section 1: Opportunities === */}
       <section className="mt-10">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Loader2, MessageSquare } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -108,12 +108,6 @@ export function ChatSection() {
 
   return (
     <div className="rounded-lg border bg-card">
-      {/* Header */}
-      <div className="flex items-center gap-2 border-b px-4 py-3">
-        <MessageSquare className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Ask Wayloft</span>
-      </div>
-
       {/* Message area — only shown when there are messages */}
       {hasMessages && (
         <div className="max-h-[300px] overflow-y-auto px-4 py-3 space-y-3">
@@ -156,24 +150,8 @@ export function ChatSection() {
         </div>
       )}
 
-      {/* Suggested questions — only shown before first message */}
-      {!hasMessages && (
-        <div className="flex flex-wrap gap-2 px-4 py-3">
-          {SUGGESTED_QUESTIONS.map((q) => (
-            <button
-              key={q}
-              onClick={() => sendMessage(q)}
-              disabled={isLoading}
-              className="rounded-full border bg-background px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
-            >
-              {q}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Input area */}
-      <div className="flex items-end gap-2 border-t px-4 py-3">
+      <div className={`flex items-end gap-2 px-4 py-3${hasMessages ? " border-t" : ""}`}>
         <textarea
           ref={textareaRef}
           value={input}
@@ -196,6 +174,22 @@ export function ChatSection() {
           )}
         </button>
       </div>
+
+      {/* Suggested questions — only shown before first message */}
+      {!hasMessages && (
+        <div className="flex flex-wrap gap-2 border-t px-4 py-3">
+          {SUGGESTED_QUESTIONS.map((q) => (
+            <button
+              key={q}
+              onClick={() => sendMessage(q)}
+              disabled={isLoading}
+              className="rounded-full border bg-background px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
