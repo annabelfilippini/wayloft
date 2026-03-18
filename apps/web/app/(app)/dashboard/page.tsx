@@ -51,21 +51,15 @@ export default async function DashboardPage() {
           <BonusSpotlight userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
 
-        {/* Two-column: Actions (left, wider) | Optimizer cheat sheet (right) */}
-        <div className="grid gap-6 lg:grid-cols-5">
-          <div className="lg:col-span-3">
-            <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
-              <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
-            </Suspense>
-          </div>
-          <div className="lg:col-span-2">
-            <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
-              <QuickOptimizer userId={user.id} />
-            </Suspense>
-          </div>
-        </div>
+        {/* Action sections — full width */}
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
+          <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
+        </Suspense>
 
-        {/* Bottom: Cards to Consider — full width */}
+        {/* Bottom: Which Card cheat sheet + Cards to Consider */}
+        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+          <QuickOptimizer userId={user.id} />
+        </Suspense>
         <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
           <NextCardWidget userId={user.id} experienceLevel={experienceLevel} />
         </Suspense>
