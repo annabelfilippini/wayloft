@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -24,11 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${dmSans.variable} ${instrumentSerif.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

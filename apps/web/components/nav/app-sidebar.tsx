@@ -11,7 +11,10 @@ import {
   Newspaper,
   Settings,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { signOut } from "@/app/actions/auth";
 import type { User } from "@supabase/supabase-js";
 
@@ -27,6 +30,7 @@ const navLinks = [
 
 export function AppSidebar({ user }: { user: User }) {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
   const displayName =
     user.user_metadata?.full_name || user.email?.split("@")[0] || "User";
 
@@ -65,7 +69,16 @@ export function AppSidebar({ user }: { user: User }) {
         <p className="truncate text-xs text-sidebar-foreground/60">
           {user.email}
         </p>
-        <form action={signOut} className="mt-2">
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        >
+          <Sun className="h-3.5 w-3.5 hidden dark:block" />
+          <Moon className="h-3.5 w-3.5 block dark:hidden" />
+          <span className="dark:hidden">Dark mode</span>
+          <span className="hidden dark:inline">Light mode</span>
+        </button>
+        <form action={signOut} className="mt-1">
           <button
             type="submit"
             className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
