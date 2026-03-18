@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { Separator } from "@/components/ui/separator";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { BonusSpotlight } from "@/components/dashboard/bonus-spotlight";
@@ -45,25 +46,49 @@ export default async function DashboardPage() {
         Welcome back, {user.user_metadata?.full_name || user.email}
       </p>
 
-      <div className="mt-6 space-y-6">
-        {/* Hero: Transfer Bonus Spotlight — full width */}
-        <Suspense fallback={<Skeleton className="h-40 w-full rounded-lg" />}>
-          <BonusSpotlight userId={user.id} experienceLevel={experienceLevel} />
-        </Suspense>
+      {/* === Section 1: Opportunities === */}
+      <section className="mt-8">
+        <SectionDivider label="Opportunities" />
+        <div className="mt-4">
+          <Suspense fallback={<Skeleton className="h-40 w-full rounded-lg" />}>
+            <BonusSpotlight userId={user.id} experienceLevel={experienceLevel} />
+          </Suspense>
+        </div>
+      </section>
 
-        {/* Action sections — full width */}
-        <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
-          <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
-        </Suspense>
+      {/* === Section 2: Your To-Do List === */}
+      <section className="mt-10">
+        <SectionDivider label="Your To-Do List" />
+        <div className="mt-4">
+          <Suspense fallback={<Skeleton className="h-64 w-full rounded-lg" />}>
+            <ActionsWidget userId={user.id} experienceLevel={experienceLevel} />
+          </Suspense>
+        </div>
+      </section>
 
-        {/* Bottom: Which Card cheat sheet + Cards to Consider */}
-        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
-          <QuickOptimizer userId={user.id} />
-        </Suspense>
-        <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
-          <NextCardWidget userId={user.id} experienceLevel={experienceLevel} />
-        </Suspense>
-      </div>
+      {/* === Section 3: Quick Reference === */}
+      <section className="mt-10">
+        <SectionDivider label="Quick Reference" />
+        <div className="mt-4 space-y-6">
+          <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+            <QuickOptimizer userId={user.id} />
+          </Suspense>
+          <Suspense fallback={<Skeleton className="h-32 w-full rounded-lg" />}>
+            <NextCardWidget userId={user.id} experienceLevel={experienceLevel} />
+          </Suspense>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function SectionDivider({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="shrink-0 text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
+        {label}
+      </span>
+      <Separator className="shrink" />
     </div>
   );
 }
