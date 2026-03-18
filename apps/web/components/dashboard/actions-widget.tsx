@@ -4,6 +4,7 @@ import type { CardAction, ExperienceLevel } from "@wayloft/shared";
 import { isBeginnerOrBelow } from "@/lib/experience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AlertTriangle, CreditCard, Gift, Clock } from "lucide-react";
 import { getCardBySlug } from "@/lib/cards/catalog";
 
 interface ActionsWidgetProps {
@@ -87,36 +88,6 @@ const urgencyOrder: Record<string, number> = {
   ok: 3,
 };
 
-const typeLabels: Record<string, string> = {
-  signup_spend: "Bonus",
-  annual_fee: "AF",
-  points_expiring: "Points",
-  credit_expiring: "Credit",
-  perk_setup: "Perk",
-  payment_due: "Payment",
-};
-
-const beginnerTypeLabels: Record<string, string> = {
-  ...typeLabels,
-  annual_fee: "Fee",
-};
-
-/** Color-coded left border by action type */
-const typeBorderColors: Record<string, string> = {
-  points_expiring: "border-l-red-500",
-  credit_expiring: "border-l-red-500",
-  signup_spend: "border-l-orange-500",
-  annual_fee: "border-l-amber-500",
-  perk_setup: "border-l-green-500",
-  payment_due: "border-l-blue-500",
-};
-
-const urgencyBadgeVariants: Record<string, "destructive" | "secondary" | "outline"> = {
-  critical: "destructive",
-  warning: "secondary",
-  info: "outline",
-  ok: "outline",
-};
 
 export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetProps) {
   const supabase = await createClient();
@@ -272,50 +243,124 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     });
   }
 
-  // Sort by urgency then days remaining
-  actions.sort((a, b) => {
-    const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
-    if (urgDiff !== 0) return urgDiff;
-    return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
-  });
+  // Group actions by category
+  const deadlines = actions
+    .filter((a) => ["signup_spend", "annual_fee", "points_expiring", "credit_expiring"].includes(a.type))
+    .sort((a, b) => {
+      const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
+      if (urgDiff !== 0) return urgDiff;
+      return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
+    });
+
+  const perkActions = actions.filter((a) => a.type === "perk_setup");
+
+  const paymentActions = actions
+    .filter((a) => a.type === "payment_due")
+    .sort((a, b) => {
+      const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
+      if (urgDiff !== 0) return urgDiff;
+      return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
+    });
 
   if (actions.length === 0) return null;
 
-  const labels = isBeginnerOrBelow(experienceLevel) ? beginnerTypeLabels : typeLabels;
+  const isBeginner = isBeginnerOrBelow(experienceLevel);
 
   return (
-    <Card className="h-fit">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold">Action Items</h3>
-          <span className="text-xs text-muted-foreground">{actions.length}</span>
-        </div>
+    <div className="space-y-4">
+      {deadlines.length > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <h3 className="text-sm font-semibold">Deadlines &amp; Reminders</h3>
+              <span className="text-xs text-muted-foreground">({deadlines.length})</span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {isBeginner
+                ? "Things you need to do soon to avoid losing value or paying extra"
+                : "Act before you lose value — spending deadlines, expiring points, upcoming fees"}
+            </p>
 
-        <div className="mt-3 max-h-[400px] space-y-1.5 overflow-y-auto">
-          {actions.map((action) => (
-            <Link
-              key={action.key}
-              href={action.href}
-              className={`flex items-start justify-between gap-2 rounded-md border-l-2 p-2 transition-colors hover:bg-muted/50 ${
-                typeBorderColors[action.type] ?? "border-l-muted"
-              }`}
-            >
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-medium">{action.title}</p>
-                <p className="text-[11px] leading-tight text-muted-foreground">
-                  {action.subtitle}
-                </p>
-              </div>
-              <Badge
-                variant={urgencyBadgeVariants[action.urgency] ?? "outline"}
-                className="shrink-0 text-[10px]"
-              >
-                {labels[action.type] ?? action.type}
-              </Badge>
-            </Link>
-          ))}
+            <div className="mt-3 space-y-1.5">
+              {deadlines.map((action) => (
+                <ActionRow key={action.key} action={action} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {perkActions.length > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Gift className="h-4 w-4 text-green-500" />
+              <h3 className="text-sm font-semibold">Perks to Activate</h3>
+              <span className="text-xs text-muted-foreground">({perkActions.length})</span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {isBeginner
+                ? "Free benefits included with your cards — set them up to start saving"
+                : "Benefits you're paying for but haven't set up yet"}
+            </p>
+
+            <div className="mt-3 space-y-1.5">
+              {perkActions.map((action) => (
+                <ActionRow key={action.key} action={action} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {paymentActions.length > 0 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-blue-500" />
+              <h3 className="text-sm font-semibold">Payments</h3>
+              <span className="text-xs text-muted-foreground">({paymentActions.length})</span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Upcoming due dates and autopay status
+            </p>
+
+            <div className="mt-3 space-y-1.5">
+              {paymentActions.map((action) => (
+                <ActionRow key={action.key} action={action} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function ActionRow({ action }: { action: UnifiedAction }) {
+  return (
+    <Link
+      href={action.href}
+      className="flex items-start justify-between gap-2 rounded-md p-2 transition-colors hover:bg-muted/50"
+    >
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-xs font-medium">{action.title}</p>
+        <p className="text-[11px] leading-tight text-muted-foreground">
+          {action.subtitle}
+        </p>
+      </div>
+      {action.daysRemaining != null && (
+        <div className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
+          <Clock className="h-3 w-3" />
+          <span>{action.daysRemaining}d</span>
         </div>
-      </CardContent>
-    </Card>
+      )}
+      {action.urgency === "critical" && (
+        <Badge variant="destructive" className="shrink-0 text-[10px]">
+          Urgent
+        </Badge>
+      )}
+    </Link>
   );
 }
