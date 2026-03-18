@@ -9,6 +9,7 @@ import { ActionsWidget } from "@/components/dashboard/actions-widget";
 import { QuickOptimizer } from "@/components/dashboard/quick-optimizer";
 import { NextCardWidget } from "@/components/dashboard/next-card-widget";
 import { SkipBanner } from "@/components/onboarding/skip-banner";
+import { ChatSection } from "@/components/dashboard/chat-section";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ExperienceLevel } from "@wayloft/shared";
 
@@ -48,6 +49,14 @@ export default async function DashboardPage() {
           <CardStrip userId={user.id} />
         </Suspense>
       </div>
+
+      {/* === Ask Wayloft chat === */}
+      <section className="mt-10">
+        <SectionDivider label="Ask Wayloft" />
+        <div className="mt-4">
+          <ChatSection />
+        </div>
+      </section>
 
       {/* === Section 1: Opportunities === */}
       <section className="mt-10">
