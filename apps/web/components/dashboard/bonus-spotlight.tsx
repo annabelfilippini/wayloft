@@ -138,7 +138,7 @@ export async function BonusSpotlight({ userId, experienceLevel }: BonusSpotlight
         <p className="mt-2 text-sm font-medium text-muted-foreground">
           No active transfer bonuses right now
         </p>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           Banks typically run promotions every few weeks. Check back soon.
         </p>
       </div>
@@ -152,7 +152,7 @@ export async function BonusSpotlight({ userId, experienceLevel }: BonusSpotlight
         {totalCount > 6 && (
           <Link
             href="/bonuses"
-            className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+            className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
           >
             View all {totalCount}
             <ArrowRight className="h-3 w-3" />
@@ -164,7 +164,7 @@ export async function BonusSpotlight({ userId, experienceLevel }: BonusSpotlight
       </p>
 
       {isBeginner && (
-        <div className="mt-2 flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+        <div className="mt-2 flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span>
             Your credit card points can be transferred to airline and hotel loyalty programs.

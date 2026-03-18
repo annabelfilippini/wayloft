@@ -27,15 +27,15 @@ export async function QuickOptimizer({ userId }: QuickOptimizerProps) {
       <Card>
         <CardContent className="p-4">
           <div className="flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold">Which Card?</h3>
+            <Wallet className="h-5 w-5 text-muted-foreground" />
+            <h3 className="text-lg font-bold">Which Card?</h3>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             Add your cards to see which to use for every purchase.
           </p>
           <Link
             href="/cards"
-            className="mt-2 inline-block text-xs text-primary hover:underline"
+            className="mt-2 inline-block text-sm text-primary hover:underline"
           >
             Add cards
           </Link>
@@ -62,15 +62,15 @@ export async function QuickOptimizer({ userId }: QuickOptimizerProps) {
       <CardContent className="p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-            <h3 className="text-sm font-semibold">Which Card?</h3>
+            <Wallet className="h-5 w-5 text-muted-foreground" />
+            <h3 className="text-lg font-bold">Which Card?</h3>
           </div>
           <CopyCheatSheet guide={guide} />
         </div>
 
         <div className="mt-3 space-y-1.5">
           {rows.map((row) => (
-            <div key={row.category} className="flex items-center justify-between text-xs">
+            <div key={row.category} className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">{row.category}</span>
               <span className="font-medium">{row.cardName}</span>
             </div>
@@ -79,7 +79,7 @@ export async function QuickOptimizer({ userId }: QuickOptimizerProps) {
 
         <Link
           href="/optimizer"
-          className="mt-3 block text-center text-xs text-muted-foreground hover:text-foreground"
+          className="mt-3 block text-center text-sm text-muted-foreground hover:text-foreground"
         >
           Full optimizer
         </Link>

@@ -274,9 +274,9 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
               <h3 className="text-lg font-bold">Deadlines &amp; Reminders</h3>
-              <span className="text-xs text-muted-foreground">({deadlines.length})</span>
+              <span className="text-sm text-muted-foreground">({deadlines.length})</span>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               {isBeginner
                 ? "Things you need to do soon to avoid losing value or paying extra"
                 : "Act before you lose value — spending deadlines, expiring points, upcoming fees"}
@@ -297,9 +297,9 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
             <div className="flex items-center gap-2">
               <Gift className="h-5 w-5 text-green-500" />
               <h3 className="text-lg font-bold">Perks to Activate</h3>
-              <span className="text-xs text-muted-foreground">({perkActions.length})</span>
+              <span className="text-sm text-muted-foreground">({perkActions.length})</span>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               {isBeginner
                 ? "Free benefits included with your cards — set them up to start saving"
                 : "Benefits you're paying for but haven't set up yet"}
@@ -320,9 +320,9 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
             <div className="flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-blue-500" />
               <h3 className="text-lg font-bold">Payments</h3>
-              <span className="text-xs text-muted-foreground">({paymentActions.length})</span>
+              <span className="text-sm text-muted-foreground">({paymentActions.length})</span>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               Upcoming due dates and autopay status
             </p>
 
@@ -345,19 +345,19 @@ function ActionRow({ action }: { action: UnifiedAction }) {
       className="flex items-start justify-between gap-2 rounded-md p-2 transition-colors hover:bg-muted/50"
     >
       <div className="min-w-0 flex-1">
-        <p className="truncate text-xs font-medium">{action.title}</p>
-        <p className="text-[11px] leading-tight text-muted-foreground">
+        <p className="truncate text-sm font-medium">{action.title}</p>
+        <p className="text-sm leading-tight text-muted-foreground">
           {action.subtitle}
         </p>
       </div>
       {action.daysRemaining != null && (
-        <div className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
-          <Clock className="h-3 w-3" />
+        <div className="flex shrink-0 items-center gap-1 text-sm text-muted-foreground">
+          <Clock className="h-3.5 w-3.5" />
           <span>{action.daysRemaining}d</span>
         </div>
       )}
       {action.urgency === "critical" && (
-        <Badge variant="destructive" className="shrink-0 text-[10px]">
+        <Badge variant="destructive" className="shrink-0 text-xs">
           Urgent
         </Badge>
       )}
