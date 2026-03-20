@@ -130,6 +130,7 @@ function ValueSummary({ cards }: { cards: ScoredCard[] }) {
                 issuer={c.card.issuer}
                 network={c.card.network}
                 cardName={c.card.name}
+                hideLabels
               />
             </div>
             <div>

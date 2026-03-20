@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plane, AlertCircle } from "lucide-react";
 import { SearchForm } from "@/components/flights/search-form";
 import { FlightCard } from "@/components/flights/flight-card";
+import { PriceToggle, type PriceView } from "@/components/flights/price-toggle";
 import type { EnrichedFlight } from "@/lib/flights/types";
 
 export default function SearchPage() {
@@ -11,6 +12,10 @@ export default function SearchPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [priceView, setPriceView] = useState<PriceView>("cash");
+
+  // Check if any flight has a portal option (needed to show points/cpp tabs)
+  const hasPortalOptions = flights.some((f) => f.bestPortalOption !== null);
 
   function handleResults(results: EnrichedFlight[]) {
     setFlights(results);
@@ -61,11 +66,20 @@ export default function SearchPage() {
       {/* Results */}
       {!isLoading && flights.length > 0 && (
         <div className="mt-6 space-y-3">
-          <p className="text-sm text-muted-foreground">
-            {flights.length} flight{flights.length !== 1 ? "s" : ""} found
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              {flights.length} flight{flights.length !== 1 ? "s" : ""} found
+            </p>
+            {hasPortalOptions && (
+              <PriceToggle value={priceView} onChange={setPriceView} />
+            )}
+          </div>
           {flights.map((flight) => (
-            <FlightCard key={flight.id} flight={flight} />
+            <FlightCard
+              key={flight.id}
+              flight={flight}
+              priceView={priceView}
+            />
           ))}
         </div>
       )}

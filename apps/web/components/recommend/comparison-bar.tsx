@@ -32,6 +32,7 @@ export function ComparisonBar({
                   issuer={s.card.issuer}
                   network={s.card.network}
                   cardName={s.card.name}
+                  hideLabels
                 />
               </div>
               <span className="text-xs font-medium max-w-[100px] truncate hidden sm:inline">

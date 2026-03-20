@@ -37,7 +37,8 @@ export async function CompactFiveTwentyFour({ userId }: CompactFiveTwentyFourPro
   const catalog = getAllCards();
   const status = computeFiveTwentyFour(userCards, externalCards, catalog);
 
-  if (status.count === 0) return null;
+  // Only show when approaching the limit (3+) — not useful noise at 1-2 cards
+  if (status.count < 3) return null;
 
   const badge = statusBadge(status.count);
   const pct = Math.min(100, (status.count / status.maxAllowed) * 100);

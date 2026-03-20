@@ -134,6 +134,82 @@ const CATEGORIES: BestForCategory[] = [
         })
         .slice(0, 6),
   },
+  {
+    slug: "groceries",
+    title: "Best Credit Cards for Groceries",
+    headline: "Maximize every trip to the store.",
+    description:
+      "The top credit cards for supermarkets and grocery stores — some earning up to 6x points per dollar. If groceries are a big part of your budget, the right card makes a real difference.",
+    selectCards: (cards) =>
+      cards
+        .filter((c) => !c.is_business && (c.earning_rates.groceries ?? 1) >= 3)
+        .sort((a, b) => {
+          const aRate = a.earning_rates.groceries ?? 1;
+          const bRate = b.earning_rates.groceries ?? 1;
+          if (bRate !== aRate) return bRate - aRate;
+          return (b.signup_bonus?.points ?? 0) - (a.signup_bonus?.points ?? 0);
+        })
+        .slice(0, 6),
+  },
+  {
+    slug: "gas",
+    title: "Best Credit Cards for Gas",
+    headline: "Stop leaving money at the pump.",
+    description:
+      "Whether you commute daily or road trip often, these cards earn 2x–5x on gas stations — turning every fill-up into real rewards.",
+    selectCards: (cards) =>
+      cards
+        .filter((c) => !c.is_business && (c.earning_rates.gas ?? 1) >= 3)
+        .sort((a, b) => {
+          const aRate = a.earning_rates.gas ?? 1;
+          const bRate = b.earning_rates.gas ?? 1;
+          if (bRate !== aRate) return bRate - aRate;
+          // Tie-break: lower annual fee wins for a commodity category
+          return a.annual_fee_cents - b.annual_fee_cents;
+        })
+        .slice(0, 6),
+  },
+  {
+    slug: "streaming",
+    title: "Best Credit Cards for Streaming",
+    headline: "Get paid to watch.",
+    description:
+      "Netflix, Spotify, Hulu, Disney+ — you're paying for them anyway. These cards earn up to 6x on streaming subscriptions so your monthly bills work harder.",
+    selectCards: (cards) =>
+      cards
+        .filter((c) => !c.is_business && (c.earning_rates.streaming ?? 1) >= 2)
+        .sort((a, b) => {
+          const aRate = a.earning_rates.streaming ?? 1;
+          const bRate = b.earning_rates.streaming ?? 1;
+          if (bRate !== aRate) return bRate - aRate;
+          return a.annual_fee_cents - b.annual_fee_cents;
+        })
+        .slice(0, 6),
+  },
+  {
+    slug: "points-transfer",
+    title: "Best Credit Cards for Points & Miles",
+    headline: "Flexible points, outsized value.",
+    description:
+      "Cards that earn transferable points (Chase UR, Amex MR, Citi TYP, Capital One) let you move rewards to airlines and hotels for 2–3x the value. These are the cards serious travel hackers build around.",
+    selectCards: (cards) => {
+      const transferCurrencies = ["UR", "MR", "TYP", "C1", "Bilt"];
+      return cards
+        .filter(
+          (c) =>
+            !c.is_business &&
+            transferCurrencies.includes(c.currency) &&
+            c.portal_cpp >= 1
+        )
+        .sort((a, b) => {
+          // Higher portal cpp first
+          if (b.portal_cpp !== a.portal_cpp) return b.portal_cpp - a.portal_cpp;
+          // Then by signup bonus value
+          return (b.signup_bonus?.points ?? 0) - (a.signup_bonus?.points ?? 0);
+        })
+        .slice(0, 8);
+    },
+  },
 ];
 
 export function getAllBestForCategories(): BestForCategory[] {

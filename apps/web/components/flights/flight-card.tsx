@@ -10,12 +10,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 import type { EnrichedFlight } from "@/lib/flights/types";
+import type { PriceView } from "./price-toggle";
 
 interface FlightCardProps {
   flight: EnrichedFlight;
+  priceView?: PriceView;
 }
 
-export function FlightCard({ flight }: FlightCardProps) {
+export function FlightCard({ flight, priceView = "cash" }: FlightCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   const cashPrice = parseFloat(flight.totalAmount);
@@ -81,16 +83,14 @@ export function FlightCard({ flight }: FlightCardProps) {
           ))}
         </div>
 
-        {/* Price + best card */}
+        {/* Price display — adapts to priceView */}
         <div className="shrink-0 text-right">
-          <p className="text-lg font-bold">
-            ${cashPrice.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-          </p>
-          {bestCard && (
-            <p className="text-xs text-muted-foreground">
-              {bestCard.multiplier}x on {bestCard.cardName.split(" ").slice(-1)}
-            </p>
-          )}
+          <PriceDisplay
+            cashPrice={cashPrice}
+            portal={portal}
+            bestCard={bestCard}
+            priceView={priceView}
+          />
           {expanded ? (
             <ChevronUp className="mt-1 ml-auto h-4 w-4 text-muted-foreground" />
           ) : (
@@ -139,27 +139,42 @@ export function FlightCard({ flight }: FlightCardProps) {
             </div>
           )}
 
-          {/* Points vs cash comparison */}
+          {/* Cash vs points comparison */}
           {portal && (
             <div>
               <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 <ArrowRight className="h-3.5 w-3.5" />
-                Pay with points via portal
+                Cash vs points
               </h4>
-              <div className="mt-2 rounded-md bg-muted/50 px-3 py-2 text-sm">
-                <div className="flex items-center justify-between">
-                  <span>
-                    {portal.pointsCost.toLocaleString()} {portal.currency} via{" "}
-                    {portal.cardName}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {portal.portalCpp}cpp
-                  </span>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <div className="rounded-md border px-3 py-2">
+                  <p className="text-[10px] font-medium uppercase text-muted-foreground">
+                    Pay cash
+                  </p>
+                  <p className="text-sm font-semibold">
+                    ${cashPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  </p>
+                  {bestCard && (
+                    <p className="text-[10px] text-muted-foreground">
+                      Earn {bestCard.pointsEarned.toLocaleString()} {bestCard.currency} ({bestCard.multiplier}x)
+                    </p>
+                  )}
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {compareValue(cashPrice, portal.pointsCost, portal.portalCpp)}
-                </p>
+                <div className="rounded-md border px-3 py-2">
+                  <p className="text-[10px] font-medium uppercase text-muted-foreground">
+                    Pay with points
+                  </p>
+                  <p className="text-sm font-semibold">
+                    {portal.pointsCost.toLocaleString()} {portal.currency}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">
+                    via {portal.cardName} portal ({portal.portalCpp}cpp)
+                  </p>
+                </div>
               </div>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {compareValue(cashPrice, portal.pointsCost, portal.portalCpp)}
+              </p>
             </div>
           )}
 
@@ -178,6 +193,66 @@ export function FlightCard({ flight }: FlightCardProps) {
         </div>
       )}
     </div>
+  );
+}
+
+function PriceDisplay({
+  cashPrice,
+  portal,
+  bestCard,
+  priceView,
+}: {
+  cashPrice: number;
+  portal: EnrichedFlight["bestPortalOption"];
+  bestCard: EnrichedFlight["cardRecommendations"][0] | undefined;
+  priceView: PriceView;
+}) {
+  if (priceView === "points" && portal) {
+    return (
+      <>
+        <p className="text-lg font-bold">
+          {portal.pointsCost.toLocaleString()} pts
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {portal.currency} via {portal.cardName.split(" ").slice(-1)}
+        </p>
+        <p className="text-[10px] text-muted-foreground">
+          ${cashPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })} cash
+        </p>
+      </>
+    );
+  }
+
+  if (priceView === "cpp" && portal) {
+    const effectiveCpp = (cashPrice / portal.pointsCost) * 100;
+    const isGoodDeal = effectiveCpp >= portal.portalCpp;
+    return (
+      <>
+        <p className={`text-lg font-bold ${isGoodDeal ? "text-green-600 dark:text-green-400" : ""}`}>
+          {effectiveCpp.toFixed(1)}cpp
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {portal.pointsCost.toLocaleString()} {portal.currency}
+        </p>
+        <p className="text-[10px] text-muted-foreground">
+          ${cashPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })} cash
+        </p>
+      </>
+    );
+  }
+
+  // Default: cash view
+  return (
+    <>
+      <p className="text-lg font-bold">
+        ${cashPrice.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+      </p>
+      {bestCard && (
+        <p className="text-xs text-muted-foreground">
+          {bestCard.multiplier}x on {bestCard.cardName.split(" ").slice(-1)}
+        </p>
+      )}
+    </>
   );
 }
 

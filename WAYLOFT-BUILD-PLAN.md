@@ -192,7 +192,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] **Catalog data audit** — portal rates separated from direct earning on CSR/Venture X/Strata Premier, signup bonuses verified against current public offers
 - [x] Card comparison view (side-by-side 2-3 cards) — inline on results page with selection checkboxes, sticky comparison bar, 5-section panel (value summary, breakdown grid with wins highlighting, context-aware category earnings, quick features, transfer partner overlap)
 - [x] Card review pages (54 SSG pages at /credit-cards/[slug]) — 10-section template, filterable index, marketing header/footer, affiliate disclosure, JSON-LD, sitemap
-- [x] "Best cards for X" comparison articles (5 categories: dining, travel, cash-back, no-annual-fee, hotels) — SSG at `/credit-cards/best-for/[category]`, comparison table + ranked breakdowns + category nav pills
+- [x] "Best cards for X" comparison articles (9 categories: dining, travel, cash-back, no-annual-fee, hotels, groceries, gas, streaming, points-transfer) — SSG at `/credit-cards/best-for/[category]`, comparison table + ranked breakdowns + category nav pills
 - [x] Affiliate link infrastructure — `AffiliateLink` component with UTM params + `trackAffiliateClick` server action → `affiliate_clicks` table, wired into card reviews, recommendations, and best-for articles
 - [x] "Cards I should get next" dashboard widget
 - [x] 5/24 counter widget (auto-calculated from user_cards)
@@ -237,25 +237,24 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [ ] Apply to affiliate networks (CardRatings, CJ, FlexOffers) — 15 reviews now live
 
 #### 3.5C. Additional Best-For Articles
-- [ ] Identify high-traffic categories beyond current 5 (dining, travel, cash-back, no-annual-fee, hotels)
-- [ ] Candidates: groceries, gas, business, balance-transfer, first-card, points-transfer
+- [x] Identify high-traffic categories beyond current 5 (dining, travel, cash-back, no-annual-fee, hotels)
+- [x] Added 4 new categories: groceries, gas, streaming, points-transfer (9 total best-for articles)
+- Candidates skipped (insufficient catalog depth): business (7 cards, separate audience), balance-transfer (only 2 cards), first-card (no low credit-score cards in catalog)
 
 ---
 
 ### Priority 4: Loop 4 — Flight Search via Duffel (Weeks 5-7)
 
-**Status: DEFERRED.** Dependency audit (Mar 11) confirmed Duffel is the right API (no accreditation, free searches, ~0.5%/booking, Managed Content model). Duffel is validated — this is a sequencing decision, not a rejection. Card content + affiliate revenue is higher leverage right now. Come back to this after P3.5 and affiliate network onboarding.
+**Status: MOSTLY COMPLETE (Mar 19).** Duffel sandbox integration shipped. Search, results, card recommendations, price toggle, and value comparison all working. Live access blocked on business registration (zero code changes needed — swap API key).
 
-**Owner:** [Sister — TBD]
-
-- [ ] Duffel API integration (sandbox → live)
-- [ ] Search form (AirportInput, DatePicker, passengers, cabin)
-- [ ] Results page with FlightCard components
-- [ ] Redis flight cache (4hr TTL, respects 1500:1 search-to-book)
-- [ ] PriceToggle: Cash / Points / CPP
-- [ ] "Best card to book with" per flight
-- [ ] Value comparison ("Pay $450 cash or 30K UR at 1.5cpp")
-- [ ] airports.json from OpenFlights
+- [x] Duffel API integration (sandbox working, live key swap when registered)
+- [x] Search form (AirportInput with autocomplete, DatePicker, passengers, cabin class)
+- [x] Results page with FlightCard components (expandable details, airline/stops/duration)
+- [x] "Best card to book with" per flight (portfolio-aware, ranked by effective return)
+- [x] PriceToggle: Cash / Points / CPP view switching
+- [x] Value comparison (side-by-side cash vs points with earn/redeem breakdown)
+- [x] airports.json (100+ airports seeded)
+- [ ] Redis flight cache (4hr TTL, respects 1500:1 search-to-book) — deferred to scale phase
 
 ---
 
@@ -309,7 +308,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**P2 closed, P3 closed (Mar 11). Dependency audit confirmed Duffel is validated but deferred — card content + affiliate revenue is higher leverage. Flight search assigned to sister. Next: Priority 3.5A (database backups to R2) → 3.5B (editorial card reviews for 10-15 top cards) → 3.5C (more best-for articles) → affiliate network applications.**
+**P4 mostly complete (Mar 19). Flight search shipped: Duffel sandbox, search form, flight cards, card recommendations, PriceToggle (cash/points/cpp), value comparison. Redis cache deferred to scale. Live access blocked on business registration. Next: P5 (browser extension) or Phase 2 (Stripe, launch prep).**
 
 ---
 

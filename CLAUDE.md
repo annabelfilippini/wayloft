@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Mar 11, 2026)
+## Current Status (Mar 19, 2026)
 
-**Loop 3 (Transfer Bonus Tracker) — complete.** Loop 2 complete (credit health endpoint shipped, editorial content ongoing). Transfer bonus tracker fully shipped: bonuses page with filters/urgency badges/portfolio personalization, dashboard integration, daily scraper via Vercel Cron, admin Supabase client, seed data, historical bonus view with pattern analysis (15 transfer pairs seeded), scraper tuned against live HTML (correct URLs, 3 source groups, per-bank DoC pages + FM consolidated page + tag pages for C1/Bilt).
+**Through Priority 4 (Flight Search).** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed).
 
 ### What's Built
 
@@ -221,21 +221,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Priority 3.5 (current):
-- 3.5A: Database backup strategy (automated pg_dump to Cloudflare R2)
-- 3.5B: Editorial card reviews for top 10-15 cards (affiliate network application prerequisite)
-- 3.5C: Additional best-for articles (groceries, gas, business, etc.)
-- Then: Apply to affiliate networks (CardRatings, CJ, FlexOffers)
+Phase 2 — Polish & Launch:
+- Stripe billing (Free / $9.99 Pro) + feature gating
+- Apply to affiliate networks (CardRatings, CJ, FlexOffers) — 15 reviews + 9 best-for articles ready
+- ToS / Privacy Policy (Termly)
+- Lighthouse, Sentry, PostHog
+- Soft launch (50 beta users)
+- PUBLIC BETA
 
 Deferred:
-- Priority 4: Flight Search via Duffel (validated, assigned to sister)
 - Priority 5: Browser Extension
-
-### Week 2 gaps (can be done anytime)
-- ToS / Privacy Policy (Termly)
-- Chrome Web Store dev account
-- Build 13 Claude Code skills
-- 4 sub-agents: expiration policy verification, airline DOM, bank DOM, MV3 guide
+- Redis flight cache (scale phase)
+- Card Catalog Monitor Agent (automated catalog freshness)
 
 ## Repository Structure
 

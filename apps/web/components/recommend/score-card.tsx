@@ -34,6 +34,7 @@ export function ScoreCard({ result, isSelected, onToggleSelect, selectionDisable
               issuer={card.issuer}
               network={card.network}
               cardName={card.name}
+              hideLabels
             />
           </div>
         </div>

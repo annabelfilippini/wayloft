@@ -19,14 +19,15 @@ import {
   History,
   Plus,
   Info,
+  ChevronDown,
+  ChevronRight,
+  AlertCircle,
+  CalendarClock,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -83,6 +84,15 @@ function formatDaysRemaining(days: number) {
   return `${weeks}w ${remaining}d`;
 }
 
+function formatIssuerName(issuer: string): string {
+  const map: Record<string, string> = {
+    chase: "Chase", amex: "Amex", citi: "Citi", capital_one: "Capital One",
+    us_bank: "U.S. Bank", bilt: "Bilt", wells_fargo: "Wells Fargo",
+    barclays: "Barclays", bank_of_america: "Bank of America", discover: "Discover",
+  };
+  return map[issuer] ?? issuer.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export function CardDetail({
   userCard,
   catalogCard,
@@ -107,12 +117,28 @@ export function CardDetail({
       )
     : null;
 
+  // Earning rates sorted by multiplier, split into "bonus" (>1x) and base
   const earningRates = Object.entries(catalogCard.earning_rates).sort(
     ([, a], [, b]) => b - a
   );
+  const bonusCategories = earningRates.filter(([, rate]) => rate > 1);
+  const baseRate = earningRates.find(([cat]) => cat === "other")?.[1] ?? 1;
+
+  // Perks needing action
+  const unactivatedPerks = perkSetup.filter(
+    (p) => p.status === "not_started" && p.perk_type !== "always_on"
+  );
+  const totalPerkValue = unactivatedPerks.reduce(
+    (sum, p) => sum + (p.estimated_annual_value_cents ?? 0), 0
+  );
+
+  // Has transfer partners worth showing?
+  const hasTransferPartners = transferPartners &&
+    (transferPartners.transfer_partners.airlines.length > 0 ||
+      transferPartners.transfer_partners.hotels.length > 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Back link */}
       <Link
         href="/cards"
@@ -122,88 +148,114 @@ export function CardDetail({
         Back to cards
       </Link>
 
-      {/* Header: Card art + key info */}
-      <div className="grid gap-6 md:grid-cols-[280px_1fr]">
-        <CardArtPlaceholder
-          issuer={userCard.issuer}
-          network={catalogCard.network}
-          cardName={userCard.card_name}
-          className="w-full"
-        />
+      {/* ===== TIER 1: Card identity + earning rates + action items ===== */}
 
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-2xl font-bold">{userCard.card_name}</h1>
-            <p className="text-sm text-muted-foreground">
-              {userCard.issuer.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-            </p>
+      {/* Compact header */}
+      <div className="flex gap-5">
+        <div className="w-40 shrink-0">
+          <CardArtPlaceholder
+            issuer={userCard.issuer}
+            network={catalogCard.network}
+            cardName={userCard.card_name}
+          />
+        </div>
+        <div className="min-w-0 flex flex-col justify-center">
+          <h1 className="text-xl font-bold leading-tight">{userCard.card_name}</h1>
+          <p className="text-sm text-muted-foreground">
+            {formatIssuerName(userCard.issuer)}
+            {annualFeeDollars > 0 ? ` · $${annualFeeDollars}/yr` : ""}
+          </p>
+        </div>
+      </div>
+
+      {/* Earning rates — visual tiles, always visible */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+          What this card earns
+        </h2>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {bonusCategories.map(([category, rate]) => (
+            <div
+              key={category}
+              className="rounded-lg border bg-card px-3 py-2.5 text-center"
+            >
+              <p className="text-2xl font-bold tabular-nums">{rate}x</p>
+              <p className="text-xs text-muted-foreground capitalize">
+                {category.replace(/_/g, " ")}
+              </p>
+            </div>
+          ))}
+          <div className="rounded-lg border bg-muted/30 px-3 py-2.5 text-center">
+            <p className="text-2xl font-bold tabular-nums text-muted-foreground">{baseRate}x</p>
+            <p className="text-xs text-muted-foreground">Everything else</p>
           </div>
-
-          {/* Quick stats */}
-          <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">{formatCurrencyName(userCard.currency, experienceLevel)}</Badge>
-            <Badge variant="outline">{catalogCard.network.toUpperCase()}</Badge>
-            <Badge variant="outline">
-              {annualFeeDollars > 0 ? `$${annualFeeDollars}/yr` : "No AF"}
-            </Badge>
-            {catalogCard.credit_score_min && (
-              <Badge variant="outline">
-                {catalogCard.credit_score_min} credit
-              </Badge>
-            )}
-            {!catalogCard.foreign_transaction_fee && (
-              <Badge variant="outline">No FTF</Badge>
-            )}
-            {catalogCard.foreign_transaction_fee && (
-              <Badge variant="destructive">Has FTF</Badge>
-            )}
+        </div>
+        {!isBeginner && catalogCard.earning_caps.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+            {catalogCard.earning_caps.map((cap) => (
+              <p key={cap.category} className="text-[11px] text-muted-foreground">
+                {cap.category}: up to ${(cap.limit_cents / 100).toLocaleString()}/{cap.period}
+              </p>
+            ))}
           </div>
+        )}
+      </div>
 
-          {/* best_for tags */}
-          {catalogCard.best_for.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {catalogCard.best_for.map((tag) => (
-                <Badge key={tag} className="text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border-0">
-                  {tag}
-                </Badge>
-              ))}
+      {/* Action items — only show sections that are relevant */}
+      {(hasActiveBonus || (afDaysRemaining !== null && afDaysRemaining <= 60 && annualFeeDollars > 0) || paymentInfo) && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Action items
+          </h2>
+
+          {/* Spending requirement to earn welcome bonus */}
+          {hasActiveBonus && (
+            <div className="rounded-lg border p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-amber-500" />
+                <div>
+                  <p className="text-sm font-medium">
+                    Spend ${((userCard.signup_spend_requirement_cents ?? 0) / 100).toLocaleString()} to earn {(userCard.signup_bonus_points ?? 0).toLocaleString()} bonus points
+                  </p>
+                  {userCard.signup_spend_deadline && (
+                    <p className="text-xs text-muted-foreground">
+                      Due by {new Date(userCard.signup_spend_deadline).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <BonusProgress
+                progressCents={userCard.signup_spend_progress_cents}
+                requirementCents={userCard.signup_spend_requirement_cents!}
+                deadline={userCard.signup_spend_deadline}
+                bonusPoints={null}
+              />
+              <SpendUpdateForm
+                cardId={userCard.id}
+                currentCents={userCard.signup_spend_progress_cents}
+              />
             </div>
           )}
 
-          {/* Signup Bonus Section */}
-          {hasActiveBonus && (
-            <Card>
-              <CardContent className="space-y-3 pt-4">
-                <p className="text-sm font-medium">Signup Bonus Progress</p>
-                <BonusProgress
-                  progressCents={userCard.signup_spend_progress_cents}
-                  requirementCents={userCard.signup_spend_requirement_cents!}
-                  deadline={userCard.signup_spend_deadline}
-                  bonusPoints={userCard.signup_bonus_points}
-                />
-                <SpendUpdateForm
-                  cardId={userCard.id}
-                  currentCents={userCard.signup_spend_progress_cents}
-                />
-              </CardContent>
-            </Card>
-          )}
-
           {userCard.signup_bonus_earned && (
-            <Badge variant="secondary">Bonus earned</Badge>
+            <div className="flex items-center gap-2 rounded-lg border p-3">
+              <Trophy className="h-4 w-4 text-green-500" />
+              <p className="text-sm text-muted-foreground">Welcome bonus earned</p>
+            </div>
           )}
-
           {userCard.signup_bonus_met && !userCard.signup_bonus_earned && (
-            <Badge variant="secondary">Bonus met - awaiting posting</Badge>
+            <div className="flex items-center gap-2 rounded-lg border p-3">
+              <Trophy className="h-4 w-4 text-amber-500" />
+              <p className="text-sm text-muted-foreground">Spend requirement met — bonus posting soon</p>
+            </div>
           )}
 
-          {/* Annual Fee Status */}
-          {annualFeeDollars > 0 && afDaysRemaining !== null && (
+          {/* Annual Fee — only when approaching (≤60 days) */}
+          {annualFeeDollars > 0 && afDaysRemaining !== null && afDaysRemaining <= 60 && (
             <AnnualFeeSection
               userCard={userCard}
               annualFeeDollars={annualFeeDollars}
               daysRemaining={afDaysRemaining}
-              perks={catalogCard.key_perks}
               creditUsage={creditUsage}
               catalogCard={catalogCard}
               perkSetup={perkSetup}
@@ -211,7 +263,7 @@ export function CardDetail({
             />
           )}
 
-          {/* Payment Due Date Tracker */}
+          {/* Payment tracker */}
           <PaymentTracker
             paymentInfo={paymentInfo}
             catalogPaymentInfo={catalogCard.payment_info ?? null}
@@ -219,225 +271,252 @@ export function CardDetail({
             cardSlug={userCard.card_slug}
           />
         </div>
-      </div>
+      )}
 
-      <Separator />
+      {/* ===== TIER 2: Perks to activate + Transfer partners ===== */}
 
-      {/* Tabbed sections */}
-      <Tabs defaultValue="earning">
-        <TabsList>
-          <TabsTrigger value="earning">Earning</TabsTrigger>
-          <TabsTrigger value="perks">Perks & Benefits</TabsTrigger>
-          {creditUsage.length > 0 && (
-            <TabsTrigger value="credits">Credits</TabsTrigger>
+      {/* Perks nudge — only if there are unactivated perks */}
+      {unactivatedPerks.length > 0 && (
+        <CollapsibleSection
+          title={`${unactivatedPerks.length} perk${unactivatedPerks.length !== 1 ? "s" : ""} to activate`}
+          subtitle={totalPerkValue > 0 ? `~$${(totalPerkValue / 100).toLocaleString()}/yr in value` : undefined}
+          icon={<AlertCircle className="h-4 w-4 text-amber-500" />}
+          defaultOpen
+        >
+          <PerkChecklist perks={perkSetup} keyPerks={catalogCard.key_perks} />
+        </CollapsibleSection>
+      )}
+
+      {/* If all perks are activated, still let them access the full list */}
+      {perkSetup.length > 0 && unactivatedPerks.length === 0 && (
+        <CollapsibleSection
+          title="Perks & Benefits"
+          subtitle="All set up"
+          icon={<Trophy className="h-4 w-4 text-green-500" />}
+        >
+          <PerkChecklist perks={perkSetup} keyPerks={catalogCard.key_perks} />
+        </CollapsibleSection>
+      )}
+
+      {/* If no structured perks, show key_perks as a simple list */}
+      {perkSetup.length === 0 && catalogCard.key_perks.length > 0 && (
+        <CollapsibleSection title="Key Perks">
+          <ul className="space-y-1.5">
+            {catalogCard.key_perks.map((perk) => (
+              <li key={perk} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground" />
+                {perk}
+              </li>
+            ))}
+          </ul>
+        </CollapsibleSection>
+      )}
+
+      {/* Transfer Partners */}
+      {hasTransferPartners && (
+        <CollapsibleSection
+          title="Transfer Partners"
+          subtitle={`${transferPartners!.transfer_partners.airlines.length} airlines · ${transferPartners!.transfer_partners.hotels.length} hotels`}
+          icon={<Plane className="h-4 w-4" />}
+        >
+          <TransferPartnersContent transferPartners={transferPartners!} />
+        </CollapsibleSection>
+      )}
+
+      {/* ===== TIER 3: Reference sections (collapsed by default) ===== */}
+
+      {/* Annual fee info — when NOT approaching (persistent reference) */}
+      {annualFeeDollars > 0 && afDaysRemaining !== null && afDaysRemaining > 60 && (
+        <CollapsibleSection
+          title="Annual Fee"
+          subtitle={`$${annualFeeDollars}/yr · Due ${new Date(userCard.annual_fee_date!).toLocaleDateString("en-US", { month: "short", year: "numeric" })}`}
+          icon={<DollarSign className="h-4 w-4" />}
+        >
+          <AnnualFeeSection
+            userCard={userCard}
+            annualFeeDollars={annualFeeDollars}
+            daysRemaining={afDaysRemaining}
+            creditUsage={creditUsage}
+            catalogCard={catalogCard}
+            perkSetup={perkSetup}
+            lifecycleEvents={lifecycleEvents}
+          />
+        </CollapsibleSection>
+      )}
+
+      {/* Statement Credits */}
+      {creditUsage.length > 0 && (
+        <CollapsibleSection
+          title="Statement Credits"
+          icon={<DollarSign className="h-4 w-4" />}
+        >
+          <CreditTracker credits={creditUsage} />
+        </CollapsibleSection>
+      )}
+
+      {/* Card History */}
+      <CollapsibleSection
+        title="Card History"
+        subtitle={lifecycleEvents.length > 0 ? `${lifecycleEvents.length} event${lifecycleEvents.length !== 1 ? "s" : ""}` : undefined}
+        icon={<History className="h-4 w-4" />}
+      >
+        <LifecycleTimeline
+          userCardId={userCard.id}
+          events={lifecycleEvents}
+        />
+      </CollapsibleSection>
+    </div>
+  );
+}
+
+// --- Collapsible Section ---
+
+function CollapsibleSection({
+  title,
+  subtitle,
+  icon,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  icon?: React.ReactNode;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div className="rounded-lg border">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted/30 transition-colors"
+      >
+        {icon && <span className="shrink-0 text-muted-foreground">{icon}</span>}
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">{title}</p>
+          {subtitle && (
+            <p className="text-xs text-muted-foreground">{subtitle}</p>
           )}
-          <TabsTrigger value="transfer">Transfer Partners</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
-        </TabsList>
-
-        {/* Earning Tab */}
-        <TabsContent value="earning">
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="mb-4 text-sm font-semibold">Earning Rates</h3>
-              <div className="space-y-2">
-                {earningRates.map(([category, rate]) => (
-                  <div
-                    key={category}
-                    className="flex items-center justify-between py-1.5 text-sm"
-                  >
-                    <span className="capitalize text-muted-foreground">
-                      {category.replace(/_/g, " ")}
-                    </span>
-                    <span className="font-medium">{rate}x</span>
-                  </div>
-                ))}
-              </div>
-
-              {!isBeginner && catalogCard.earning_caps.length > 0 && (
-                <>
-                  <Separator className="my-4" />
-                  <h3 className="mb-2 text-sm font-semibold">Earning Caps</h3>
-                  <div className="space-y-1.5">
-                    {catalogCard.earning_caps.map((cap) => (
-                      <p
-                        key={cap.category}
-                        className="text-xs text-muted-foreground"
-                      >
-                        {cap.category}: up to $
-                        {(cap.limit_cents / 100).toLocaleString()}/{cap.period}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              {catalogCard.portal_cpp > 0 && (() => {
-                const issuerName = userCard.issuer === "chase" ? "Chase" : userCard.issuer === "amex" ? "Amex" : userCard.issuer === "citi" ? "Citi" : userCard.issuer === "capital_one" ? "Capital One" : userCard.issuer === "us_bank" ? "U.S. Bank" : userCard.issuer === "bilt" ? "Bilt" : userCard.issuer.replace("_", " ").replace(/\b\w/g, (c: string) => c.toUpperCase());
-                return (
-                  <>
-                    <Separator className="my-4" />
-                    {isBeginner ? (
-                      <p className="text-sm text-muted-foreground">
-                        Each point is worth {catalogCard.portal_cpp}&cent; when you book travel through {issuerName}
-                      </p>
-                    ) : (
-                      <div className="flex items-center justify-between text-sm">
-                        <div>
-                          <span className="text-muted-foreground">
-                            Travel portal value
-                          </span>
-                          <p className="text-xs text-muted-foreground/70">
-                            Worth {catalogCard.portal_cpp}&cent; per point when booking through{" "}
-                            {issuerName}&apos;s travel portal
-                          </p>
-                        </div>
-                        <span className="font-medium shrink-0">
-                          {catalogCard.portal_cpp}&cent;/pt
-                        </span>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Perks Tab */}
-        <TabsContent value="perks">
-          <Card>
-            <CardContent className="pt-6">
-              <h3 className="mb-4 text-sm font-semibold">Perks & Benefits</h3>
-              <PerkChecklist perks={perkSetup} keyPerks={catalogCard.key_perks} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Credits Tab */}
-        {creditUsage.length > 0 && (
-          <TabsContent value="credits">
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="mb-4 text-sm font-semibold">Statement Credits</h3>
-                <CreditTracker credits={creditUsage} />
-              </CardContent>
-            </Card>
-          </TabsContent>
+        </div>
+        {isOpen ? (
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
         )}
+      </button>
+      {isOpen && (
+        <div className="border-t px-4 py-4">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
 
-        {/* Transfer Partners Tab */}
-        <TabsContent value="transfer">
-          <Card>
-            <CardContent className="pt-6">
-              {transferPartners ? (
-                <div className="space-y-6">
-                  <div>
-                    <p className="mb-1 text-xs text-muted-foreground">
-                      {transferPartners.name}
-                    </p>
+// --- Transfer Partners Content ---
+
+const ALLIANCE_DESCRIPTIONS: Record<string, string> = {
+  "Star Alliance": "26 airlines including United, Lufthansa, ANA, Air Canada, and Singapore",
+  "oneworld": "13 airlines including American, British Airways, Cathay Pacific, and Qantas",
+  "SkyTeam": "19 airlines including Delta, Air France/KLM, and Korean Air",
+};
+
+function TransferPartnersContent({ transferPartners }: { transferPartners: TransferPartnerData }) {
+  const airlines = transferPartners.transfer_partners.airlines;
+  const hotels = transferPartners.transfer_partners.hotels;
+  const alliances = [...new Set(airlines.map((a) => a.alliance).filter(Boolean))] as string[];
+  const relevantAlliances = alliances.filter((a) => a in ALLIANCE_DESCRIPTIONS);
+
+  return (
+    <div className="space-y-5">
+      <p className="text-xs text-muted-foreground">{transferPartners.name}</p>
+
+      {relevantAlliances.length > 0 && (
+        <div className="space-y-1.5">
+          {relevantAlliances.map((alliance) => (
+            <div
+              key={alliance}
+              className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground"
+            >
+              <Info className="mt-0.5 h-3 w-3 shrink-0" />
+              <p>
+                <span className="font-medium text-foreground">{alliance}:</span>{" "}
+                {ALLIANCE_DESCRIPTIONS[alliance]}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {airlines.length > 0 && (
+        <div>
+          <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <Plane className="h-3.5 w-3.5" />
+            Airlines
+          </h3>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {airlines.map((airline) => (
+              <div
+                key={airline.code}
+                className="flex items-center justify-between rounded-md border p-3 text-sm"
+              >
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{airline.partner}</p>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{airline.code}</span>
+                    {airline.alliance && (
+                      <>
+                        <span>&middot;</span>
+                        <span>{airline.alliance}</span>
+                      </>
+                    )}
                   </div>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="font-medium">{airline.ratio}</p>
+                  <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {airline.transfer_time}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-                  {/* Airlines */}
-                  {transferPartners.transfer_partners.airlines.length > 0 && (
-                    <div>
-                      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
-                        <Plane className="h-4 w-4" />
-                        Airlines
-                      </h3>
-                      <AllianceLegend airlines={transferPartners.transfer_partners.airlines} />
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {transferPartners.transfer_partners.airlines.map(
-                          (airline) => (
-                            <div
-                              key={airline.code}
-                              className="flex items-center justify-between rounded-md border p-3 text-sm"
-                            >
-                              <div className="min-w-0">
-                                <p className="truncate font-medium">
-                                  {airline.partner}
-                                </p>
-                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                  <span>{airline.code}</span>
-                                  {airline.alliance && (
-                                    <>
-                                      <span>&middot;</span>
-                                      <span>{airline.alliance}</span>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="shrink-0 text-right">
-                                <p className="font-medium">{airline.ratio}</p>
-                                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Clock className="h-3 w-3" />
-                                  {airline.transfer_time}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Hotels */}
-                  {transferPartners.transfer_partners.hotels.length > 0 && (
-                    <div>
-                      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
-                        <Building2 className="h-4 w-4" />
-                        Hotels
-                      </h3>
-                      <div className="grid gap-2 sm:grid-cols-2">
-                        {transferPartners.transfer_partners.hotels.map(
-                          (hotel) => (
-                            <div
-                              key={hotel.code}
-                              className="flex items-center justify-between rounded-md border p-3 text-sm"
-                            >
-                              <div>
-                                <p className="font-medium">{hotel.partner}</p>
-                                {hotel.note && (
-                                  <p className="text-xs text-muted-foreground">
-                                    {hotel.note}
-                                  </p>
-                                )}
-                              </div>
-                              <div className="shrink-0 text-right">
-                                <p className="font-medium">{hotel.ratio}</p>
-                                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Clock className="h-3 w-3" />
-                                  {hotel.transfer_time}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
+      {hotels.length > 0 && (
+        <div>
+          <h3 className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <Building2 className="h-3.5 w-3.5" />
+            Hotels
+          </h3>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {hotels.map((hotel) => (
+              <div
+                key={hotel.code}
+                className="flex items-center justify-between rounded-md border p-3 text-sm"
+              >
+                <div>
+                  <p className="font-medium">{hotel.partner}</p>
+                  {hotel.note && (
+                    <p className="text-xs text-muted-foreground">{hotel.note}</p>
                   )}
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  No transfer partners available for {userCard.currency} points.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* History Tab */}
-        <TabsContent value="history">
-          <Card>
-            <CardContent className="pt-6">
-              <LifecycleTimeline
-                userCardId={userCard.id}
-                events={lifecycleEvents}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                <div className="shrink-0 text-right">
+                  <p className="font-medium">{hotel.ratio}</p>
+                  <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {hotel.transfer_time}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -512,7 +591,6 @@ function LifecycleTimeline({
         )}
       </div>
 
-      {/* Log Event Form */}
       {showForm && (
         <form action={formAction} className="space-y-3 rounded-md border p-3">
           <input type="hidden" name="user_card_id" value={userCardId} />
@@ -555,71 +633,33 @@ function LifecycleTimeline({
 
           {showRetentionFields && (
             <div className="grid gap-3 sm:grid-cols-2">
-              <Input
-                name="retention_offer_type"
-                placeholder="Offer type (e.g. statement_credit)"
-                className="h-8 text-sm"
-              />
-              <Input
-                name="retention_offer_value"
-                placeholder="Value (e.g. $150 credit)"
-                className="h-8 text-sm"
-              />
-              <Input
-                name="retention_spend_requirement"
-                placeholder="Spend req (e.g. $2k in 3mo)"
-                className="h-8 text-sm sm:col-span-2"
-              />
+              <Input name="retention_offer_type" placeholder="Offer type (e.g. statement_credit)" className="h-8 text-sm" />
+              <Input name="retention_offer_value" placeholder="Value (e.g. $150 credit)" className="h-8 text-sm" />
+              <Input name="retention_spend_requirement" placeholder="Spend req (e.g. $2k in 3mo)" className="h-8 text-sm sm:col-span-2" />
             </div>
           )}
 
           {showProductFields && (
             <div className="grid gap-3 sm:grid-cols-2">
-              <Input
-                name="from_card_slug"
-                placeholder="From card slug"
-                className="h-8 text-sm"
-              />
-              <Input
-                name="to_card_slug"
-                placeholder="To card slug"
-                className="h-8 text-sm"
-              />
+              <Input name="from_card_slug" placeholder="From card slug" className="h-8 text-sm" />
+              <Input name="to_card_slug" placeholder="To card slug" className="h-8 text-sm" />
             </div>
           )}
 
-          <Textarea
-            name="notes"
-            placeholder="Notes (optional)"
-            className="min-h-[50px] text-sm"
-          />
+          <Textarea name="notes" placeholder="Notes (optional)" className="min-h-[50px] text-sm" />
 
-          {state.error && (
-            <p className="text-xs text-destructive">{state.error}</p>
-          )}
-          {state.success && (
-            <p className="text-xs text-green-600">Event logged</p>
-          )}
+          {state.error && <p className="text-xs text-destructive">{state.error}</p>}
+          {state.success && <p className="text-xs text-green-600">Event logged</p>}
 
           <div className="flex gap-2">
-            <Button
-              type="button"
-              size="sm"
-              variant="ghost"
-              onClick={() => setShowForm(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" size="sm" disabled={isPending}>
-              {isPending ? "Saving..." : "Save"}
-            </Button>
+            <Button type="button" size="sm" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
+            <Button type="submit" size="sm" disabled={isPending}>{isPending ? "Saving..." : "Save"}</Button>
           </div>
         </form>
       )}
 
-      {/* Timeline */}
       {events.length === 0 ? (
-        <div className="flex flex-col items-center gap-2 py-8 text-center">
+        <div className="flex flex-col items-center gap-2 py-6 text-center">
           <History className="h-8 w-8 text-muted-foreground/50" />
           <p className="text-sm text-muted-foreground">No events yet</p>
           <p className="text-xs text-muted-foreground">
@@ -630,48 +670,148 @@ function LifecycleTimeline({
         <div className="relative ml-3 border-l border-border pl-6">
           {events.map((event) => {
             const config = EVENT_CONFIG[event.event_type] ?? {
-              label: event.event_type,
-              icon: CreditCard,
-              color: "text-muted-foreground",
+              label: event.event_type, icon: CreditCard, color: "text-muted-foreground",
             };
             const Icon = config.icon;
-
             return (
               <div key={event.id} className="relative pb-6 last:pb-0">
-                <div
-                  className={`absolute -left-[31px] flex h-5 w-5 items-center justify-center rounded-full border bg-background ${config.color}`}
-                >
+                <div className={`absolute -left-[31px] flex h-5 w-5 items-center justify-center rounded-full border bg-background ${config.color}`}>
                   <Icon className="h-3 w-3" />
                 </div>
                 <div className="space-y-0.5">
                   <p className="text-sm font-medium">{config.label}</p>
                   <p className="text-xs text-muted-foreground">
-                    {new Date(event.event_date).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
+                    {new Date(event.event_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                   {event.retention_offer_value && (
                     <p className="text-xs text-muted-foreground">
                       {event.retention_offer_type}: {event.retention_offer_value}
-                      {event.retention_spend_requirement &&
-                        ` (requires ${event.retention_spend_requirement})`}
+                      {event.retention_spend_requirement && ` (requires ${event.retention_spend_requirement})`}
                     </p>
                   )}
                   {event.from_card_slug && event.to_card_slug && (
-                    <p className="text-xs text-muted-foreground">
-                      {event.from_card_slug} → {event.to_card_slug}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{event.from_card_slug} → {event.to_card_slug}</p>
                   )}
-                  {event.notes && (
-                    <p className="text-xs text-muted-foreground">{event.notes}</p>
-                  )}
+                  {event.notes && <p className="text-xs text-muted-foreground">{event.notes}</p>}
                 </div>
               </div>
             );
           })}
         </div>
+      )}
+    </div>
+  );
+}
+
+// --- Annual Fee Section ---
+
+type AFActionState = { error?: string; success?: boolean };
+
+function AnnualFeeSection({
+  userCard,
+  annualFeeDollars,
+  daysRemaining,
+  creditUsage,
+  catalogCard,
+  perkSetup,
+  lifecycleEvents,
+}: {
+  userCard: UserCard;
+  annualFeeDollars: number;
+  daysRemaining: number;
+  creditUsage: UserCreditUsage[];
+  catalogCard: CatalogCard;
+  perkSetup: UserPerkSetup[];
+  lifecycleEvents: CardLifecycleEvent[];
+}) {
+  const [showRetentionForm, setShowRetentionForm] = useState(false);
+  const [showDecisionHelper, setShowDecisionHelper] = useState(false);
+
+  const hasDecisionData = !!(catalogCard.downgrade_options?.length || catalogCard.retention_data);
+
+  const [state, formAction, isPending] = useActionState<AFActionState, FormData>(
+    async (_prev, formData) => {
+      const result = await logAnnualFeeEvent(formData);
+      if (result.success) setShowRetentionForm(false);
+      return result;
+    },
+    {}
+  );
+
+  return (
+    <div className="rounded-lg border p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CalendarClock className="h-4 w-4 text-muted-foreground" />
+          <div>
+            <p className="text-sm font-medium">Annual Fee</p>
+            <p className="text-xs text-muted-foreground">
+              ${annualFeeDollars} &middot; Next:{" "}
+              {new Date(userCard.annual_fee_date!).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            </p>
+          </div>
+        </div>
+        {daysRemaining <= 14 ? (
+          <Badge variant="destructive">{formatDaysRemaining(daysRemaining)}</Badge>
+        ) : daysRemaining <= 30 ? (
+          <Badge variant="secondary">{formatDaysRemaining(daysRemaining)}</Badge>
+        ) : (
+          <span className="text-xs text-muted-foreground">{formatDaysRemaining(daysRemaining)}</span>
+        )}
+      </div>
+
+      {/* AF Offset Calculator */}
+      {creditUsage.length > 0 && <AnnualFeeOffset annualFeeDollars={annualFeeDollars} credits={creditUsage} />}
+
+      {/* AF Decision Helper */}
+      {hasDecisionData && !showDecisionHelper && (
+        <Button variant="outline" size="sm" className="w-full" onClick={() => setShowDecisionHelper(true)}>
+          Review your options
+        </Button>
+      )}
+      {showDecisionHelper && (
+        <AFDecisionHelper
+          catalogCard={catalogCard}
+          creditUsage={creditUsage}
+          perkSetup={perkSetup}
+          lifecycleEvents={lifecycleEvents}
+        />
+      )}
+
+      {/* Retention offer */}
+      {!showRetentionForm ? (
+        <button
+          type="button"
+          onClick={() => setShowRetentionForm(true)}
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Phone className="h-3 w-3" />
+          Log retention offer
+        </button>
+      ) : (
+        <form action={formAction} className="space-y-3 rounded-md border p-3">
+          <input type="hidden" name="user_card_id" value={userCard.id} />
+          <div className="space-y-2">
+            <Select name="event_type" defaultValue="retention_offer">
+              <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="retention_offer">Received offer</SelectItem>
+                <SelectItem value="retention_declined">No offer / declined</SelectItem>
+                <SelectItem value="annual_fee_posted">AF posted</SelectItem>
+                <SelectItem value="annual_fee_waived">AF waived</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input name="retention_offer_type" placeholder="Offer type (e.g. statement_credit)" className="h-8 text-sm" />
+            <Input name="retention_offer_value" placeholder="Offer value (e.g. $150 credit)" className="h-8 text-sm" />
+            <Textarea name="notes" placeholder="Notes..." className="min-h-[60px] text-sm" />
+          </div>
+          {state.error && <p className="text-xs text-destructive">{state.error}</p>}
+          {state.success && <p className="text-xs text-green-600">Logged successfully</p>}
+          <div className="flex gap-2">
+            <Button type="button" size="sm" variant="ghost" onClick={() => setShowRetentionForm(false)}>Cancel</Button>
+            <Button type="submit" size="sm" disabled={isPending}>{isPending ? "Saving..." : "Save"}</Button>
+          </div>
+        </form>
       )}
     </div>
   );
@@ -686,7 +826,6 @@ function AnnualFeeOffset({
   annualFeeDollars: number;
   credits: UserCreditUsage[];
 }) {
-  // Group credits by name, sum used amounts
   const creditSums: Record<string, number> = {};
   for (const c of credits) {
     creditSums[c.credit_name] = (creditSums[c.credit_name] ?? 0) + c.amount_used_cents;
@@ -715,198 +854,12 @@ function AnnualFeeOffset({
       <div className="border-t pt-1.5 flex justify-between font-medium">
         <span>Effective cost</span>
         <span className={effectiveCost <= 0 ? "text-green-600" : "text-amber-600"}>
-          {effectiveCost <= 0 ? `-$${Math.abs(effectiveCost).toFixed(0)} ✓` : `$${effectiveCost.toFixed(0)}`}
+          {effectiveCost <= 0 ? `-$${Math.abs(effectiveCost).toFixed(0)}` : `$${effectiveCost.toFixed(0)}`}
         </span>
       </div>
       {effectiveCost <= 0 && (
         <p className="text-xs text-green-600">You&apos;re ahead on this card</p>
       )}
     </div>
-  );
-}
-
-// --- Alliance Legend ---
-
-const ALLIANCE_DESCRIPTIONS: Record<string, string> = {
-  "Star Alliance": "26 airlines including United, Lufthansa, ANA, Air Canada, and Singapore",
-  "oneworld": "13 airlines including American, British Airways, Cathay Pacific, and Qantas",
-  "SkyTeam": "19 airlines including Delta, Air France/KLM, and Korean Air",
-};
-
-function AllianceLegend({ airlines }: { airlines: TransferPartnerEntry[] }) {
-  const alliances = [...new Set(airlines.map((a) => a.alliance).filter(Boolean))] as string[];
-  const relevant = alliances.filter((a) => a in ALLIANCE_DESCRIPTIONS);
-
-  if (relevant.length === 0) return null;
-
-  return (
-    <div className="mb-3 space-y-1.5">
-      {relevant.map((alliance) => (
-        <div
-          key={alliance}
-          className="flex items-start gap-2 rounded-md bg-muted/50 px-3 py-2 text-xs text-muted-foreground"
-        >
-          <Info className="mt-0.5 h-3 w-3 shrink-0" />
-          <p>
-            <span className="font-medium text-foreground">{alliance}:</span>{" "}
-            {ALLIANCE_DESCRIPTIONS[alliance]}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// --- Annual Fee Section with retention offer logging ---
-
-type AFActionState = { error?: string; success?: boolean };
-
-function AnnualFeeSection({
-  userCard,
-  annualFeeDollars,
-  daysRemaining,
-  perks,
-  creditUsage,
-  catalogCard,
-  perkSetup,
-  lifecycleEvents,
-}: {
-  userCard: UserCard;
-  annualFeeDollars: number;
-  daysRemaining: number;
-  perks: string[];
-  creditUsage: UserCreditUsage[];
-  catalogCard: CatalogCard;
-  perkSetup: UserPerkSetup[];
-  lifecycleEvents: CardLifecycleEvent[];
-}) {
-  const [showRetentionForm, setShowRetentionForm] = useState(false);
-  const [showDecisionHelper, setShowDecisionHelper] = useState(false);
-
-  const hasDecisionData = !!(catalogCard.downgrade_options?.length || catalogCard.retention_data);
-  const showDecisionCTA = hasDecisionData && daysRemaining <= 60;
-
-  const [state, formAction, isPending] = useActionState<AFActionState, FormData>(
-    async (_prev, formData) => {
-      const result = await logAnnualFeeEvent(formData);
-      if (result.success) setShowRetentionForm(false);
-      return result;
-    },
-    {}
-  );
-
-  return (
-    <Card>
-      <CardContent className="space-y-4 pt-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium">Annual Fee</p>
-            <p className="text-xs text-muted-foreground">
-              ${annualFeeDollars} &middot; Next:{" "}
-              {new Date(userCard.annual_fee_date!).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </p>
-          </div>
-          {daysRemaining <= 14 ? (
-            <Badge variant="destructive">{formatDaysRemaining(daysRemaining)}</Badge>
-          ) : daysRemaining <= 30 ? (
-            <Badge variant="secondary">{formatDaysRemaining(daysRemaining)}</Badge>
-          ) : (
-            <span className="text-xs text-muted-foreground">
-              {formatDaysRemaining(daysRemaining)}
-            </span>
-          )}
-        </div>
-
-        {/* AF Offset Calculator */}
-        {creditUsage.length > 0 && <AnnualFeeOffset annualFeeDollars={annualFeeDollars} credits={creditUsage} />}
-
-        {/* AF Decision Helper */}
-        {showDecisionCTA && !showDecisionHelper && (
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full"
-            onClick={() => setShowDecisionHelper(true)}
-          >
-            Review your options
-          </Button>
-        )}
-        {showDecisionHelper && (
-          <AFDecisionHelper
-            catalogCard={catalogCard}
-            creditUsage={creditUsage}
-            perkSetup={perkSetup}
-            lifecycleEvents={lifecycleEvents}
-          />
-        )}
-
-        {/* Retention offer CTA */}
-        {!showRetentionForm ? (
-          <button
-            type="button"
-            onClick={() => setShowRetentionForm(true)}
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Phone className="h-3 w-3" />
-            Log retention offer
-          </button>
-        ) : (
-          <form action={formAction} className="space-y-3 rounded-md border p-3">
-            <input type="hidden" name="user_card_id" value={userCard.id} />
-            <div className="space-y-2">
-              <Select name="event_type" defaultValue="retention_offer">
-                <SelectTrigger className="h-8 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="retention_offer">Received offer</SelectItem>
-                  <SelectItem value="retention_declined">No offer / declined</SelectItem>
-                  <SelectItem value="annual_fee_posted">AF posted</SelectItem>
-                  <SelectItem value="annual_fee_waived">AF waived</SelectItem>
-                </SelectContent>
-              </Select>
-              <Input
-                name="retention_offer_type"
-                placeholder="Offer type (e.g. statement_credit)"
-                className="h-8 text-sm"
-              />
-              <Input
-                name="retention_offer_value"
-                placeholder="Offer value (e.g. $150 credit)"
-                className="h-8 text-sm"
-              />
-              <Textarea
-                name="notes"
-                placeholder="Notes..."
-                className="min-h-[60px] text-sm"
-              />
-            </div>
-            {state.error && (
-              <p className="text-xs text-destructive">{state.error}</p>
-            )}
-            {state.success && (
-              <p className="text-xs text-green-600">Logged successfully</p>
-            )}
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                onClick={() => setShowRetentionForm(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" size="sm" disabled={isPending}>
-                {isPending ? "Saving..." : "Save"}
-              </Button>
-            </div>
-          </form>
-        )}
-      </CardContent>
-    </Card>
   );
 }
