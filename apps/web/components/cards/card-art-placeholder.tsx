@@ -34,17 +34,17 @@ export function CardArtPlaceholder({
       {!hideLabels && (
         <>
           {/* Issuer name */}
-          <div className="absolute top-3 left-4 text-xs font-bold uppercase tracking-wider opacity-80">
+          <div className="absolute top-2 left-3 text-[10px] font-bold uppercase tracking-wider opacity-80">
             {issuer.replace("_", " ")}
           </div>
 
           {/* Card name */}
-          <div className="absolute bottom-6 left-4 right-4 text-sm font-semibold leading-tight">
+          <div className="absolute bottom-4 left-3 right-3 text-[11px] font-semibold leading-snug">
             {cardName}
           </div>
 
           {/* Network badge */}
-          <div className="absolute right-3 bottom-3 text-[10px] font-medium uppercase opacity-60">
+          <div className="absolute right-2.5 bottom-1.5 text-[9px] font-medium uppercase opacity-60">
             {network}
           </div>
         </>
