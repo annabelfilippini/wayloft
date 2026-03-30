@@ -158,7 +158,7 @@ function StatusBadge({ credit, daysLeft }: { credit: UserCreditUsage; daysLeft: 
   return <Badge variant="outline">{daysLeft}d left</Badge>;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 function MarkUsedButton({ creditId }: { creditId: string }) {
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
@@ -172,7 +172,7 @@ function MarkUsedButton({ creditId }: { creditId: string }) {
       <Button type="submit" size="sm" variant="outline" className="text-xs" disabled={isPending}>
         {isPending ? "Saving..." : "Mark used"}
       </Button>
-      {state.error && <p className="text-xs text-destructive mt-1">{state.error}</p>}
+      {state.error && <p className="text-xs text-destructive mt-1">{state.error.message}</p>}
     </form>
   );
 }
@@ -205,7 +205,7 @@ function PartialForm({ creditId, onDone }: { creditId: string; onDone: () => voi
       <Button type="button" size="sm" variant="ghost" className="h-7 text-xs" onClick={onDone}>
         Cancel
       </Button>
-      {state.error && <p className="text-xs text-destructive">{state.error}</p>}
+      {state.error && <p className="text-xs text-destructive">{state.error.message}</p>}
     </form>
   );
 }
@@ -227,7 +227,7 @@ function EnrollButton({ creditId }: { creditId: string }) {
       >
         {isPending ? "Enrolling..." : "Enroll to activate"}
       </Button>
-      {state.error && <p className="text-xs text-destructive mt-1">{state.error}</p>}
+      {state.error && <p className="text-xs text-destructive mt-1">{state.error.message}</p>}
     </form>
   );
 }

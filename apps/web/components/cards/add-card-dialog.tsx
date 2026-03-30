@@ -22,7 +22,7 @@ interface AddCardDialogProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 export function AddCardDialog({ catalog, open: controlledOpen, onOpenChange: controlledOnOpenChange }: AddCardDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -120,7 +120,7 @@ export function AddCardDialog({ catalog, open: controlledOpen, onOpenChange: con
             </div>
 
             {state.error && (
-              <p className="text-sm text-destructive">{state.error}</p>
+              <p className="text-sm text-destructive">{state.error.message}</p>
             )}
 
             <div className="flex gap-2">

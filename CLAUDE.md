@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Mar 19, 2026)
+## Current Status (Mar 30, 2026)
 
-**Through Priority 4 (Flight Search).** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed).
+**Through Priority 4 (Flight Search) + pre-launch code quality pass.** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed). Pre-launch hardening pass: ActionResult schema, SELECT * violations, onboarding error handling, test infrastructure.
 
 ### What's Built
 
@@ -219,7 +219,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 8 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views
 - `/ship` slash command (commit + update docs)
 
+**Code Quality & Test Infrastructure (Mar 30 — partial):**
+- Vitest installed + configured (`apps/web/vitest.config.ts`, `pnpm test` in `apps/web`)
+- 24 passing engine tests: `tests/recommend/engine.test.ts` — filtering, 5/24 warnings, CPP weighting, signup bonus achievability, goal alignment proportionality
+- `bonuses.ts`: all 3 functions migrated to `ActionResult<T>` (were using bare `{data,error}` shape)
+- `profile.ts exportUserData`: explicit column selects + error checking on all 3 queries (was silently returning success on DB failure)
+- `onboarding.ts completeOnboarding`: error checking added to cards upsert, quiz response upsert, and profile update
+- `cards.ts markCreditUsed`: explicit column select on `user_credit_usage`
+- `credit-health.ts getCreditHealth`: explicit column selects on `user_cards` and `user_external_cards`
+- `.claude/commands/`: 6 slash commands — `error-audit`, `scraper-audit`, `data-integrity-check`, `card-data-check`, `review-pr`, `test-gen`
+- `.claude/rules/`: 6 rule files — database, error-handling, extraction-attribution, data-pipeline, testing, api-conventions
+
 ### What's Next
+
+Pre-launch quality (blocking):
+- **Test coverage** — 28 untested server action functions across 8 files (`cards`, `loyalty`, `onboarding`, `profile`, `recommend`, `bonuses`, `credit-health`, `scraper`). Rules require 3 tests minimum per function before shipping.
+- **Hard deletes** — `removeCard`, `deletePaymentInfo`, `removeLoyaltyBalance` still use hard delete. Requires migration (3 `deleted_at` columns + view updates) + ~35 code changes. Defer to dedicated session.
+- **Scraper attribution** — `scraper.ts` missing `retrieved_date` and `confidence` on scraped records.
 
 Phase 2 — Polish & Launch:
 - Stripe billing (Free / $9.99 Pro) + feature gating
@@ -346,3 +362,12 @@ pnpm turbo lint         # ESLint
 3. Transfer Bonus Tracker (Python scrapers)
 4. Flight Search via Duffel API
 5. Browser Extension (DOM enrichers, balance capture, crowdsourced data)
+
+## Rules
+
+@.claude/rules/database.md
+@.claude/rules/error-handling.md
+@.claude/rules/extraction-and-attribution.md
+@.claude/rules/data-pipeline.md
+@.claude/rules/testing.md
+@.claude/rules/api-conventions.md

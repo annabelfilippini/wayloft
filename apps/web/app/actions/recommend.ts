@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@wayloft/shared";
 
 export interface QuizData {
   monthly_dining_spend: number;
@@ -19,16 +20,14 @@ export interface QuizData {
 
 export async function submitQuiz(
   formData: FormData
-): Promise<
-  { success: true; quizData: QuizData } | { success?: never; error: string }
-> {
+): Promise<ActionResult<QuizData>> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to save your quiz results.', isRetryable: false } };
   }
 
   const cardSlugs = formData.getAll("current_card_slugs") as string[];
@@ -60,8 +59,8 @@ export async function submitQuiz(
     .upsert(row, { onConflict: "user_id" });
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to save quiz results. Please try again.', description: error.message, isRetryable: true } };
   }
 
-  return { success: true, quizData };
+  return { success: true, data: quizData };
 }

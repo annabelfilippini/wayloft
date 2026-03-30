@@ -10,7 +10,7 @@ interface SpendUpdateFormProps {
   currentCents: number;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 const QUICK_INCREMENTS = [500, 1000, 2000];
 
@@ -72,7 +72,7 @@ export function SpendUpdateForm({ cardId, currentCents }: SpendUpdateFormProps) 
         </Button>
       </form>
       {state.error && (
-        <p className="text-xs text-destructive">{state.error}</p>
+        <p className="text-xs text-destructive">{state.error.message}</p>
       )}
     </div>
   );

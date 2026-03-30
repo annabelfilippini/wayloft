@@ -25,7 +25,7 @@ interface ProfileFormProps {
   email: string;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 export function ProfileForm({ profile, email }: ProfileFormProps) {
   const [cabin, setCabin] = useState(profile.preferred_cabin);
@@ -123,7 +123,7 @@ export function ProfileForm({ profile, email }: ProfileFormProps) {
         </div>
 
         {state.error && (
-          <p className="text-sm text-destructive">{state.error}</p>
+          <p className="text-sm text-destructive">{state.error.message}</p>
         )}
         {state.success && (
           <p className="text-sm text-green-600">Profile updated</p>

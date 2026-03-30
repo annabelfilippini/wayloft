@@ -3,8 +3,7 @@ Figure out what to work on next. This is research only — do NOT start building
 1. **Read all source files** — Read these in full:
    - `CLAUDE.md` — current status, what's built, what's next
    - `WAYLOFT-BUILD-PLAN.md` — consolidated build plan with checkboxes (single source of truth for progress)
-   - `WAYLOFT-MASTER-PLAN-V3.md` — full specs, DB schemas, algorithm details, acceptance criteria
-   - `wayloft-master-plan-additions-v3.2.md` — additional detailed specs (optimizer, credits, perks, AF helper, payments, experience levels, education layer)
+   - `WAYLOFT-MASTER-PLAN-V3.md` — full specs, DB schemas, algorithm details, acceptance criteria (consolidated, includes v3.2 additions)
 
 2. **Determine current state** — From the files above, identify:
    - The current priority level (P0, P1, P2, P3, etc.)
@@ -20,11 +19,6 @@ Figure out what to work on next. This is research only — do NOT start building
    - Prefer tasks with clear specs in the master plan over underspecified ones
    - If multiple tasks are equally good, pick the smallest one (ship fast, iterate)
 
-4. **Check for specs** — Look up the recommended task in V3.md and v3.2 additions. Pull out:
-   - DB schema / migration SQL if any
-   - Component specs or acceptance criteria
-   - Types or JSON schema changes needed
-   - Any dependencies on other features
 
 5. **Present the recommendation** — Output exactly this format:
 
@@ -39,10 +33,6 @@ Figure out what to work on next. This is research only — do NOT start building
    - [Bullet list of concrete implementation steps]
    - [Include files to create/modify if known from the specs]
    - [Include any DB migrations needed]
-
-   ### Specs found
-   - [Relevant acceptance criteria, schemas, or algorithm details pulled from V3/v3.2]
-   - [Or "No detailed spec found — will need to define as we go"]
 
    ### Dependencies / blockers
    - [Anything that needs to happen first, or "None"]

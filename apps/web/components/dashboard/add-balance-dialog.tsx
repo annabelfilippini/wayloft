@@ -58,7 +58,7 @@ const PROGRAMS: Program[] = [
   { code: "IHG", name: "IHG One Rewards", type: "hotel", currency: "IHG" },
 ];
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 export function AddBalanceDialog() {
   const [open, setOpen] = useState(false);
@@ -166,7 +166,7 @@ export function AddBalanceDialog() {
           </div>
 
           {state.error && (
-            <p className="text-sm text-destructive">{state.error}</p>
+            <p className="text-sm text-destructive">{state.error.message}</p>
           )}
 
           <Button

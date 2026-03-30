@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
-import type { LifecycleEventType, CatalogCredit, PerkSetupStatus, AutopayType } from "@wayloft/shared";
+import type { LifecycleEventType, CatalogCredit, PerkSetupStatus, AutopayType, ActionResult } from "@wayloft/shared";
 
 function calculatePeriodDates(
   period: CatalogCredit["period"],
@@ -52,19 +52,19 @@ export async function addCard(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const cardSlug = formData.get("card_slug") as string;
   const cardSince = formData.get("card_since") as string | null;
 
   if (!cardSlug) {
-    return { error: "No card selected" };
+    return { success: false, error: { category: 'validation', message: 'No card selected.', isRetryable: false } };
   }
 
   const catalog = getCardBySlug(cardSlug);
   if (!catalog) {
-    return { error: "Card not found in catalog" };
+    return { success: false, error: { category: 'validation', message: 'Card not found in catalog.', isRetryable: false } };
   }
 
   const openedDate = cardSince || new Date().toISOString().split("T")[0];
@@ -88,9 +88,9 @@ export async function addCard(formData: FormData) {
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "You already have this card" };
+      return { success: false, error: { category: 'validation', message: 'You already have this card.', isRetryable: false } };
     }
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to add card. Please try again.', description: error.message, isRetryable: true } };
   }
 
   // Auto-log "opened" lifecycle event
@@ -157,7 +157,7 @@ export async function updateSpendProgress(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const cardId = formData.get("card_id") as string;
@@ -165,7 +165,7 @@ export async function updateSpendProgress(formData: FormData) {
   const amountStr = formData.get("amount") as string | null;
 
   if (!cardId) {
-    return { error: "Invalid input" };
+    return { success: false, error: { category: 'validation', message: 'No card specified.', isRetryable: false } };
   }
 
   let cents: number;
@@ -173,7 +173,7 @@ export async function updateSpendProgress(formData: FormData) {
   if (incrementStr) {
     const incrementDollars = parseFloat(incrementStr);
     if (isNaN(incrementDollars) || incrementDollars <= 0) {
-      return { error: "Invalid increment" };
+      return { success: false, error: { category: 'validation', message: 'Enter a valid amount greater than $0.', isRetryable: false, field: 'increment' } };
     }
     // Fetch current balance and add increment
     const { data: card } = await supabase
@@ -184,14 +184,14 @@ export async function updateSpendProgress(formData: FormData) {
       .single();
 
     if (!card) {
-      return { error: "Card not found" };
+      return { success: false, error: { category: 'validation', message: 'Card not found.', isRetryable: false } };
     }
 
     cents = (card.signup_spend_progress_cents ?? 0) + Math.round(incrementDollars * 100);
   } else {
     const amountDollars = parseFloat(amountStr ?? "");
     if (isNaN(amountDollars) || amountDollars < 0) {
-      return { error: "Invalid input" };
+      return { success: false, error: { category: 'validation', message: 'Enter a valid dollar amount.', isRetryable: false, field: 'amount' } };
     }
     cents = Math.round(amountDollars * 100);
   }
@@ -203,7 +203,7 @@ export async function updateSpendProgress(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to update spend. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -218,12 +218,12 @@ export async function removeCard(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const cardId = formData.get("card_id") as string;
   if (!cardId) {
-    return { error: "No card specified" };
+    return { success: false, error: { category: 'validation', message: 'No card specified.', isRetryable: false } };
   }
 
   const { error } = await supabase
@@ -233,7 +233,7 @@ export async function removeCard(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to remove card. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -262,7 +262,7 @@ export async function logLifecycleEvent(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const userCardId = formData.get("user_card_id") as string;
@@ -280,7 +280,7 @@ export async function logLifecycleEvent(formData: FormData) {
     !eventType ||
     !VALID_LIFECYCLE_EVENTS.includes(eventType as LifecycleEventType)
   ) {
-    return { error: "Invalid input" };
+    return { success: false, error: { category: 'validation', message: 'Invalid lifecycle event.', isRetryable: false } };
   }
 
   const { error } = await supabase.from("card_lifecycle_events").insert({
@@ -297,7 +297,7 @@ export async function logLifecycleEvent(formData: FormData) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to log event. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -312,7 +312,7 @@ export async function logAnnualFeeEvent(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const userCardId = formData.get("user_card_id") as string;
@@ -330,7 +330,7 @@ export async function logAnnualFeeEvent(formData: FormData) {
   ];
 
   if (!userCardId || !eventType || !validEvents.includes(eventType)) {
-    return { error: "Invalid input" };
+    return { success: false, error: { category: 'validation', message: 'Invalid annual fee event.', isRetryable: false } };
   }
 
   const { error } = await supabase.from("card_lifecycle_events").insert({
@@ -344,7 +344,7 @@ export async function logAnnualFeeEvent(formData: FormData) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to log annual fee event. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -359,32 +359,32 @@ export async function markCreditUsed(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const creditId = formData.get("credit_id") as string;
   const amountStr = formData.get("amount") as string | null;
 
   if (!creditId) {
-    return { error: "No credit specified" };
+    return { success: false, error: { category: 'validation', message: 'No credit specified.', isRetryable: false } };
   }
 
   const { data: credit } = await supabase
     .from("user_credit_usage")
-    .select("*")
+    .select("id, user_id, user_card_id, credit_type, credit_name, credit_amount_cents, period, period_start, period_end, amount_used_cents, status, enrollment_required, enrolled, created_at, updated_at")
     .eq("id", creditId)
     .eq("user_id", user.id)
     .single();
 
   if (!credit) {
-    return { error: "Credit not found" };
+    return { success: false, error: { category: 'validation', message: 'Credit not found.', isRetryable: false } };
   }
 
   let newUsed: number;
   if (amountStr) {
     const amountDollars = parseFloat(amountStr);
     if (isNaN(amountDollars) || amountDollars <= 0) {
-      return { error: "Invalid amount" };
+      return { success: false, error: { category: 'validation', message: 'Enter a valid amount greater than $0.', isRetryable: false, field: 'amount' } };
     }
     newUsed = credit.amount_used_cents + Math.round(amountDollars * 100);
   } else {
@@ -407,7 +407,7 @@ export async function markCreditUsed(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to update credit. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -422,13 +422,13 @@ export async function enrollCredit(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const creditId = formData.get("credit_id") as string;
 
   if (!creditId) {
-    return { error: "No credit specified" };
+    return { success: false, error: { category: 'validation', message: 'No credit specified.', isRetryable: false } };
   }
 
   const { error } = await supabase
@@ -438,7 +438,7 @@ export async function enrollCredit(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to enroll credit. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -453,14 +453,14 @@ export async function markPerkSetup(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const perkId = formData.get("perk_id") as string;
   const newStatus = formData.get("status") as PerkSetupStatus;
 
   if (!perkId || !newStatus) {
-    return { error: "Invalid input" };
+    return { success: false, error: { category: 'validation', message: 'Perk ID and status are required.', isRetryable: false } };
   }
 
   const validStatuses: PerkSetupStatus[] = [
@@ -470,7 +470,7 @@ export async function markPerkSetup(formData: FormData) {
     "not_applicable",
   ];
   if (!validStatuses.includes(newStatus)) {
-    return { error: "Invalid status" };
+    return { success: false, error: { category: 'validation', message: 'Invalid perk status.', isRetryable: false, field: 'status' } };
   }
 
   const updates: Record<string, unknown> = { status: newStatus };
@@ -490,7 +490,7 @@ export async function markPerkSetup(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to update perk. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -505,13 +505,13 @@ export async function dismissPerk(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const perkId = formData.get("perk_id") as string;
 
   if (!perkId) {
-    return { error: "No perk specified" };
+    return { success: false, error: { category: 'validation', message: 'No perk specified.', isRetryable: false } };
   }
 
   const { error } = await supabase
@@ -521,7 +521,7 @@ export async function dismissPerk(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to dismiss perk. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -543,7 +543,7 @@ export async function addPaymentInfo(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const userCardId = formData.get("user_card_id") as string;
@@ -554,16 +554,16 @@ export async function addPaymentInfo(formData: FormData) {
   const notes = formData.get("notes") as string | null;
 
   if (!userCardId || !cardSlug || !dueDayStr) {
-    return { error: "Invalid input" };
+    return { success: false, error: { category: 'validation', message: 'Card and due day are required.', isRetryable: false } };
   }
 
   const dueDay = parseInt(dueDayStr, 10);
   if (isNaN(dueDay) || dueDay < 1 || dueDay > 28) {
-    return { error: "Due day must be between 1 and 28" };
+    return { success: false, error: { category: 'validation', message: 'Due day must be between 1 and 28.', isRetryable: false, field: 'due_day' } };
   }
 
   if (!VALID_AUTOPAY_TYPES.includes(autopayType)) {
-    return { error: "Invalid autopay type" };
+    return { success: false, error: { category: 'validation', message: 'Invalid autopay type.', isRetryable: false, field: 'autopay_type' } };
   }
 
   const { error } = await supabase.from("user_payment_info").insert({
@@ -578,9 +578,9 @@ export async function addPaymentInfo(formData: FormData) {
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "Payment info already exists for this card" };
+      return { success: false, error: { category: 'validation', message: 'Payment info already exists for this card.', isRetryable: false } };
     }
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to save payment info. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -595,13 +595,13 @@ export async function updatePaymentInfo(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const paymentInfoId = formData.get("payment_info_id") as string;
 
   if (!paymentInfoId) {
-    return { error: "No payment info specified" };
+    return { success: false, error: { category: 'validation', message: 'No payment info specified.', isRetryable: false } };
   }
 
   const updates: Record<string, unknown> = {};
@@ -610,7 +610,7 @@ export async function updatePaymentInfo(formData: FormData) {
   if (dueDayStr) {
     const dueDay = parseInt(dueDayStr, 10);
     if (isNaN(dueDay) || dueDay < 1 || dueDay > 28) {
-      return { error: "Due day must be between 1 and 28" };
+      return { success: false, error: { category: 'validation', message: 'Due day must be between 1 and 28.', isRetryable: false, field: 'due_day' } };
     }
     updates.due_day = dueDay;
   }
@@ -623,7 +623,7 @@ export async function updatePaymentInfo(formData: FormData) {
   const autopayType = formData.get("autopay_type") as string | null;
   if (autopayType) {
     if (!VALID_AUTOPAY_TYPES.includes(autopayType as AutopayType)) {
-      return { error: "Invalid autopay type" };
+      return { success: false, error: { category: 'validation', message: 'Invalid autopay type.', isRetryable: false, field: 'autopay_type' } };
     }
     updates.autopay_type = autopayType;
   }
@@ -634,7 +634,7 @@ export async function updatePaymentInfo(formData: FormData) {
   }
 
   if (Object.keys(updates).length === 0) {
-    return { error: "No changes provided" };
+    return { success: false, error: { category: 'validation', message: 'No changes provided.', isRetryable: false } };
   }
 
   const { error } = await supabase
@@ -644,7 +644,7 @@ export async function updatePaymentInfo(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to update payment info. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");
@@ -659,13 +659,13 @@ export async function deletePaymentInfo(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const paymentInfoId = formData.get("payment_info_id") as string;
 
   if (!paymentInfoId) {
-    return { error: "No payment info specified" };
+    return { success: false, error: { category: 'validation', message: 'No payment info specified.', isRetryable: false } };
   }
 
   const { error } = await supabase
@@ -675,7 +675,7 @@ export async function deletePaymentInfo(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to delete payment info. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/cards");

@@ -1,83 +1,112 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import type { TransferBonus, TransferBonusHistory } from "@wayloft/shared";
+import type { ActionResult, TransferBonus, TransferBonusHistory } from "@wayloft/shared";
 
-export async function getActiveBonuses(): Promise<{
-  data: TransferBonus[];
-  error: string | null;
-}> {
+const BONUS_COLUMNS =
+  "id, bank, currency, partner, partner_code, partner_type, bonus_percentage, start_date, end_date, source_url, is_active, scraped_at, created_at";
+
+const HISTORY_COLUMNS =
+  "id, bank, currency, partner, partner_code, bonus_percentage, start_date, end_date, duration_days, created_at";
+
+export async function getActiveBonuses(): Promise<ActionResult<TransferBonus[]>> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("transfer_bonuses")
-    .select("*")
+    .select(BONUS_COLUMNS)
     .eq("is_active", true)
     .gte("end_date", new Date().toISOString().split("T")[0])
     .order("end_date", { ascending: true });
 
   if (error) {
-    return { data: [], error: error.message };
+    return {
+      success: false,
+      error: {
+        category: "transient",
+        message: "Unable to load transfer bonuses. Please try again.",
+        description: error.message,
+        isRetryable: true,
+      },
+    };
   }
 
-  return { data: (data ?? []) as TransferBonus[], error: null };
+  return { success: true, data: (data ?? []) as TransferBonus[] };
 }
 
-export async function getActiveBonusesForUser(): Promise<{
-  data: TransferBonus[];
-  error: string | null;
-}> {
+export async function getActiveBonusesForUser(): Promise<ActionResult<TransferBonus[]>> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { data: [], error: "Not authenticated" };
+    return {
+      success: false,
+      error: {
+        category: "permission",
+        message: "Sign in to view your personalized bonuses.",
+        isRetryable: false,
+      },
+    };
   }
 
-  // Get the user's active cards to determine which currencies they hold
-  const { data: userCards } = await supabase
+  const { data: userCards, error: cardsError } = await supabase
     .from("user_cards")
     .select("currency")
     .eq("user_id", user.id)
     .eq("status", "active");
 
-  if (!userCards || userCards.length === 0) {
-    return { data: [], error: null };
+  if (cardsError) {
+    return {
+      success: false,
+      error: {
+        category: "transient",
+        message: "Unable to load your card portfolio. Please try again.",
+        description: cardsError.message,
+        isRetryable: true,
+      },
+    };
   }
 
-  // Derive unique currencies from user's cards
+  if (!userCards || userCards.length === 0) {
+    return { success: true, data: [] };
+  }
+
   const currencies = [...new Set(userCards.map((c) => c.currency as string))];
 
-  // Fetch active bonuses matching user's currencies
   const { data, error } = await supabase
     .from("transfer_bonuses")
-    .select("*")
+    .select(BONUS_COLUMNS)
     .eq("is_active", true)
     .gte("end_date", new Date().toISOString().split("T")[0])
     .in("currency", currencies)
     .order("end_date", { ascending: true });
 
   if (error) {
-    return { data: [], error: error.message };
+    return {
+      success: false,
+      error: {
+        category: "transient",
+        message: "Unable to load transfer bonuses. Please try again.",
+        description: error.message,
+        isRetryable: true,
+      },
+    };
   }
 
-  return { data: (data ?? []) as TransferBonus[], error: null };
+  return { success: true, data: (data ?? []) as TransferBonus[] };
 }
 
 export async function getBonusHistory(
   bank?: string,
   partnerCode?: string
-): Promise<{
-  data: TransferBonusHistory[];
-  error: string | null;
-}> {
+): Promise<ActionResult<TransferBonusHistory[]>> {
   const supabase = await createClient();
 
   let query = supabase
     .from("transfer_bonus_history")
-    .select("*")
+    .select(HISTORY_COLUMNS)
     .order("end_date", { ascending: false })
     .limit(50);
 
@@ -92,8 +121,16 @@ export async function getBonusHistory(
   const { data, error } = await query;
 
   if (error) {
-    return { data: [], error: error.message };
+    return {
+      success: false,
+      error: {
+        category: "transient",
+        message: "Unable to load bonus history. Please try again.",
+        description: error.message,
+        isRetryable: true,
+      },
+    };
   }
 
-  return { data: (data ?? []) as TransferBonusHistory[], error: null };
+  return { success: true, data: (data ?? []) as TransferBonusHistory[] };
 }

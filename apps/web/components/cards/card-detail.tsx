@@ -734,7 +734,7 @@ function SettingsRow({
 // Retention Call Log
 // ═══════════════════════════════════════════════════
 
-type RetentionActionState = { error?: string; success?: boolean };
+type RetentionActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 function RetentionCallLog({
   userCardId,
@@ -803,7 +803,7 @@ function RetentionCallLog({
             className="min-h-[60px] text-sm"
           />
           {state.error && (
-            <p className="text-xs text-destructive">{state.error}</p>
+            <p className="text-xs text-destructive">{state.error.message}</p>
           )}
           {state.success && (
             <p className="text-xs text-green-600">Logged</p>
@@ -1070,7 +1070,7 @@ const PRODUCT_CHANGE_TYPES: LifecycleEventType[] = [
   "upgrade",
 ];
 
-type TimelineActionState = { error?: string; success?: boolean };
+type TimelineActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 function LifecycleTimeline({
   userCardId,
@@ -1208,7 +1208,7 @@ function LifecycleTimeline({
           />
 
           {state.error && (
-            <p className="text-xs text-destructive">{state.error}</p>
+            <p className="text-xs text-destructive">{state.error.message}</p>
           )}
           {state.success && (
             <p className="text-xs text-green-600">Event logged</p>

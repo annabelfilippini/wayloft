@@ -24,7 +24,7 @@ interface PaymentTrackerProps {
   cardSlug: string;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 function getNextDueDate(dueDay: number): Date {
   const now = new Date();
@@ -201,7 +201,7 @@ function PaymentDisplay({
           </form>
         </div>
         {deleteState.error && (
-          <p className="text-xs text-destructive">{deleteState.error}</p>
+          <p className="text-xs text-destructive">{deleteState.error.message}</p>
         )}
       </CardContent>
     </Card>
@@ -315,7 +315,7 @@ function PaymentForm({
           )}
 
           {state.error && (
-            <p className="text-xs text-destructive">{state.error}</p>
+            <p className="text-xs text-destructive">{state.error.message}</p>
           )}
 
           <div className="flex gap-2">

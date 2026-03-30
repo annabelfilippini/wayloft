@@ -250,7 +250,7 @@ function PerkStatusBadge({
   return null;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 function ToggleButton({
   perkId,
@@ -284,7 +284,7 @@ function ToggleButton({
         )}
       </button>
       {state.error && (
-        <p className="text-[10px] text-destructive mt-0.5">{state.error}</p>
+        <p className="text-[10px] text-destructive mt-0.5">{state.error.message}</p>
       )}
     </form>
   );
@@ -308,7 +308,7 @@ function DismissButton({ perkId }: { perkId: string }) {
         <X className="h-3.5 w-3.5" />
       </button>
       {state.error && (
-        <p className="text-[10px] text-destructive">{state.error}</p>
+        <p className="text-[10px] text-destructive">{state.error.message}</p>
       )}
     </form>
   );

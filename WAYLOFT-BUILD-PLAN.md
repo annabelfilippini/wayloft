@@ -279,6 +279,16 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ---
 
+### Pre-Launch Code Quality (blocking Phase 2)
+
+- [x] ActionResult<T> schema on all server actions (bonuses.ts complete Mar 30)
+- [x] Eliminate SELECT * in server actions (profile, cards, credit-health complete Mar 30)
+- [x] Error-check all DB writes in onboarding.ts (Mar 30)
+- [x] Vitest installed + 24 engine tests passing (Mar 30)
+- [ ] **Test coverage** — 28 untested functions across cards, loyalty, onboarding, profile, recommend, bonuses, credit-health, scraper (3 tests minimum each per rules)
+- [ ] **Hard deletes** → soft delete: removeCard, deletePaymentInfo, removeLoyaltyBalance (requires migration + ~35 code changes across 15 files)
+- [ ] **Scraper attribution** — add retrieved_date + confidence to ScrapedBonus / NormalizedBonus types
+
 ### Phase 2: Polish & Launch (Weeks 9-12)
 
 - [ ] Stripe billing (Free / $9.99 Pro)
@@ -308,7 +318,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**P4 mostly complete (Mar 19). Flight search shipped: Duffel sandbox, search form, flight cards, card recommendations, PriceToggle (cash/points/cpp), value comparison. Redis cache deferred to scale. Live access blocked on business registration. Next: P5 (browser extension) or Phase 2 (Stripe, launch prep).**
+**Mar 30: Pre-launch quality pass in progress. ActionResult schema, SELECT *, onboarding error handling fixed. Vitest + 24 engine tests passing. Remaining blockers: test coverage for 28 functions, hard deletes → soft delete migration, scraper attribution fields. Next: test coverage sweep (cards.ts priority), then hard delete migration as a dedicated session.**
 
 ---
 

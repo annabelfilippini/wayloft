@@ -23,8 +23,8 @@ export function DataPrivacySection() {
     const result = await exportUserData();
     setExporting(false);
 
-    if (result.error) {
-      alert(result.error);
+    if (!result.success) {
+      alert(result.error.message);
       return;
     }
 
@@ -45,8 +45,8 @@ export function DataPrivacySection() {
     const result = await deleteAccount();
     setDeleting(false);
 
-    if (result.error) {
-      alert(result.error);
+    if (!result.success) {
+      alert(result.error.message);
       return;
     }
 

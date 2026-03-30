@@ -1,5 +1,19 @@
 // Core Wayloft types — expand as features are built
 
+// ── Action Result ──
+
+export type ActionError = {
+  category: 'transient' | 'validation' | 'permission';
+  message: string;       // shown to user
+  description?: string;  // logged only, never shown
+  isRetryable: boolean;
+  field?: string;
+};
+
+export type ActionResult<T = void> =
+  | { success: true; data?: T }
+  | { success: false; error: ActionError };
+
 export type Currency = "UR" | "MR" | "TYP" | "C1" | "BILT" | "WF" | "ALTITUDE";
 
 export type Issuer =

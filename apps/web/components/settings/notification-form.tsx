@@ -14,7 +14,7 @@ interface NotificationFormProps {
   };
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 export function NotificationForm({ notifications }: NotificationFormProps) {
   const [state, formAction, isPending] = useActionState<ActionState, FormData>(
@@ -64,7 +64,7 @@ export function NotificationForm({ notifications }: NotificationFormProps) {
         </div>
 
         {state.error && (
-          <p className="text-sm text-destructive">{state.error}</p>
+          <p className="text-sm text-destructive">{state.error.message}</p>
         )}
         {state.success && (
           <p className="text-sm text-green-600">Preferences saved</p>

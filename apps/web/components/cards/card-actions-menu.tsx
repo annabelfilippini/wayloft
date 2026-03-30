@@ -16,7 +16,7 @@ interface CardActionsMenuProps {
   cardName: string;
 }
 
-type ActionState = { error?: string; success?: boolean };
+type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
 
 export function CardActionsMenu({ cardId, cardName }: CardActionsMenuProps) {
   const [, formAction, isPending] = useActionState<ActionState, FormData>(

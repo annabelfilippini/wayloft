@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@wayloft/shared";
 
 export async function addLoyaltyBalance(formData: FormData) {
   const supabase = await createClient();
@@ -10,7 +11,7 @@ export async function addLoyaltyBalance(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const programName = formData.get("program_name") as string;
@@ -24,12 +25,12 @@ export async function addLoyaltyBalance(formData: FormData) {
   const inactivityMonths = formData.get("inactivity_months") as string | null;
 
   if (!programName || !programCode || !programType || isNaN(balance) || !currency) {
-    return { error: "Missing required fields" };
+    return { success: false, error: { category: 'validation', message: 'Program, balance, and currency are required.', isRetryable: false } };
   }
 
   const validTypes = ["credit_card", "airline", "hotel"];
   if (!validTypes.includes(programType)) {
-    return { error: "Invalid program type" };
+    return { success: false, error: { category: 'validation', message: 'Invalid program type.', isRetryable: false, field: 'program_type' } };
   }
 
   const { error } = await supabase.from("loyalty_balances").insert({
@@ -47,9 +48,9 @@ export async function addLoyaltyBalance(formData: FormData) {
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "Balance for this program already exists" };
+      return { success: false, error: { category: 'validation', message: 'A balance for this program already exists.', isRetryable: false } };
     }
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to add balance. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/dashboard");
@@ -63,7 +64,7 @@ export async function updateLoyaltyBalance(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const balanceId = formData.get("balance_id") as string;
@@ -72,7 +73,7 @@ export async function updateLoyaltyBalance(formData: FormData) {
   const lastActivityDate = formData.get("last_activity_date") as string | null;
 
   if (!balanceId || isNaN(balance)) {
-    return { error: "Invalid input" };
+    return { success: false, error: { category: 'validation', message: 'Balance ID and a valid amount are required.', isRetryable: false } };
   }
 
   const updates: Record<string, unknown> = {
@@ -89,7 +90,7 @@ export async function updateLoyaltyBalance(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to update balance. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/dashboard");
@@ -103,12 +104,12 @@ export async function removeLoyaltyBalance(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const balanceId = formData.get("balance_id") as string;
   if (!balanceId) {
-    return { error: "No balance specified" };
+    return { success: false, error: { category: 'validation', message: 'No balance specified.', isRetryable: false } };
   }
 
   const { error } = await supabase
@@ -118,7 +119,7 @@ export async function removeLoyaltyBalance(formData: FormData) {
     .eq("user_id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to remove balance. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/dashboard");

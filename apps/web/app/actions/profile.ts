@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "@wayloft/shared";
 
 export async function updateProfile(formData: FormData) {
   const supabase = await createClient();
@@ -10,7 +11,7 @@ export async function updateProfile(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const fullName = formData.get("full_name") as string;
@@ -37,7 +38,7 @@ export async function updateProfile(formData: FormData) {
     .eq("id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to save profile. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/settings");
@@ -51,7 +52,7 @@ export async function updateNotificationPreferences(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const emailBonusAlerts = formData.get("email_bonus_alerts") === "on";
@@ -68,28 +69,45 @@ export async function updateNotificationPreferences(formData: FormData) {
     });
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to save preferences. Please try again.', description: error.message, isRetryable: true } };
   }
 
   revalidatePath("/settings");
   return { success: true };
 }
 
-export async function exportUserData() {
+export async function exportUserData(): Promise<ActionResult<{ profile: unknown; cards: unknown[]; loyalty_balances: unknown[]; exported_at: string }>> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
+  const USER_CARD_COLUMNS =
+    "id, user_id, card_slug, card_name, issuer, currency, annual_fee_cents, status, card_since, is_primary, annual_fee_date, af_reminder_days_before, signup_bonus_points, signup_spend_requirement_cents, signup_spend_timeframe_months, signup_spend_deadline, signup_spend_progress_cents, signup_bonus_met, signup_bonus_earned, created_at, updated_at";
+  const BALANCE_COLUMNS =
+    "id, user_id, program_name, program_code, program_type, balance, currency, source, last_verified_at, expires_at, expiration_policy, expiration_notes, last_activity_date, inactivity_months, tier_status, created_at, updated_at";
+  const PROFILE_COLUMNS =
+    "id, email, full_name, avatar_url, home_airport, alternate_airports, preferred_cabin, preferred_airlines, max_connections, subscription_tier, onboarding_completed, experience_level, created_at, updated_at";
+
   const [cardsRes, balancesRes, profileRes] = await Promise.all([
-    supabase.from("user_cards").select("*").eq("user_id", user.id),
-    supabase.from("loyalty_balances").select("*").eq("user_id", user.id),
-    supabase.from("profiles").select("*").eq("id", user.id).single(),
+    supabase.from("user_cards").select(USER_CARD_COLUMNS).eq("user_id", user.id),
+    supabase.from("loyalty_balances").select(BALANCE_COLUMNS).eq("user_id", user.id),
+    supabase.from("profiles").select(PROFILE_COLUMNS).eq("id", user.id).single(),
   ]);
+
+  if (cardsRes.error) {
+    return { success: false, error: { category: "transient", message: "Failed to export card data. Please try again.", description: cardsRes.error.message, isRetryable: true } };
+  }
+  if (balancesRes.error) {
+    return { success: false, error: { category: "transient", message: "Failed to export balance data. Please try again.", description: balancesRes.error.message, isRetryable: true } };
+  }
+  if (profileRes.error) {
+    return { success: false, error: { category: "transient", message: "Failed to export profile data. Please try again.", description: profileRes.error.message, isRetryable: true } };
+  }
 
   return {
     success: true,
@@ -102,21 +120,21 @@ export async function exportUserData() {
   };
 }
 
-export async function deleteAccount() {
+export async function deleteAccount(): Promise<ActionResult> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   // Delete profile (cascades to user_cards, loyalty_balances, etc. via FK constraints)
   const { error } = await supabase.from("profiles").delete().eq("id", user.id);
 
   if (error) {
-    return { error: error.message };
+    return { success: false, error: { category: 'transient', message: 'Failed to delete account. Please try again.', description: error.message, isRetryable: true } };
   }
 
   // Sign out

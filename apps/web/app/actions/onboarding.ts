@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
+import type { ActionResult } from "@wayloft/shared";
 
 export async function completeOnboarding(formData: FormData) {
   const supabase = await createClient();
@@ -11,7 +12,7 @@ export async function completeOnboarding(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   const cardSlugs = formData.getAll("card_slugs") as string[];
@@ -41,12 +42,15 @@ export async function completeOnboarding(formData: FormData) {
 
     if (cardInserts.length > 0) {
       // Use upsert to skip duplicates
-      await supabase
+      const { error: cardsError } = await supabase
         .from("user_cards")
         .upsert(cardInserts as Record<string, unknown>[], {
           onConflict: "user_id,card_slug",
           ignoreDuplicates: true,
         });
+      if (cardsError) {
+        return { success: false, error: { category: "transient", message: "Failed to save your cards. Please try again.", description: cardsError.message, isRetryable: true } };
+      }
     }
   }
 
@@ -59,19 +63,24 @@ export async function completeOnboarding(formData: FormData) {
   if (experienceLevel && validLevels.includes(experienceLevel)) {
     updates.experience_level = experienceLevel;
   }
-  // Store travel goal in user_metadata or as preferred_cabin proxy
-  // For now, we'll store it in the quiz responses table
+  // Store travel goal in quiz responses table
   if (travelGoal) {
-    await supabase.from("card_quiz_responses").upsert(
+    const { error: goalError } = await supabase.from("card_quiz_responses").upsert(
       {
         user_id: user.id,
         travel_goal: travelGoal,
       },
       { onConflict: "user_id" }
     );
+    if (goalError) {
+      return { success: false, error: { category: "transient", message: "Failed to save your preferences. Please try again.", description: goalError.message, isRetryable: true } };
+    }
   }
 
-  await supabase.from("profiles").update(updates).eq("id", user.id);
+  const { error: profileError } = await supabase.from("profiles").update(updates).eq("id", user.id);
+  if (profileError) {
+    return { success: false, error: { category: "transient", message: "Failed to complete onboarding. Please try again.", description: profileError.message, isRetryable: true } };
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/cards");
@@ -85,7 +94,7 @@ export async function skipOnboarding() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Not authenticated" };
+    return { success: false, error: { category: 'permission', message: 'Sign in to continue.', isRetryable: false } };
   }
 
   // Don't flip onboarding_completed — leave it false so banner shows

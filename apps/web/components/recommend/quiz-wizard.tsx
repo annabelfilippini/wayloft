@@ -108,8 +108,8 @@ export function QuizWizard({
 
       const result = await submitQuiz(formData);
 
-      if ("error" in result) {
-        setError(result.error);
+      if (!result.success) {
+        setError(result.error.message);
         return;
       }
 
