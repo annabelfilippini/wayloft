@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
 
     const { data: pastDueBonuses } = await supabase
       .from("transfer_bonuses")
-      .select("id, bank, currency, partner, partner_code, bonus_percentage, start_date, end_date")
+      .select("id, bank, currency, partner, partner_code, bonus_percentage, start_date, end_date, retrieved_at, confidence")
       .eq("is_active", true)
       .lt("end_date", today);
 
@@ -106,6 +106,8 @@ export async function GET(request: NextRequest) {
           bonus_percentage: bonus.bonus_percentage,
           start_date: bonus.start_date ?? today,
           end_date: bonus.end_date ?? today,
+          retrieved_at: bonus.retrieved_at,
+          confidence: bonus.confidence,
         });
 
         // Deactivate

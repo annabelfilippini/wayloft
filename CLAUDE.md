@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Current Status (Mar 30, 2026)
 
-**Through Priority 4 (Flight Search) + pre-launch code quality pass.** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed). Pre-launch hardening pass: ActionResult schema, SELECT * violations, onboarding error handling, test infrastructure.
+**Through Priority 4 (Flight Search) + pre-launch code quality pass.** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed). Pre-launch hardening pass: ActionResult schema, SELECT * violations, onboarding error handling, test infrastructure, scraper attribution (retrieved_date + confidence).
 
 ### What's Built
 
@@ -216,17 +216,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard page stub with actions widget
 - Route stubs: search, settings
 - Community intelligence scan agent + daily cron script
-- 8 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views
+- 9 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views, scraper attribution
 - `/ship` slash command (commit + update docs)
 
-**Code Quality & Test Infrastructure (Mar 30 — partial):**
+**Code Quality & Test Infrastructure (Mar 31 — near complete):**
 - Vitest installed + configured (`apps/web/vitest.config.ts`, `pnpm test` in `apps/web`)
-- 24 passing engine tests: `tests/recommend/engine.test.ts` — filtering, 5/24 warnings, CPP weighting, signup bonus achievability, goal alignment proportionality
+- 143 passing tests across 9 test files (engine, cards, loyalty, onboarding, profile, recommend, bonuses actions, credit-health, scraper)
 - `bonuses.ts`: all 3 functions migrated to `ActionResult<T>` (were using bare `{data,error}` shape)
 - `profile.ts exportUserData`: explicit column selects + error checking on all 3 queries (was silently returning success on DB failure)
 - `onboarding.ts completeOnboarding`: error checking added to cards upsert, quiz response upsert, and profile update
 - `cards.ts markCreditUsed`: explicit column select on `user_credit_usage`
 - `credit-health.ts getCreditHealth`: explicit column selects on `user_cards` and `user_external_cards`
+- Scraper attribution: `retrieved_date` + `confidence` on all scraped records (migration 009), confidence varies by parse strategy (0.90 table → 0.50 content scan), `SELECT *` fixed in `applyChanges`
 - `.claude/commands/`: 6 slash commands — `error-audit`, `scraper-audit`, `data-integrity-check`, `card-data-check`, `review-pr`, `test-gen`
 - `.claude/rules/`: 6 rule files — database, error-handling, extraction-attribution, data-pipeline, testing, api-conventions
 
@@ -235,7 +236,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Pre-launch quality (blocking):
 - **Test coverage** — 28 untested server action functions across 8 files (`cards`, `loyalty`, `onboarding`, `profile`, `recommend`, `bonuses`, `credit-health`, `scraper`). Rules require 3 tests minimum per function before shipping.
 - **Hard deletes** — `removeCard`, `deletePaymentInfo`, `removeLoyaltyBalance` still use hard delete. Requires migration (3 `deleted_at` columns + view updates) + ~35 code changes. Defer to dedicated session.
-- **Scraper attribution** — `scraper.ts` missing `retrieved_date` and `confidence` on scraped records.
 
 Phase 2 — Polish & Launch:
 - Stripe billing (Free / $9.99 Pro) + feature gating

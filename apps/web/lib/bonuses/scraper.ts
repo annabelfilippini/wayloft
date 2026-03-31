@@ -11,12 +11,14 @@ export interface ScrapedBonus {
   bonus_percentage: number;
   end_date: string | null;
   source_url: string;
+  retrieved_date: string; // ISO 8601 date when fetched
+  confidence: number; // 0–1 based on parse strategy
 }
 
 interface ScraperSource {
   name: string;
   urls: string[];
-  parse: (html: string, url: string) => ScrapedBonus[];
+  parse: (html: string, url: string, retrievedDate: string) => ScrapedBonus[];
 }
 
 interface NormalizedBonus {
@@ -29,6 +31,8 @@ interface NormalizedBonus {
   start_date: string;
   end_date: string | null;
   source_url: string;
+  retrieved_date: string;
+  confidence: number;
 }
 
 export interface DiffResult {
@@ -389,7 +393,7 @@ function parseEndDate(raw: string): string | null {
  * - Or structured sections with headings per bank
  * - Or list items with bonus details
  */
-function parseFrequentMiler(html: string, url: string): ScrapedBonus[] {
+function parseFrequentMiler(html: string, url: string, retrievedDate: string): ScrapedBonus[] {
   const $ = cheerio.load(html);
   const bonuses: ScrapedBonus[] = [];
 
@@ -491,6 +495,8 @@ function parseFrequentMiler(html: string, url: string): ScrapedBonus[] {
             bonus_percentage: pct,
             end_date: parseEndDate(dateText),
             source_url: url,
+            retrieved_date: retrievedDate,
+            confidence: 0.90,
           });
         }
       });
@@ -560,6 +566,8 @@ function parseFrequentMiler(html: string, url: string): ScrapedBonus[] {
             bonus_percentage: pct,
             end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
             source_url: url,
+            retrieved_date: retrievedDate,
+            confidence: 0.70,
           });
         }
       });
@@ -624,6 +632,8 @@ function parseFrequentMiler(html: string, url: string): ScrapedBonus[] {
         bonus_percentage: pct,
         end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
         source_url: url,
+        retrieved_date: retrievedDate,
+        confidence: 0.50,
       });
     }
   });
@@ -645,7 +655,8 @@ function parseFrequentMiler(html: string, url: string): ScrapedBonus[] {
  */
 function parseDoctorOfCreditPerBank(
   html: string,
-  url: string
+  url: string,
+  retrievedDate: string
 ): ScrapedBonus[] {
   const $ = cheerio.load(html);
   const bonuses: ScrapedBonus[] = [];
@@ -692,7 +703,7 @@ function parseDoctorOfCreditPerBank(
 
         listItems.each((__, li) => {
           const itemText = $(li).text();
-          parseDocEntryText(itemText, bank, url, bonuses);
+          parseDocEntryText(itemText, bank, url, bonuses, retrievedDate, 0.85);
         });
 
         sibling = sibling.next();
@@ -717,7 +728,7 @@ function parseDoctorOfCreditPerBank(
     if (text.toLowerCase().includes("expired")) return;
     if (!text.match(/\d+\s*%/)) return;
 
-    parseDocEntryText(text, bank, url, bonuses);
+    parseDocEntryText(text, bank, url, bonuses, retrievedDate, 0.70);
   });
 
   // Strategy 3: Paragraphs in content
@@ -727,7 +738,7 @@ function parseDoctorOfCreditPerBank(
       if (text.toLowerCase().includes("[expired]")) return;
       if (!text.match(/\d+\s*%/)) return;
 
-      parseDocEntryText(text, bank, url, bonuses);
+      parseDocEntryText(text, bank, url, bonuses, retrievedDate, 0.60);
     });
   }
 
@@ -747,7 +758,9 @@ function parseDocEntryText(
   text: string,
   knownBank: KnownBank | null,
   sourceUrl: string,
-  bonuses: ScrapedBonus[]
+  bonuses: ScrapedBonus[],
+  retrievedDate: string,
+  confidence: number
 ): void {
   const pct = parseBonusPercentage(text);
   if (!pct) return;
@@ -804,6 +817,8 @@ function parseDocEntryText(
     bonus_percentage: pct,
     end_date: endDate,
     source_url: sourceUrl,
+    retrieved_date: retrievedDate,
+    confidence,
   });
 }
 
@@ -822,7 +837,8 @@ function parseDocEntryText(
  */
 function parseDoctorOfCreditTagPage(
   html: string,
-  url: string
+  url: string,
+  retrievedDate: string
 ): ScrapedBonus[] {
   const $ = cheerio.load(html);
   const bonuses: ScrapedBonus[] = [];
@@ -891,6 +907,8 @@ function parseDoctorOfCreditTagPage(
       bonus_percentage: pct,
       end_date: dateMatch ? parseEndDate(dateMatch[1]) : null,
       source_url: url,
+      retrieved_date: retrievedDate,
+      confidence: 0.65,
     });
   });
 
@@ -978,6 +996,8 @@ function normalize(
       start_date: today,
       end_date: bonus.end_date,
       source_url: bonus.source_url,
+      retrieved_date: bonus.retrieved_date,
+      confidence: bonus.confidence,
     });
   }
 
@@ -1055,6 +1075,8 @@ export async function applyChanges(
         source_url: bonus.source_url,
         is_active: true,
         scraped_at: new Date().toISOString(),
+        retrieved_at: bonus.retrieved_date,
+        confidence: bonus.confidence,
       },
       {
         onConflict: "bank,partner_code,start_date",
@@ -1074,7 +1096,7 @@ export async function applyChanges(
     // Fetch full bonus data before deactivating
     const { data: fullBonus } = await supabase
       .from("transfer_bonuses")
-      .select("*")
+      .select("bank, currency, partner, partner_code, bonus_percentage, start_date, end_date, retrieved_at, confidence")
       .eq("id", bonus.id)
       .single();
 
@@ -1090,6 +1112,8 @@ export async function applyChanges(
           bonus_percentage: fullBonus.bonus_percentage,
           start_date: fullBonus.start_date ?? today,
           end_date: fullBonus.end_date ?? today,
+          retrieved_at: fullBonus.retrieved_at,
+          confidence: fullBonus.confidence,
         });
       if (histError) {
         errors.push(
@@ -1136,7 +1160,8 @@ export async function scrapeAllSources(): Promise<{
           `[scraper] ${source.name} (${url}): received ${html.length} chars`
         );
 
-        const parsed = source.parse(html, url);
+        const retrievedDate = new Date().toISOString();
+        const parsed = source.parse(html, url, retrievedDate);
         console.log(
           `[scraper] ${source.name} (${url}): parsed ${parsed.length} bonuses`
         );

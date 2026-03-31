@@ -287,7 +287,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] Vitest installed + 24 engine tests passing (Mar 30)
 - [ ] **Test coverage** — 28 untested functions across cards, loyalty, onboarding, profile, recommend, bonuses, credit-health, scraper (3 tests minimum each per rules)
 - [ ] **Hard deletes** → soft delete: removeCard, deletePaymentInfo, removeLoyaltyBalance (requires migration + ~35 code changes across 15 files)
-- [ ] **Scraper attribution** — add retrieved_date + confidence to ScrapedBonus / NormalizedBonus types
+- [x] **Scraper attribution** — retrieved_date + confidence on all scraped records (migration 009, confidence by parse strategy: 0.90 table → 0.50 content scan), `SELECT *` fixed in applyChanges, 143 tests passing
 
 ### Phase 2: Polish & Launch (Weeks 9-12)
 
@@ -318,7 +318,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Mar 30: Pre-launch quality pass in progress. ActionResult schema, SELECT *, onboarding error handling fixed. Vitest + 24 engine tests passing. Remaining blockers: test coverage for 28 functions, hard deletes → soft delete migration, scraper attribution fields. Next: test coverage sweep (cards.ts priority), then hard delete migration as a dedicated session.**
+**Mar 31: Pre-launch quality pass nearly complete. ActionResult schema, SELECT *, onboarding error handling, test coverage (143 tests), scraper attribution all done. Remaining blocker: hard deletes → soft delete migration (removeCard, deletePaymentInfo, removeLoyaltyBalance). Next: dedicated session for soft delete migration.**
 
 ---
 

@@ -4,10 +4,10 @@ import { createClient } from "@/lib/supabase/server";
 import type { ActionResult, TransferBonus, TransferBonusHistory } from "@wayloft/shared";
 
 const BONUS_COLUMNS =
-  "id, bank, currency, partner, partner_code, partner_type, bonus_percentage, start_date, end_date, source_url, is_active, scraped_at, created_at";
+  "id, bank, currency, partner, partner_code, partner_type, bonus_percentage, start_date, end_date, source_url, is_active, scraped_at, retrieved_at, confidence, created_at";
 
 const HISTORY_COLUMNS =
-  "id, bank, currency, partner, partner_code, bonus_percentage, start_date, end_date, duration_days, created_at";
+  "id, bank, currency, partner, partner_code, bonus_percentage, start_date, end_date, duration_days, retrieved_at, confidence, created_at";
 
 export async function getActiveBonuses(): Promise<ActionResult<TransferBonus[]>> {
   const supabase = await createClient();

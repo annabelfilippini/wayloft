@@ -315,6 +315,8 @@ export interface TransferBonus {
   source_url: string | null;
   is_active: boolean;
   scraped_at: string;
+  retrieved_at: string | null;
+  confidence: number | null;
   created_at: string;
 }
 
@@ -328,6 +330,8 @@ export interface TransferBonusHistory {
   start_date: string;
   end_date: string;
   duration_days: number;
+  retrieved_at: string | null;
+  confidence: number | null;
   created_at: string;
 }
 
