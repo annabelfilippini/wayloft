@@ -15,7 +15,7 @@ function makeMockChain(result: {
     catch: promise.catch.bind(promise),
     single: vi.fn().mockResolvedValue(resolved),
   };
-  for (const m of ["select", "insert", "update", "delete", "eq", "upsert"]) {
+  for (const m of ["select", "insert", "update", "delete", "eq", "is", "upsert"]) {
     chain[m] = vi.fn().mockReturnValue(chain);
   }
   return chain as any;

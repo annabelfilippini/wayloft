@@ -55,7 +55,8 @@ export async function getActiveBonusesForUser(): Promise<ActionResult<TransferBo
     .from("user_cards")
     .select("currency")
     .eq("user_id", user.id)
-    .eq("status", "active");
+    .eq("status", "active")
+    .is("deleted_at", null);
 
   if (cardsError) {
     return {

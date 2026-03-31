@@ -35,8 +35,6 @@ Every new table must have:
 - **Soft delete only for user data.** Never hard-delete rows from user-facing tables (`user_cards`, `user_credit_usage`, `user_perk_setup`, `user_payment_info`, `loyalty_balances`, `card_lifecycle_events`).
 - Soft delete pattern: add `deleted_at TIMESTAMPTZ` column, filter `WHERE deleted_at IS NULL` in queries.
 - Hard delete is only acceptable for: account deletion (cascades from `profiles`), and internal/admin cleanup of system tables.
-
-**Known violations to fix before Phase 2:**
-- `removeCard` in `actions/cards.ts` — hard delete on `user_cards`
-- `deletePaymentInfo` in `actions/cards.ts` — hard delete on `user_payment_info`
-- `removeLoyaltyBalance` in `actions/loyalty.ts` — hard delete on `loyalty_balances`
+- When soft-deleting a parent row (e.g., `user_cards`), also soft-delete related child rows (e.g., `user_payment_info` for that card).
+- All queries on soft-deletable tables must include `.is("deleted_at", null)` filter.
+- Unique constraints on soft-deletable tables use partial indexes (`WHERE deleted_at IS NULL`) to allow re-adding previously deleted rows.

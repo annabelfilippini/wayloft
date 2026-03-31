@@ -109,6 +109,7 @@ export interface UserPaymentInfo {
   autopay_type: AutopayType;
   minimum_payment_cents: number | null;
   notes: string | null;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -201,6 +202,7 @@ export interface UserCard {
   signup_spend_progress_cents: number;
   signup_bonus_met: boolean;
   signup_bonus_earned: boolean;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -441,6 +443,7 @@ export interface LoyaltyBalance {
   last_activity_date: string | null;
   inactivity_months: number | null;
   tier_status: string | null;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -16,6 +16,7 @@ export async function TopStats({ userId }: TopStatsProps) {
       .from("loyalty_balances")
       .select("*")
       .eq("user_id", userId)
+      .is("deleted_at", null)
       .order("balance", { ascending: false }),
     supabase.from("upcoming_card_actions").select("*").eq("user_id", userId),
     supabase
@@ -33,7 +34,8 @@ export async function TopStats({ userId }: TopStatsProps) {
       .from("user_cards")
       .select("*")
       .eq("user_id", userId)
-      .eq("status", "active"),
+      .eq("status", "active")
+      .is("deleted_at", null),
   ]);
 
   // ── Card A: Total Points Value ──

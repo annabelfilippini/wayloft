@@ -286,7 +286,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 - [x] Error-check all DB writes in onboarding.ts (Mar 30)
 - [x] Vitest installed + 24 engine tests passing (Mar 30)
 - [ ] **Test coverage** — 28 untested functions across cards, loyalty, onboarding, profile, recommend, bonuses, credit-health, scraper (3 tests minimum each per rules)
-- [ ] **Hard deletes** → soft delete: removeCard, deletePaymentInfo, removeLoyaltyBalance (requires migration + ~35 code changes across 15 files)
+- [x] **Hard deletes** → soft delete: removeCard, deletePaymentInfo, removeLoyaltyBalance (migration 010, deleted_at columns on 3 tables, partial unique indexes, 6 views recreated, ~20 files updated with `.is("deleted_at", null)` filters)
 - [x] **Scraper attribution** — retrieved_date + confidence on all scraped records (migration 009, confidence by parse strategy: 0.90 table → 0.50 content scan), `SELECT *` fixed in applyChanges, 143 tests passing
 
 ### Phase 2: Polish & Launch (Weeks 9-12)
@@ -318,7 +318,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Mar 31: Pre-launch quality pass nearly complete. ActionResult schema, SELECT *, onboarding error handling, test coverage (143 tests), scraper attribution all done. Remaining blocker: hard deletes → soft delete migration (removeCard, deletePaymentInfo, removeLoyaltyBalance). Next: dedicated session for soft delete migration.**
+**Mar 31: Pre-launch quality pass complete. All blockers resolved: ActionResult schema, SELECT *, onboarding error handling, test coverage (143 tests), scraper attribution, soft delete migration (migration 010). Next: Phase 2 — Stripe billing, affiliate network applications, feature gating, monitoring, soft launch.**
 
 ---
 

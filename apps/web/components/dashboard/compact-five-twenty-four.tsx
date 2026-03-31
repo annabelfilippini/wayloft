@@ -25,7 +25,7 @@ export async function CompactFiveTwentyFour({ userId }: CompactFiveTwentyFourPro
   const supabase = await createClient();
 
   const [cardsRes, externalRes] = await Promise.all([
-    supabase.from("user_cards").select("*").eq("user_id", userId),
+    supabase.from("user_cards").select("*").eq("user_id", userId).is("deleted_at", null),
     supabase.from("user_external_cards").select("*").eq("user_id", userId),
   ]);
 

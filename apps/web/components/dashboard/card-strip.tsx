@@ -24,6 +24,7 @@ export async function CardStrip({ userId }: CardStripProps) {
       .select("*")
       .eq("user_id", userId)
       .eq("status", "active")
+      .is("deleted_at", null)
       .order("card_since", { ascending: true }),
     supabase
       .from("upcoming_payments")

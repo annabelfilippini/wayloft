@@ -108,12 +108,14 @@ export async function BonusSpotlight({ userId, experienceLevel }: BonusSpotlight
     supabase
       .from("loyalty_balances")
       .select("program_code, balance, currency")
-      .eq("user_id", userId),
+      .eq("user_id", userId)
+      .is("deleted_at", null),
     supabase
       .from("user_cards")
       .select("currency")
       .eq("user_id", userId)
-      .eq("status", "active"),
+      .eq("status", "active")
+      .is("deleted_at", null),
   ]);
 
   const allBonuses = (bonusesRes.data ?? []) as TransferBonus[];

@@ -25,8 +25,9 @@ export async function buildChatContext(userId: string): Promise<string> {
       .from("user_cards")
       .select("*")
       .eq("user_id", userId)
-      .eq("status", "active"),
-    supabase.from("loyalty_balances").select("*").eq("user_id", userId),
+      .eq("status", "active")
+      .is("deleted_at", null),
+    supabase.from("loyalty_balances").select("*").eq("user_id", userId).is("deleted_at", null),
     supabase
       .from("expiring_credits")
       .select("*")

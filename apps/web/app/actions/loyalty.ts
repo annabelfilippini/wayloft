@@ -114,9 +114,10 @@ export async function removeLoyaltyBalance(formData: FormData) {
 
   const { error } = await supabase
     .from("loyalty_balances")
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq("id", balanceId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .is("deleted_at", null);
 
   if (error) {
     return { success: false, error: { category: 'transient', message: 'Failed to remove balance. Please try again.', description: error.message, isRetryable: true } };

@@ -94,8 +94,8 @@ export async function exportUserData(): Promise<ActionResult<{ profile: unknown;
     "id, email, full_name, avatar_url, home_airport, alternate_airports, preferred_cabin, preferred_airlines, max_connections, subscription_tier, onboarding_completed, experience_level, created_at, updated_at";
 
   const [cardsRes, balancesRes, profileRes] = await Promise.all([
-    supabase.from("user_cards").select(USER_CARD_COLUMNS).eq("user_id", user.id),
-    supabase.from("loyalty_balances").select(BALANCE_COLUMNS).eq("user_id", user.id),
+    supabase.from("user_cards").select(USER_CARD_COLUMNS).eq("user_id", user.id).is("deleted_at", null),
+    supabase.from("loyalty_balances").select(BALANCE_COLUMNS).eq("user_id", user.id).is("deleted_at", null),
     supabase.from("profiles").select(PROFILE_COLUMNS).eq("id", user.id).single(),
   ]);
 

@@ -20,6 +20,7 @@ export default async function CardDetailPage({
     .select("*")
     .eq("id", id)
     .eq("user_id", user.id)
+    .is("deleted_at", null)
     .single();
 
   if (!row) notFound();
@@ -62,6 +63,7 @@ export default async function CardDetailPage({
       .select("*")
       .eq("user_card_id", id)
       .eq("user_id", user.id)
+      .is("deleted_at", null)
       .maybeSingle(),
   ]);
 

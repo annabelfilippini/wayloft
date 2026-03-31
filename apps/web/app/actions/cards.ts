@@ -181,6 +181,7 @@ export async function updateSpendProgress(formData: FormData) {
       .select("signup_spend_progress_cents")
       .eq("id", cardId)
       .eq("user_id", user.id)
+      .is("deleted_at", null)
       .single();
 
     if (!card) {
@@ -226,15 +227,25 @@ export async function removeCard(formData: FormData) {
     return { success: false, error: { category: 'validation', message: 'No card specified.', isRetryable: false } };
   }
 
+  const now = new Date().toISOString();
   const { error } = await supabase
     .from("user_cards")
-    .delete()
+    .update({ deleted_at: now })
     .eq("id", cardId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .is("deleted_at", null);
 
   if (error) {
     return { success: false, error: { category: 'transient', message: 'Failed to remove card. Please try again.', description: error.message, isRetryable: true } };
   }
+
+  // Soft-delete related payment info for this card
+  await supabase
+    .from("user_payment_info")
+    .update({ deleted_at: now })
+    .eq("user_card_id", cardId)
+    .eq("user_id", user.id)
+    .is("deleted_at", null);
 
   revalidatePath("/cards");
   revalidatePath("/dashboard");
@@ -670,9 +681,10 @@ export async function deletePaymentInfo(formData: FormData) {
 
   const { error } = await supabase
     .from("user_payment_info")
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq("id", paymentInfoId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .is("deleted_at", null);
 
   if (error) {
     return { success: false, error: { category: 'transient', message: 'Failed to delete payment info. Please try again.', description: error.message, isRetryable: true } };

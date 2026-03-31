@@ -119,7 +119,8 @@ export async function DashboardTips({ userId }: DashboardTipsProps) {
       .from("user_cards")
       .select("*")
       .eq("user_id", userId)
-      .eq("status", "active"),
+      .eq("status", "active")
+      .is("deleted_at", null),
     supabase
       .from("transfer_bonuses")
       .select("*")

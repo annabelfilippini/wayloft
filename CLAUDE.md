@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Mar 30, 2026)
+## Current Status (Mar 31, 2026)
 
-**Through Priority 4 (Flight Search) + pre-launch code quality pass.** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed). Pre-launch hardening pass: ActionResult schema, SELECT * violations, onboarding error handling, test infrastructure, scraper attribution (retrieved_date + confidence).
+**Through Priority 4 (Flight Search) + pre-launch code quality pass complete.** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed). Pre-launch hardening pass complete: ActionResult schema, SELECT * violations, onboarding error handling, test infrastructure (143 tests), scraper attribution (retrieved_date + confidence), soft delete migration (migration 010: deleted_at on user_cards/user_payment_info/loyalty_balances, partial unique indexes, 6 views updated).
 
 ### What's Built
 
@@ -216,7 +216,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard page stub with actions widget
 - Route stubs: search, settings
 - Community intelligence scan agent + daily cron script
-- 9 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views, scraper attribution
+- 10 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views, scraper attribution, soft delete (deleted_at on user_cards/user_payment_info/loyalty_balances)
 - `/ship` slash command (commit + update docs)
 
 **Code Quality & Test Infrastructure (Mar 31 — near complete):**
@@ -228,14 +228,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `cards.ts markCreditUsed`: explicit column select on `user_credit_usage`
 - `credit-health.ts getCreditHealth`: explicit column selects on `user_cards` and `user_external_cards`
 - Scraper attribution: `retrieved_date` + `confidence` on all scraped records (migration 009), confidence varies by parse strategy (0.90 table → 0.50 content scan), `SELECT *` fixed in `applyChanges`
+- Soft delete: migration 010 adds `deleted_at` columns to `user_cards`, `user_payment_info`, `loyalty_balances`. Partial unique indexes replace hard constraints. All 6 dependent views updated. `removeCard`, `deletePaymentInfo`, `removeLoyaltyBalance` converted to soft delete. `.is("deleted_at", null)` filter on all queries across ~20 files.
 - `.claude/commands/`: 6 slash commands — `error-audit`, `scraper-audit`, `data-integrity-check`, `card-data-check`, `review-pr`, `test-gen`
 - `.claude/rules/`: 6 rule files — database, error-handling, extraction-attribution, data-pipeline, testing, api-conventions
 
 ### What's Next
 
-Pre-launch quality (blocking):
-- **Test coverage** — 28 untested server action functions across 8 files (`cards`, `loyalty`, `onboarding`, `profile`, `recommend`, `bonuses`, `credit-health`, `scraper`). Rules require 3 tests minimum per function before shipping.
-- **Hard deletes** — `removeCard`, `deletePaymentInfo`, `removeLoyaltyBalance` still use hard delete. Requires migration (3 `deleted_at` columns + view updates) + ~35 code changes. Defer to dedicated session.
+Pre-launch quality complete. All blockers resolved (ActionResult, SELECT *, error handling, test coverage, scraper attribution, soft deletes).
 
 Phase 2 — Polish & Launch:
 - Stripe billing (Free / $9.99 Pro) + feature gating

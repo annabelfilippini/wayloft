@@ -20,6 +20,7 @@ export async function PointsPortfolio({ userId, experienceLevel }: PointsPortfol
     .from("loyalty_balances")
     .select("*")
     .eq("user_id", userId)
+    .is("deleted_at", null)
     .order("balance", { ascending: false });
 
   const balances = (rows ?? []) as LoyaltyBalance[];

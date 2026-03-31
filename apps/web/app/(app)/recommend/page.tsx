@@ -23,7 +23,8 @@ export default async function RecommendPage() {
     .from("user_cards")
     .select("card_slug")
     .eq("user_id", user.id)
-    .eq("status", "active");
+    .eq("status", "active")
+    .is("deleted_at", null);
 
   const userCardSlugs = (userCards ?? []).map(
     (c: { card_slug: string }) => c.card_slug

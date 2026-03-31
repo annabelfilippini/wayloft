@@ -136,7 +136,8 @@ export async function getCreditHealth(): Promise<CreditHealth | null> {
     supabase
       .from("user_cards")
       .select("id, user_id, card_slug, card_name, issuer, currency, annual_fee_cents, status, card_since, is_primary, annual_fee_date, af_reminder_days_before, signup_bonus_points, signup_spend_requirement_cents, signup_spend_timeframe_months, signup_spend_deadline, signup_spend_progress_cents, signup_bonus_met, signup_bonus_earned, created_at, updated_at")
-      .eq("user_id", user.id),
+      .eq("user_id", user.id)
+      .is("deleted_at", null),
     supabase
       .from("user_external_cards")
       .select("id, user_id, card_name, issuer, is_business, opened_at, closed_at, created_at, updated_at")

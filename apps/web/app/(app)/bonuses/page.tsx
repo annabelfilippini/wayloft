@@ -20,11 +20,13 @@ async function BonusesContent() {
       .from("user_cards")
       .select("currency")
       .eq("user_id", user.id)
-      .eq("status", "active"),
+      .eq("status", "active")
+      .is("deleted_at", null),
     supabase
       .from("loyalty_balances")
       .select("program_code, balance, currency")
-      .eq("user_id", user.id),
+      .eq("user_id", user.id)
+      .is("deleted_at", null),
     supabase
       .from("transfer_bonuses")
       .select("*")

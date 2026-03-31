@@ -51,7 +51,8 @@ export async function POST(request: Request) {
     .from("user_cards")
     .select("card_slug")
     .eq("user_id", user.id)
-    .eq("status", "active");
+    .eq("status", "active")
+    .is("deleted_at", null);
 
   const slugs = (userCards ?? []).map(
     (c: { card_slug: string }) => c.card_slug

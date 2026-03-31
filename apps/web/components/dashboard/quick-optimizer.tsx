@@ -18,7 +18,8 @@ export async function QuickOptimizer({ userId }: QuickOptimizerProps) {
     .from("user_cards")
     .select("card_slug")
     .eq("user_id", userId)
-    .eq("status", "active");
+    .eq("status", "active")
+    .is("deleted_at", null);
 
   const cards = (userCards ?? []) as Pick<UserCard, "card_slug">[];
 
