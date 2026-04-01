@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wayloft Dashboard | Preview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed": "#ffdfa0",
+                        "primary-fixed": "#d6e3ff",
+                        "inverse-on-surface": "#f1f1ec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1a1c19",
+                        "surface-tint": "#465f88",
+                        "on-surface": "#1a1c19",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#fafaf5",
+                        "secondary-fixed-dim": "#fbbc00",
+                        "on-surface-variant": "#44474e",
+                        "surface-variant": "#e3e3de",
+                        "surface-dim": "#dadad5",
+                        "on-primary-container": "#708ab5",
+                        "secondary": "#795900",
+                        "primary": "#000a1e",
+                        "surface": "#fafaf5",
+                        "on-tertiary-fixed-variant": "#49473a",
+                        "on-secondary-fixed": "#261a00",
+                        "on-tertiary-container": "#8d897a",
+                        "tertiary-fixed-dim": "#cbc6b6",
+                        "outline": "#74777f",
+                        "outline-variant": "#c4c6cf",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#ffbf00",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e8e8e3",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#6d5000",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eeeee9",
+                        "on-primary-fixed-variant": "#2d476f",
+                        "primary-container": "#002147",
+                        "tertiary-fixed": "#e8e2d1",
+                        "surface-container-highest": "#e3e3de",
+                        "on-tertiary-fixed": "#1d1c11",
+                        "on-primary-fixed": "#001b3d",
+                        "tertiary": "#0c0b04",
+                        "surface-container-low": "#f4f4ef",
+                        "on-secondary-fixed-variant": "#5c4300",
+                        "inverse-surface": "#2f312e",
+                        "tertiary-container": "#232217",
+                        "background": "#fafaf5",
+                        "primary-fixed-dim": "#aec7f6",
+                        "inverse-primary": "#aec7f6"
+                    },
+                    fontFamily: {
+                        "headline": ["DM Sans", "sans-serif"],
+                        "body": ["DM Sans", "sans-serif"],
+                        "label": ["DM Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-fixed">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-[#fafaf5]/80 backdrop-blur-md flex justify-between items-center px-8 h-20 max-w-full mx-auto border-b border-outline-variant/10">
+<div class="text-3xl text-[#002147]" style="font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.15em;">WL</div>
+<div class="hidden md:flex items-center space-x-12">
+<a class="text-[#1a1c19]/60 hover:text-[#002147] font-body text-sm tracking-wide" href="#">Portfolio</a>
+<a class="text-[#1a1c19]/60 hover:text-[#002147] font-body text-sm tracking-wide" href="#">Cards</a>
+<a class="text-[#1a1c19]/60 hover:text-[#002147] font-body text-sm tracking-wide" href="#">Transfers</a>
+<a class="text-[#1a1c19]/60 hover:text-[#002147] font-body text-sm tracking-wide" href="#">Concierge</a>
+</div>
+<div class="flex items-center space-x-6">
+<button class="material-symbols-outlined text-primary-container">notifications</button>
+<button class="material-symbols-outlined text-primary-container">account_circle</button>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Header -->
+<section class="relative text-on-primary py-24 px-8 md:px-20 overflow-hidden" style="background: linear-gradient(135deg, #001229 0%, #002147 35%, #001a3a 65%, #000d1f 100%);">
+<!-- Subtle geometric accent -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] opacity-[0.04] pointer-events-none" style="background: radial-gradient(circle at 70% 30%, #ffbf00, transparent 60%);"></div>
+<div class="absolute bottom-0 left-0 w-[300px] h-[300px] opacity-[0.03] pointer-events-none" style="background: radial-gradient(circle, #ffffff, transparent 70%);"></div>
+<!-- Thin gold accent line -->
+<div class="absolute top-0 left-0 w-full h-[2px]" style="background: linear-gradient(90deg, transparent 0%, #ffbf00 30%, #ffbf00 70%, transparent 100%); opacity: 0.3;"></div>
+<div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div>
+<span class="font-label text-[10px] uppercase tracking-[0.3rem] text-secondary-container/80 mb-6 block">Your Personal Briefing</span>
+<h1 class="font-headline text-5xl md:text-7xl leading-[0.95] tracking-tight">
+                        Welcome back, <br/><span class="font-light">Annabel.</span>
+</h1>
+<p class="mt-6 text-white/40 text-sm font-light max-w-md">Here's what's happening with your rewards portfolio today.</p>
+</div>
+<div class="md:text-right">
+<span class="font-label text-[10px] uppercase tracking-[0.3rem] text-white/50 mb-3 block">Estimated Portfolio Value</span>
+<div class="font-headline text-5xl md:text-7xl text-secondary-container font-light"><span id="total-rewards-value">$12,450</span></div>
+</div>
+</div>
+</section>
+<!-- Main Content Area -->
+<div class="max-w-7xl mx-auto px-8 md:px-20 mt-8 relative z-20 pb-32">
+<!-- Card Row -->
+<section class="mb-16">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline text-3xl font-semibold">The Portfolio</h2>
+<a class="font-label text-xs uppercase tracking-widest border-b border-secondary pb-1" href="#">View All Cards</a>
+</div>
+<div class="flex gap-8 overflow-x-auto hide-scrollbar pb-8 -mx-4 px-4">
+<!-- Card 1: Chase Sapphire Reserve -->
+<div class="min-w-[300px] group cursor-pointer shrink-0">
+<div class="h-[190px] w-[300px] rounded-xl relative overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow" style="background: linear-gradient(135deg, #1a1f71 0%, #0d1347 40%, #1a237e 70%, #0a0e3a 100%);">
+  <div class="absolute top-8 left-6">
+    <div class="w-10 h-7 rounded-md" style="background: linear-gradient(135deg, #d4af37 0%, #f5d682 40%, #c5a028 70%, #e8c84a 100%); box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);"></div>
+  </div>
+  <div class="absolute top-0 right-0 w-40 h-40 opacity-10" style="background: radial-gradient(circle at center, #4fc3f7 0%, transparent 70%);"></div>
+  <div class="absolute bottom-12 left-6 text-white/90 font-body text-sm font-semibold tracking-wide">SAPPHIRE RESERVE</div>
+  <div class="absolute bottom-5 right-6 text-white/60 font-body text-[10px] font-bold tracking-widest">VISA</div>
+  <div class="absolute top-8 right-6 text-white/50 font-body text-[10px] font-bold tracking-widest uppercase">Chase</div>
+</div>
+<div class="flex justify-between items-center mt-3 px-1">
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-medium">$550/yr</span>
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider">Active</span>
+</div>
+</div>
+<!-- Card 2: Amex Gold -->
+<div class="min-w-[300px] group cursor-pointer shrink-0">
+<div class="h-[190px] w-[300px] rounded-xl relative overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow" style="background: linear-gradient(135deg, #c6993e 0%, #dbb453 25%, #a67c2e 50%, #d4a942 75%, #b8922f 100%);">
+  <div class="absolute top-8 left-6">
+    <div class="w-10 h-7 rounded-md" style="background: linear-gradient(135deg, #d4af37 0%, #f5d682 40%, #c5a028 70%, #e8c84a 100%); box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);"></div>
+  </div>
+  <div class="absolute top-6 right-6 w-16 h-16 opacity-20" style="background: radial-gradient(circle, #fff 0%, transparent 70%);"></div>
+  <div class="absolute bottom-12 left-6 text-white font-body text-sm font-semibold tracking-wide">GOLD CARD</div>
+  <div class="absolute top-8 right-6 text-white/70 font-body text-[10px] font-bold tracking-[0.2em] uppercase">American Express</div>
+  <div class="absolute bottom-5 right-6 text-white/50 font-body text-[10px] font-bold tracking-widest">AMEX</div>
+</div>
+<div class="flex justify-between items-center mt-3 px-1">
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-medium">$250/yr</span>
+<span class="text-[11px] text-secondary uppercase tracking-wider font-bold">67% toward bonus</span>
+</div>
+</div>
+<!-- Card 3: Venture X -->
+<div class="min-w-[300px] group cursor-pointer shrink-0">
+<div class="h-[190px] w-[300px] rounded-xl relative overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow" style="background: linear-gradient(160deg, #1a1a1a 0%, #2d2d2d 30%, #0f0f0f 60%, #1a1a1a 100%);">
+  <div class="absolute top-8 left-6">
+    <div class="w-10 h-7 rounded-md" style="background: linear-gradient(135deg, #d4af37 0%, #f5d682 40%, #c5a028 70%, #e8c84a 100%); box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);"></div>
+  </div>
+  <div class="absolute top-0 right-0 w-2 h-full" style="background: linear-gradient(180deg, #c41230 0%, #8b0000 100%);"></div>
+  <div class="absolute bottom-12 left-6 text-white/90 font-body text-sm font-semibold tracking-wide">VENTURE X REWARDS</div>
+  <div class="absolute bottom-5 right-6 text-white/50 font-body text-[10px] font-bold tracking-widest">VISA</div>
+  <div class="absolute top-8 right-6 text-white/50 font-body text-[10px] font-bold tracking-widest uppercase">Capital One</div>
+</div>
+<div class="flex justify-between items-center mt-3 px-1">
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-medium">$395/yr</span>
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider">Active</span>
+</div>
+</div>
+<!-- Card 4: Citi Double Cash -->
+<div class="min-w-[300px] group cursor-pointer shrink-0">
+<div class="h-[190px] w-[300px] rounded-xl relative overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow" style="background: linear-gradient(135deg, #005f9e 0%, #003d6b 40%, #00476e 70%, #004e7a 100%);">
+  <div class="absolute top-8 left-6">
+    <div class="w-10 h-7 rounded-md" style="background: linear-gradient(135deg, #d4af37 0%, #f5d682 40%, #c5a028 70%, #e8c84a 100%); box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);"></div>
+  </div>
+  <div class="absolute top-4 right-8 w-24 h-12 border-t-2 border-white/20 rounded-t-full"></div>
+  <div class="absolute bottom-12 left-6 text-white/90 font-body text-sm font-semibold tracking-wide">DOUBLE CASH</div>
+  <div class="absolute bottom-5 right-6 text-white/50 font-body text-[10px] font-bold tracking-widest">MASTERCARD</div>
+  <div class="absolute top-8 right-6 text-white/60 font-body text-[10px] font-bold tracking-widest uppercase">Citi</div>
+</div>
+<div class="flex justify-between items-center mt-3 px-1">
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider font-medium">No AF</span>
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider">Active</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Strategic Opportunities and Tasks -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
+<!-- Strategic Opportunities -->
+<div class="lg:col-span-5">
+<h3 class="font-headline text-3xl font-semibold mb-10">Strategic Opportunities</h3>
+<div class="space-y-8">
+<div class="group bg-surface-container-low p-8 transition-all duration-300 hover:bg-white hover:shadow-2xl">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-secondary-container text-on-secondary-container text-[10px] font-bold px-2.5 py-1 uppercase tracking-tighter">Limited Time</span>
+<span class="text-xs text-error font-medium">Ends in 5 days</span>
+</div>
+<div class="flex items-center gap-5 mb-5">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined">flight_takeoff</span>
+</div>
+<div>
+<div class="font-headline text-2xl">30% Transfer Bonus</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-[0.15em] mt-0.5">Amex &rarr; Virgin Atlantic</div>
+</div>
+</div>
+<p class="text-[13px] text-on-surface-variant font-light leading-relaxed">Perfect for London Upper Class redemptions. Best value found on JFK-LHR routes.</p>
+</div>
+<div class="group bg-surface-container-low p-8 transition-all duration-300 hover:bg-white hover:shadow-2xl">
+<div class="flex justify-between items-start mb-6">
+<span class="bg-primary text-white text-[10px] font-bold px-2.5 py-1 uppercase tracking-tighter">Value Alert</span>
+<span class="text-xs text-on-surface-variant font-medium">Ends in 12 days</span>
+</div>
+<div class="flex items-center gap-5 mb-5">
+<div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined">hotel</span>
+</div>
+<div>
+<div class="font-headline text-2xl">25% Transfer Bonus</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-[0.15em] mt-0.5">Chase &rarr; Hyatt</div>
+</div>
+</div>
+<p class="text-[13px] text-on-surface-variant font-light leading-relaxed">Maximize stay at Park Hyatt Paris-Vendome or Alila Ventana Big Sur.</p>
+</div>
+</div>
+</div>
+<!-- The Concierge Task List -->
+<div class="lg:col-span-7">
+<div class="flex items-center justify-between mb-10">
+<h3 class="font-headline text-3xl font-semibold">The Concierge Task List</h3>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-[0.2em]">5 Active Tasks</span>
+</div>
+<div class="space-y-4">
+<!-- Credit expiring -->
+<div class="flex items-center gap-8 p-8 bg-surface-container-lowest border border-outline-variant/10 hover:shadow-lg transition-all group cursor-pointer">
+<div class="w-1 self-stretch bg-secondary-container"></div>
+<div class="flex-1">
+<div class="text-base font-medium">Use $300 travel credit &mdash; expires in 14 days</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1.5">Chase Sapphire Reserve</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-20 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<!-- AF decision -->
+<div class="flex items-center gap-8 p-8 bg-surface-container-lowest border border-outline-variant/10 hover:shadow-lg transition-all group cursor-pointer">
+<div class="w-1 self-stretch bg-secondary-container"></div>
+<div class="flex-1">
+<div class="text-base font-medium">Annual fee decision due in 23 days</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1.5">Amex Gold</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-20 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<!-- Signup spend -->
+<div class="flex items-center gap-8 p-8 bg-surface-container-lowest border border-outline-variant/10 hover:shadow-lg transition-all group cursor-pointer">
+<div class="w-1 self-stretch bg-secondary-container"></div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-2">
+<div class="text-base font-medium">Spend $800 more for signup bonus &mdash; 42 days left</div>
+<span class="text-[10px] font-bold">70%</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex-1 h-2 bg-outline-variant/20 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[70%]"></div>
+</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">Venture X</div>
+</div>
+</div>
+</div>
+<!-- Perk to activate -->
+<div class="flex items-center gap-8 p-8 bg-surface-container-lowest border border-outline-variant/10 hover:shadow-lg transition-all group cursor-pointer">
+<div class="w-1 self-stretch bg-secondary-container"></div>
+<div class="flex-1">
+<div class="text-base font-medium">Set up Priority Pass &mdash; save ~$100/yr</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1.5">Chase Sapphire Reserve</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-20 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+<!-- Payment due -->
+<div class="flex items-center gap-8 p-8 bg-surface-container-lowest border border-outline-variant/10 hover:shadow-lg transition-all group cursor-pointer">
+<div class="w-1 self-stretch bg-secondary-container"></div>
+<div class="flex-1">
+<div class="text-base font-medium">CSR payment due Apr 15</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1.5">Chase Sapphire Reserve</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant opacity-20 group-hover:opacity-100 transition-opacity">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Section: Ask Wayloft & Spending Optimizer -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+<!-- Ask Wayloft -->
+<div class="bg-primary-container text-on-primary p-12 border border-outline-variant/10 relative overflow-hidden flex flex-col justify-between">
+<div class="relative z-10">
+<h3 class="font-headline text-4xl font-semibold mb-8">Ask Wayloft</h3>
+<div class="flex flex-wrap gap-3 mb-12">
+<button class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-[11px] uppercase tracking-wider border border-white/10 transition-colors">Which card for dining?</button>
+<button class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-[11px] uppercase tracking-wider border border-white/10 transition-colors">What perks am I missing?</button>
+<button class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-[11px] uppercase tracking-wider border border-white/10 transition-colors">Any transfer bonuses?</button>
+</div>
+</div>
+<div class="relative z-10 bg-white/5 border border-white/10 p-4 flex items-center">
+<input class="bg-transparent border-none focus:ring-0 w-full placeholder:text-white/40 text-sm py-2" placeholder="Ask about your cards, points, or spending..." type="text"/>
+<button class="material-symbols-outlined text-secondary-container hover:scale-110 transition-transform">send</button>
+</div>
+</div>
+<!-- Spending Optimizer -->
+<div class="bg-surface-container-low p-12 border border-outline-variant/10 flex flex-col">
+<h3 class="font-headline text-3xl font-semibold mb-4">Spending Optimizer</h3>
+<p class="text-on-surface-variant font-light text-sm mb-10">Your best card for every purchase category.</p>
+<div class="space-y-6 flex-grow">
+<div class="flex items-center justify-between border-b border-outline-variant/10 pb-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary">restaurant</span>
+<span class="font-medium text-sm">Dining</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-bold">Amex Gold</div>
+<div class="text-[10px] text-secondary font-medium uppercase">4x MR Points</div>
+</div>
+</div>
+<div class="flex items-center justify-between border-b border-outline-variant/10 pb-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary">public</span>
+<span class="font-medium text-sm">Travel</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-bold">Sapphire Reserve</div>
+<div class="text-[10px] text-secondary font-medium uppercase">3x UR Points</div>
+</div>
+</div>
+<div class="flex items-center justify-between border-b border-outline-variant/10 pb-4">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary">local_grocery_store</span>
+<span class="font-medium text-sm">Groceries</span>
+</div>
+<div class="text-right">
+<div class="text-sm font-bold">Amex Gold</div>
+<div class="text-[10px] text-secondary font-medium uppercase">4x MR Points</div>
+</div>
+</div>
+</div>
+<div class="mt-10 flex items-center justify-end">
+<a class="font-label text-[10px] uppercase tracking-widest text-primary font-bold border-b border-primary/20 hover:border-primary transition-colors pb-0.5" href="#">View full optimizer &rarr;</a>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-outline-variant/10 py-8 px-8 md:px-20 max-w-7xl mx-auto flex justify-between items-center">
+<div class="text-2xl text-[#002147]" style="font-family: 'Inter', sans-serif; font-weight: 900; letter-spacing: -0.15em;">WL</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">&copy; 2026 Wayloft. All rights reserved.</div>
+</footer>
+<script>
+        (function() {
+            const targetId = 'total-rewards-value';
+            const finalValue = 12450;
+            const duration = 1500;
+            const element = document.getElementById(targetId);
+            if (!element) return;
+            const hasAnimated = sessionStorage.getItem('hasAnimated');
+            if (hasAnimated) {
+                element.textContent = '$' + finalValue.toLocaleString();
+                return;
+            }
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeProgress = progress * (2 - progress);
+                const currentVal = Math.floor(easeProgress * finalValue);
+                element.textContent = '$' + currentVal.toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    sessionStorage.setItem('hasAnimated', 'true');
+                }
+            };
+            window.requestAnimationFrame(step);
+        })();
+    </script>
+</body></html>
