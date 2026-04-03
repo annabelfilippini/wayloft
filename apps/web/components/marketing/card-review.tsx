@@ -417,24 +417,55 @@ export function CardReview({
         {/* ── 8. Editorial Review ── */}
         {hasEditorial && card.editorial && (
           <section>
-            <h2 className="mb-4 text-lg font-semibold">Our Review</h2>
-            {card.editorial.rating && (
-              <div className="mb-4 flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-5 w-5 ${
-                      i < card.editorial!.rating!
-                        ? "fill-amber-400 text-amber-400"
-                        : "text-muted"
-                    }`}
-                  />
-                ))}
-                <span className="ml-2 text-sm font-medium">
-                  {card.editorial.rating}/5
-                </span>
-              </div>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold">The Verdict</h2>
+              {card.editorial.rating && (
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < card.editorial!.rating!
+                          ? "fill-amber-400 text-amber-400"
+                          : "text-muted"
+                      }`}
+                    />
+                  ))}
+                  <span className="ml-1.5 text-sm font-medium">
+                    {card.editorial.rating}/5
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="mb-4 flex items-center gap-2 text-xs text-muted-foreground">
+              <span>By</span>
+              <Link href="/about" className="font-medium text-foreground hover:underline">
+                Ellis Church
+              </Link>
+              {card.editorial.updated_at && (
+                <>
+                  <span>&middot;</span>
+                  <span>
+                    {new Date(card.editorial.updated_at).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
+                </>
+              )}
+            </div>
+
+            {card.editorial.tagline && (
+              <p className="mb-4 text-base font-medium leading-relaxed">
+                {card.editorial.tagline}
+              </p>
             )}
+
+            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+              {card.editorial.verdict}
+            </p>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -470,10 +501,6 @@ export function CardReview({
                 </ul>
               </div>
             </div>
-
-            <p className="mt-4 text-sm text-muted-foreground">
-              {card.editorial.verdict}
-            </p>
           </section>
         )}
 
