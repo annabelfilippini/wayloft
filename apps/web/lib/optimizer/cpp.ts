@@ -9,7 +9,7 @@ interface CppEntry {
 const valuations = (partnersData as unknown as { cpp_valuations: Record<string, CppEntry> }).cpp_valuations;
 
 // Cash-back currencies always worth exactly 1.0 cpp
-const CASH_CURRENCIES = new Set([
+export const CASH_CURRENCIES = new Set([
   "BCP_CASH",
   "BCE_CASH",
   "DISCOVER_CASH",

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAllCppValuations } from "@/lib/cards/valuations";
 
 interface PortfolioHeroProps {
   userId: string;
@@ -15,10 +16,13 @@ export async function PortfolioHero({ userId, displayName }: PortfolioHeroProps)
     .eq("user_id", userId)
     .is("deleted_at", null);
 
-  // Simple valuation: 1 cpp for points, 1 cpp for miles (conservative)
-  // TODO: Use getAllCppValuations for accurate values
-  const totalCents = (balances ?? []).reduce((sum, b) => sum + (b.balance ?? 0), 0);
-  const totalValue = Math.round(totalCents / 100);
+  const valuations = getAllCppValuations();
+  const totalValue = Math.round(
+    (balances ?? []).reduce((sum, b) => {
+      const cpp = valuations[b.program_code]?.cpp ?? 1.0;
+      return sum + ((b.balance ?? 0) * cpp) / 100;
+    }, 0)
+  );
   const programCount = new Set((balances ?? []).map((b) => b.program_code)).size;
 
   return (

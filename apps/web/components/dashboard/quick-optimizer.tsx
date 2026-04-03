@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCards } from "@/lib/cards/catalog";
 import { generateWalletGuide } from "@/lib/optimizer/engine";
+import { CASH_CURRENCIES } from "@/lib/optimizer/cpp";
 import { CopyCheatSheet } from "@/components/optimizer/copy-cheat-sheet";
 import type { UserCard } from "@wayloft/shared";
 
@@ -59,21 +60,23 @@ export async function QuickOptimizer({ userId }: QuickOptimizerProps) {
   const slugs = cards.map((c) => c.card_slug);
   const guide = generateWalletGuide(slugs, catalog);
 
+  function formatRate(multiplier: number, currency: string | undefined): string {
+    if (currency && CASH_CURRENCIES.has(currency)) {
+      return `${multiplier}% CB`;
+    }
+    return `${multiplier}x ${currency?.toUpperCase() ?? ""}`;
+  }
+
   // Only show categories where the best card beats 1x
   const rows = guide.categories
     .filter((cat) => cat.rankings.length > 0 && cat.rankings[0].multiplier > 1)
     .slice(0, 6)
     .map((cat) => {
       const best = cat.rankings[0];
-      // Format earn rate
-      const rateStr = best.currency === "cashback"
-        ? `${best.multiplier}% CB`
-        : `${best.multiplier}x ${best.currency?.toUpperCase() ?? ""}`;
-
       return {
         category: cat.displayName,
         cardName: best.cardName,
-        rate: rateStr,
+        rate: formatRate(best.multiplier, best.currency),
         icon: CATEGORY_ICONS[cat.displayName] ?? "more_horiz",
       };
     });
@@ -82,13 +85,10 @@ export async function QuickOptimizer({ userId }: QuickOptimizerProps) {
   const everythingElse = guide.categories.find((c) => c.displayName === "Everything Else" || c.displayName === "Other");
   if (everythingElse && everythingElse.rankings.length > 0) {
     const best = everythingElse.rankings[0];
-    const rateStr = best.currency === "cashback"
-      ? `${best.multiplier}% CB`
-      : `${best.multiplier}x ${best.currency?.toUpperCase() ?? ""}`;
     rows.push({
       category: "Everything else",
       cardName: best.cardName,
-      rate: rateStr,
+      rate: formatRate(best.multiplier, best.currency),
       icon: "more_horiz",
     });
   }
