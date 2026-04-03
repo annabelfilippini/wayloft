@@ -28,6 +28,20 @@ export async function generateMetadata({
       title: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} Worth It? | Wayloft`,
       description: `${af} — Toggle your benefits, see the math. Instant verdict.`,
       url: `https://wayloft.app/credit-cards/${card.slug}/worth-it`,
+      images: [
+        {
+          url: `https://wayloft.app/api/og/worth-it?slug=${card.slug}`,
+          width: 1200,
+          height: 630,
+          alt: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} worth the ${af} fee?`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} Worth It? | Wayloft`,
+      description: `${af} — Toggle your benefits, see the math. Instant verdict.`,
+      images: [`https://wayloft.app/api/og/worth-it?slug=${card.slug}`],
     },
   };
 }
