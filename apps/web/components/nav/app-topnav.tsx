@@ -29,6 +29,7 @@ const navLinks = [
   { href: "/cards", label: "Cards" },
   { href: "/recommend", label: "Find a Card" },
   { href: "/travel", label: "Travel" },
+  { href: "/about", label: "About" },
 ];
 
 const mobileLinks = [

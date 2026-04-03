@@ -5,6 +5,7 @@ const navLinks = [
   { href: "/credit-cards", label: "Cards" },
   { href: "/credit-cards/best-for/travel", label: "Best Cards", hideOnMobile: true },
   { href: "/recommend", label: "Find Your Card", hideOnMobile: true },
+  { href: "/about", label: "About", hideOnMobile: true },
 ];
 
 export function MarketingHeader() {

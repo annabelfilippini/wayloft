@@ -313,6 +313,17 @@ export function WorthItTool({ card, hasData }: WorthItToolProps) {
         Actual value depends on your usage patterns. Credit values are annualized from their
         stated period. Perk values are estimated. Always verify current terms with your card issuer.
       </p>
+
+      {/* ── Ellis Church Attribution ── */}
+      <p className="mt-4 text-xs text-muted-foreground">
+        Analysis by{" "}
+        <Link
+          href="/about"
+          className="underline underline-offset-2 hover:text-foreground transition-colors"
+        >
+          Ellis Church
+        </Link>
+      </p>
     </div>
   );
 }
