@@ -90,7 +90,7 @@ export function CardReview({
           <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {ISSUER_LABELS[card.issuer] ?? card.issuer}
           </p>
-          <h1 className="mt-1 font-[family-name:var(--font-display)] text-2xl tracking-tight md:text-3xl">
+          <h1 className="mt-1 text-2xl font-bold tracking-[-0.02em] md:text-3xl">
             {card.name}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -486,7 +486,7 @@ export function CardReview({
                 <Link
                   key={related.slug}
                   href={`/credit-cards/${related.slug}`}
-                  className="group rounded-xl border p-4 transition-colors hover:border-foreground/20 hover:bg-accent/30"
+                  className="group border p-4 transition-colors hover:border-foreground/20 hover:bg-accent/30"
                 >
                   <CardArtPlaceholder
                     issuer={related.issuer}
@@ -508,9 +508,26 @@ export function CardReview({
           </section>
         )}
 
+        {/* ── Worth-It CTA ── */}
+        {card.annual_fee_cents > 0 && (
+          <section className="border border-primary/20 bg-primary/5 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold">Is this card worth the {formatCents(card.annual_fee_cents)}/yr fee?</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Toggle the benefits you use. Get an instant verdict.</p>
+            </div>
+            <Link
+              href={`/credit-cards/${card.slug}/worth-it`}
+              className="inline-flex items-center gap-2 bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:brightness-110 transition-[filter] shrink-0"
+            >
+              Analyze This Card
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </section>
+        )}
+
         {/* ── 10. Quiz CTA Banner ── */}
-        <section className="rounded-xl border bg-muted/30 p-8 text-center">
-          <h2 className="font-[family-name:var(--font-display)] text-xl tracking-tight">
+        <section className="border bg-muted/30 p-8 text-center">
+          <h2 className="text-xl font-semibold tracking-[-0.01em]">
             Not sure which card is right for you?
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">

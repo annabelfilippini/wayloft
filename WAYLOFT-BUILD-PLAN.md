@@ -258,7 +258,29 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ---
 
-### Priority 5: Loop 5 — Browser Extension (Weeks 5-7, parallel)
+### Distribution Sprint — Three-Layer Funnel (Apr 2 — in progress)
+
+**Week 1: Worth-It Tool + Reddit Checkpoint**
+- [x] Signal design system cleanup (shadows, rounded corners, purple colors — 12 files)
+- [x] DESIGN.md synced with implementation (theme default, nav labels, label font)
+- [x] Extract `computeValueBreakdown()` to `lib/cards/worth-it.ts` (pure function + toggle variant)
+- [x] 16 unit tests for worth-it verdict logic (159 total tests passing)
+- [x] Public Worth-It page at `/credit-cards/[slug]/worth-it` (SSG, no auth required)
+- [x] Worth-It index page at `/credit-cards/worth-it` (lists analyzable cards)
+- [x] "Analyze This Card" CTA on card review pages (cards with AF > $0)
+- [x] Marketing nav restructure: left-aligned nav matching app pattern, "Worth It?" as primary nav item
+- [ ] QA pass on Worth-It pages (visual, functional, responsive)
+- [ ] Reddit launch: post CSR + Amex Platinum worth-it links to r/creditcards, r/churning
+- [ ] **CHECKPOINT:** If <50 uses → pivot to content/SEO. If >50 → evaluate extension.
+
+**Weeks 2-4: Decided after checkpoint**
+- [ ] OG image route (`/api/og/worth-it`) for social sharing
+- [ ] Chrome extension scaffold (conditional on checkpoint)
+- [ ] Beehiiv newsletter integration (conditional on checkpoint)
+
+---
+
+### Priority 5: Loop 5 — Browser Extension (deferred to post-checkpoint)
 
 - [ ] Manifest V3 foundation
 - [ ] Content scripts for airline sites (United, AA, Delta)
@@ -318,7 +340,7 @@ Built. `lib/glossary.ts` with 8-term glossary (beginner + intermediate definitio
 
 ## Immediate Next Action
 
-**Mar 31: Pre-launch quality pass complete. All blockers resolved: ActionResult schema, SELECT *, onboarding error handling, test coverage (143 tests), scraper attribution, soft delete migration (migration 010). Next: Phase 2 — Stripe billing, affiliate network applications, feature gating, monitoring, soft launch.**
+**Apr 2: Distribution sprint Week 1 built. Worth-It tool live (3 cards: CSR, Amex Platinum, Amex Gold). Marketing nav restructured. 159 tests passing. Signal design system at 9/10. Next: QA pass on worth-it pages, then Reddit launch for checkpoint. Extension decision deferred to post-checkpoint data.**
 
 ---
 

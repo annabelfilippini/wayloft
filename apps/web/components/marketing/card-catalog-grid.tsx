@@ -90,7 +90,7 @@ export function CardCatalogGrid({ cards }: { cards: CatalogCard[] }) {
           <Link
             key={card.slug}
             href={`/credit-cards/${card.slug}`}
-            className="group rounded-xl border bg-card p-4 transition-colors hover:border-foreground/20 hover:bg-accent/30"
+            className="group border bg-card p-4 transition-colors hover:border-foreground/20 hover:bg-accent/30"
           >
             <CardArtPlaceholder
               issuer={card.issuer}

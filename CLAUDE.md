@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Wayloft** is a travel rewards optimization platform that helps users manage credit card portfolios, track transfer bonuses, search flights, and maximize points/miles value. See `WAYLOFT-MASTER-PLAN-V3.md` for the full business plan, timeline, and automation framework.
 
-## Current Status (Mar 31, 2026)
+## Current Status (Apr 2, 2026)
 
-**Through Priority 4 (Flight Search) + pre-launch code quality pass complete.** Loops 1-3 complete. P3.5 complete (database backups, 15 editorial card reviews, 9 best-for articles). Flight search shipped with Duffel sandbox: search form, airport autocomplete, flight cards, portfolio-aware card recommendations, PriceToggle (cash/points/cpp), side-by-side value comparison. Dashboard v2 with urgency-first layout, card deck, AI chat, dark mode. Live Duffel access blocked on business registration (zero code changes needed). Pre-launch hardening pass complete: ActionResult schema, SELECT * violations, onboarding error handling, test infrastructure (143 tests), scraper attribution (retrieved_date + confidence), soft delete migration (migration 010: deleted_at on user_cards/user_payment_info/loyalty_balances, partial unique indexes, 6 views updated).
+**Through Priority 4 + Distribution Sprint Week 1 in progress.** Signal design system at 9/10 (anti-pattern cleanup complete Apr 2). Worth-It public tool shipped: verdict logic extracted to `lib/cards/worth-it.ts`, 16 unit tests, SSG pages at `/credit-cards/[slug]/worth-it` for cards with AF + benefit data (CSR, Amex Platinum, Amex Gold). Worth-It index page at `/credit-cards/worth-it`. Marketing nav restructured to left-aligned layout matching app nav: Worth It? | Cards | Best Cards | Find Your Card | Sign In | Join. 159 tests passing. Pre-launch hardening complete. Next: QA pass → Reddit launch → checkpoint (extension decision deferred to post-data).
 
 ### What's Built
 
@@ -21,7 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - GitHub repo: github.com/annabelfilippini/wayloft (private)
 - Vercel: auto-deploys on push to main, env vars set
 - CI/CD: GitHub Actions (lint, type-check, build)
-- Brand identity: Instrument Serif (display) + DM Sans (body), navy/amber/warm stone palette
+- Brand identity: "The Signal" design system — implemented. See DESIGN.md for full spec.
 
 **Auth system (complete):**
 - Login, signup, forgot password, reset password, email verification pages
@@ -121,8 +121,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Dashboard headers bumped to text-lg font-bold
 - Optimizer: removed quick reference card, added gap suggestions with lightbulb icons
 
+**Signal Design System (Apr 2 — complete, 9/10):**
+- Fonts: Geist + Geist Mono (replaced Instrument Serif + DM Sans)
+- Colors: Carbon #0F0F0F / Warm White #FAFAF6 / Amber #D4A020 (replaced OKLch navy tokens)
+- Light mode default (was dark)
+- Navigation: top horizontal nav + mobile bottom tabs (replaced sidebar)
+- Components: sharp edges (4px radius), no shadows, monospace data, 44px touch targets
+- Material Symbols icons for category/perk display
+- Dashboard: hero with portfolio value, card deck, 40/60 bonuses/tasks grid, portfolio summary + optimizer grid, Ask Wayloft chat
+- Card detail: issuer gradient hero, stats bar, earning velocity (optimizer-style rows), benefits with actionable credits/perks, destination sweet spots with Unsplash images linking to /travel, transfer partners dropdown, card management section
+- Card art: issuer gradient backgrounds with gold chip element
+- Landing page: Carbon background, amber CTAs, sharp edges
+- Marketing pages: WAYLOFT monospace wordmark, Signal footer
+- New components: AppTopNav, PortfolioHero, PortfolioSummary
+- Issuer gradients: Chase navy, Amex gold, Capital One charcoal, Citi teal
+- Anti-pattern cleanup (Apr 2): removed decorative shadows (4 files), replaced rounded-xl/2xl with sharp edges (5 files), purged purple/violet colors from sweet-spots + issuer-colors + card-detail
+
+**"Is Your Card Worth It?" Tool (Apr 2 — complete):**
+- `lib/cards/worth-it.ts`: extracted verdict logic (`computeValueBreakdown`, `computeWorthItVerdict`, `verdictConfig`, `formatCents`)
+- `af-decision-helper.tsx` refactored to import from shared module (zero duplication)
+- 16 unit tests at `tests/cards/worth-it.test.ts` (boundary cases, toggle logic, formatCents)
+- Public SSG page at `/credit-cards/[slug]/worth-it`: toggle credits + perks, instant verdict (keep/call/downgrade)
+- Worth-It index page at `/credit-cards/worth-it`: lists analyzable cards (currently CSR, Amex Platinum, Amex Gold)
+- "Analyze This Card" CTA on card review pages for cards with AF > $0
+- Marketing nav restructured: left-aligned (WAYLOFT + nav links left, auth right), "Worth It?" as primary nav item
+- Financial disclaimer included
+- No auth required — public distribution tool for strangers
+
 **Landing page (complete):**
-- Clean navy hero with Instrument Serif headlines
+- Carbon background, Geist type, amber CTAs, sharp edges
 - Features grid (Card Portfolio, Transfer Bonuses, Flight Search)
 - CTA section + footer
 
@@ -211,17 +238,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Credit health endpoint: `getCreditHealth()` server action + `GET /api/user/credit-health` — 5/24 status, velocity warnings (Chase 5/24, Barclays 6/24, Citi 8/48, general velocity), recent application counts, recommended spacing, next card to fall off
 - `CreditHealth` + `VelocityWarning` types in @wayloft/shared
 
+**Page Architecture (Apr 2 — complete):**
+- 4-page app structure: Dashboard, Cards (with Optimizer tab), Find a Card, Travel (flights + bonuses)
+- Nav: top horizontal bar (Desktop) + bottom tab bar (Mobile) — Dashboard / Cards / Find a Card / Travel
+- `/travel` page: flight search + transfer bonus sidebar + sweet spots pre-search panel (60/40 layout)
+- `/cards` page: tabbed view — "My Cards" grid + "Optimizer" category guide, URL-synced via `?view=optimizer`
+- Old routes redirect: `/search` → `/travel`, `/bonuses` → `/travel`, `/optimizer` → `/cards?view=optimizer` (308 permanent)
+- Settings, Reviews, Optimizer accessible via avatar dropdown + command palette
+- New components: `TravelClient`, `BonusSidebar`, `SweetSpotsPanel`, `CardsTabView`
+
 **Other:**
 - App sidebar navigation (`components/nav/app-sidebar.tsx`)
-- Dashboard page stub with actions widget
-- Route stubs: search, settings
+- App top nav (`components/nav/app-topnav.tsx`), command palette (`components/nav/command-palette.tsx`)
 - Community intelligence scan agent + daily cron script
 - 10 migrations: initial schema, issuer rules + user credit profile, statement credits, perk setup, payment due dates, experience level, quiz cards_opened_48mo, transfer bonus views, scraper attribution, soft delete (deleted_at on user_cards/user_payment_info/loyalty_balances)
 - `/ship` slash command (commit + update docs)
 
-**Code Quality & Test Infrastructure (Mar 31 — near complete):**
+**Code Quality & Test Infrastructure (Apr 2 — 159 tests):**
 - Vitest installed + configured (`apps/web/vitest.config.ts`, `pnpm test` in `apps/web`)
-- 143 passing tests across 9 test files (engine, cards, loyalty, onboarding, profile, recommend, bonuses actions, credit-health, scraper)
+- 159 passing tests across 10 test files (engine, cards, loyalty, onboarding, profile, recommend, bonuses actions, credit-health, scraper, worth-it)
 - `bonuses.ts`: all 3 functions migrated to `ActionResult<T>` (were using bare `{data,error}` shape)
 - `profile.ts exportUserData`: explicit column selects + error checking on all 3 queries (was silently returning success on DB failure)
 - `onboarding.ts completeOnboarding`: error checking added to cards upsert, quiz response upsert, and profile update
@@ -234,9 +269,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### What's Next
 
-Pre-launch quality complete. All blockers resolved (ActionResult, SELECT *, error handling, test coverage, scraper attribution, soft deletes).
+Distribution Sprint Week 1 built. Worth-It tool live. Marketing nav restructured. 159 tests passing.
 
-Phase 2 — Polish & Launch:
+**Immediate:** QA pass on worth-it pages → Reddit launch → checkpoint.
+
+**After checkpoint (data-driven):**
+- OG image route for social sharing (`/api/og/worth-it`)
+- Chrome extension (conditional on Reddit traction)
+- Beehiiv newsletter (conditional on Reddit traction)
+
+**Phase 2 — Polish & Launch:**
 - Stripe billing (Free / $9.99 Pro) + feature gating
 - Apply to affiliate networks (CardRatings, CJ, FlexOffers) — 15 reviews + 9 best-for articles ready
 - ToS / Privacy Policy (Termly)
@@ -245,7 +287,7 @@ Phase 2 — Polish & Launch:
 - PUBLIC BETA
 
 Deferred:
-- Priority 5: Browser Extension
+- Priority 5: Browser Extension (deferred to post-checkpoint)
 - Redis flight cache (scale phase)
 - Card Catalog Monitor Agent (automated catalog freshness)
 
@@ -257,7 +299,7 @@ wayloft/
 │   ├── web/                        # Next.js 16.1.6 (App Router, Tailwind v4, shadcn/ui)
 │   │   ├── app/
 │   │   │   ├── (marketing)/        # Public: landing, login, signup, password flows, credit-cards/[slug]
-│   │   │   ├── (app)/              # Authenticated: dashboard, cards, recommend, bonuses, search, settings
+│   │   │   ├── (app)/              # Authenticated: dashboard, cards, travel, recommend, settings (bonuses/search/optimizer redirect)
 │   │   │   ├── actions/            # Server actions (auth.ts, cards.ts, recommend.ts)
 │   │   │   ├── sitemap.ts          # Dynamic sitemap (homepage + 54 card review pages)
 │   │   │   └── auth/callback/      # OAuth callback handler
@@ -266,7 +308,8 @@ wayloft/
 │   │   │   ├── cards/              # Card grid, card item, picker, bonus progress, credit tracker, etc.
 │   │   │   ├── dashboard/          # Actions widget, points portfolio, expiration alerts, 5/24 counter
 │   │   │   ├── marketing/          # Affiliate disclosure, marketing header/footer, card catalog grid, card review
-│   │   │   ├── nav/                # App sidebar
+│   │   │   ├── nav/                # App top nav, sidebar, command palette
+│   │   │   ├── travel/             # Travel page: flight search + bonus sidebar + sweet spots
 │   │   │   ├── recommend/          # Quiz wizard, steps, results, score card, comparison bar + panel
 │   │   │   └── ui/                 # shadcn components
 │   │   ├── lib/
@@ -297,7 +340,7 @@ wayloft/
 
 **Active:**
 - **Frontend:** Next.js 16.1.6 (App Router), Tailwind CSS v4, shadcn/ui (New York, Neutral)
-- **Fonts:** Instrument Serif (display, weight 400), DM Sans (body) — via next/font/google
+- **Fonts:** Geist (display + body) + Geist Mono (data/tables) — via next/font/google
 - **Database:** Supabase (PostgreSQL) — project `wjloligimlldiljeyelh`, 15+ tables with RLS
 - **Auth:** Supabase Auth with @supabase/ssr (email + Google OAuth)
 - **Infrastructure:** Vercel (auto-deploys from main), GitHub Actions CI
@@ -361,6 +404,12 @@ pnpm turbo lint         # ESLint
 3. Transfer Bonus Tracker (Python scrapers)
 4. Flight Search via Duffel API
 5. Browser Extension (DOM enrichers, balance capture, crowdsourced data)
+
+## Design System
+Always read DESIGN.md before making any visual or UI decisions.
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+In QA mode, flag any code that doesn't match DESIGN.md.
 
 ## Rules
 

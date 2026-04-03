@@ -43,10 +43,10 @@ export function BestForArticle({
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Wayloft Picks &middot; {new Date().getFullYear()}
         </p>
-        <h1 className="mt-2 font-[family-name:var(--font-display)] text-2xl tracking-tight md:text-3xl">
+        <h1 className="mt-2 text-2xl font-bold tracking-[-0.02em] md:text-3xl">
           {category.title}
         </h1>
-        <p className="mt-1 font-[family-name:var(--font-display)] text-lg text-muted-foreground">
+        <p className="mt-1 text-lg text-muted-foreground">
           {category.headline}
         </p>
         <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
@@ -149,8 +149,8 @@ export function BestForArticle({
       </section>
 
       {/* Quiz CTA */}
-      <section className="mt-12 rounded-xl border bg-muted/30 p-8 text-center">
-        <h2 className="font-[family-name:var(--font-display)] text-xl tracking-tight">
+      <section className="mt-12 border bg-muted/30 p-8 text-center">
+        <h2 className="text-xl font-semibold tracking-[-0.01em]">
           Want a personalized recommendation?
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -193,7 +193,7 @@ function CardBreakdown({
     .slice(0, 4);
 
   return (
-    <div className="rounded-xl border p-6 md:p-8">
+    <div className="border p-6 md:p-8">
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         {/* Card art */}
         <div className="w-full max-w-[200px] shrink-0">

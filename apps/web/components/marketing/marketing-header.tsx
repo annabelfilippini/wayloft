@@ -1,43 +1,50 @@
 import Link from "next/link";
 
+const navLinks = [
+  { href: "/credit-cards/worth-it", label: "Worth It?" },
+  { href: "/credit-cards", label: "Cards" },
+  { href: "/credit-cards/best-for/travel", label: "Best Cards", hideOnMobile: true },
+  { href: "/recommend", label: "Find Your Card", hideOnMobile: true },
+];
+
 export function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="mx-auto flex max-w-[1120px] items-center justify-between px-6 py-3 md:px-10">
-        <Link
-          href="/"
-          className="font-[family-name:var(--font-display)] text-[19px] tracking-[0.04em]"
-        >
-          Wayloft
-        </Link>
-        <div className="flex items-center gap-6 text-[13px] text-muted-foreground md:gap-8">
+    <header className="sticky top-0 z-50 h-[52px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <nav className="mx-auto flex max-w-[1120px] h-full items-center justify-between px-6 md:px-10">
+        {/* Left: Wordmark + Nav */}
+        <div className="flex items-center gap-8">
           <Link
-            href="/credit-cards"
-            className="transition-colors hover:text-foreground"
+            href="/"
+            className="mono text-[15px] font-bold tracking-[-0.04em] text-primary"
           >
-            Cards
+            WAYLOFT
           </Link>
-          <Link
-            href="/credit-cards/best-for/travel"
-            className="hidden transition-colors hover:text-foreground md:block"
-          >
-            Best Cards
-          </Link>
-          <Link
-            href="/recommend"
-            className="hidden transition-colors hover:text-foreground sm:block"
-          >
-            Find Your Card
-          </Link>
+          <div className="flex items-center gap-6">
+            {navLinks.map(({ href, label, hideOnMobile }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`text-sm text-muted-foreground transition-colors hover:text-foreground ${
+                  hideOnMobile ? "hidden md:block" : ""
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Auth */}
+        <div className="flex items-center gap-4">
           <Link
             href="/login"
-            className="transition-colors hover:text-foreground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Sign In
           </Link>
           <Link
             href="/signup"
-            className="rounded-full border px-4 py-1.5 text-foreground transition-colors hover:bg-muted"
+            className="border px-4 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
           >
             Join
           </Link>
