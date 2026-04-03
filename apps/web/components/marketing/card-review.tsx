@@ -509,7 +509,7 @@ export function CardReview({
         )}
 
         {/* ── Worth-It CTA ── */}
-        {card.annual_fee_cents > 0 && (
+        {card.annual_fee_cents > 0 && ((card.credits?.length ?? 0) > 0 || (card.perks?.length ?? 0) > 0) && (
           <section className="border border-primary/20 bg-primary/5 p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-sm font-semibold">Is this card worth the {formatCents(card.annual_fee_cents)}/yr fee?</p>
