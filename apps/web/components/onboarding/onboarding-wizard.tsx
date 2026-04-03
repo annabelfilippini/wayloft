@@ -19,12 +19,14 @@ export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
     useState<ExperienceLevel | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
   function handleSkip() {
     router.push("/dashboard");
   }
 
   function handleSubmit(goal: string, airport: string) {
+    setError(null);
     startTransition(async () => {
       const formData = new FormData();
       for (const slug of selectedCards) {
@@ -35,14 +37,21 @@ export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
       if (experienceLevel) formData.set("experience_level", experienceLevel);
 
       const result = await completeOnboarding(formData);
-      if (result.success) {
-        router.push("/dashboard");
+      // completeOnboarding redirects on success — if we reach here, it failed
+      if (!result.success && result.error) {
+        setError(result.error.message);
       }
     });
   }
 
   return (
     <div>
+      {error && (
+        <div className="mb-6 rounded-md border border-destructive/50 bg-destructive/5 px-4 py-3">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
+
       {/* Progress indicator */}
       <div className="mb-8 flex items-center gap-2">
         <div

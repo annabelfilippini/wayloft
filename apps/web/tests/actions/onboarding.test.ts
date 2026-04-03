@@ -1,9 +1,13 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("next/navigation", () => ({
+  redirect: vi.fn(() => { throw new Error("NEXT_REDIRECT"); }),
+}));
 vi.mock("@/lib/supabase/server", () => ({ createClient: vi.fn() }));
 vi.mock("@/lib/cards/catalog", () => ({ getCardBySlug: vi.fn() }));
 
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
 import { completeOnboarding, skipOnboarding } from "@/app/actions/onboarding";
@@ -76,51 +80,54 @@ beforeEach(() => {
 // ─── completeOnboarding ────────────────────────────────────────────────────────
 
 describe("completeOnboarding", () => {
-  it("happy path: saves cards, quiz goal, and profile — returns success", async () => {
+  it("happy path: saves cards, quiz goal, and profile — redirects to dashboard", async () => {
     const { chain } = makeSupabaseClient();
 
-    const result = await completeOnboarding(
-      fd({
-        card_slugs: ["chase-sapphire-preferred"],
-        travel_goal: "maximize_travel",
-        home_airport: "ORD",
-        experience_level: "intermediate",
-      })
-    );
+    await expect(
+      completeOnboarding(
+        fd({
+          card_slugs: ["chase-sapphire-preferred"],
+          travel_goal: "maximize_travel",
+          home_airport: "ORD",
+          experience_level: "intermediate",
+        })
+      )
+    ).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(result.success).toBe(true);
-    // cards upserted, quiz upserted, profile updated
-    expect(chain.upsert).toHaveBeenCalledTimes(2);
+    // cards inserted, quiz upserted, profile updated
+    expect(chain.insert).toHaveBeenCalledTimes(1);
+    expect(chain.upsert).toHaveBeenCalledTimes(1);
     expect(chain.update).toHaveBeenCalledWith(
       expect.objectContaining({ onboarding_completed: true, home_airport: "ORD" })
     );
+    expect(redirect).toHaveBeenCalledWith("/dashboard");
   });
 
-  it("happy path: no cards or goal — only profile update runs", async () => {
+  it("happy path: no cards or goal — only profile update runs, redirects", async () => {
     const { chain } = makeSupabaseClient();
 
-    const result = await completeOnboarding(fd({}));
+    await expect(completeOnboarding(fd({}))).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(result.success).toBe(true);
     expect(chain.upsert).not.toHaveBeenCalled();
     expect(chain.update).toHaveBeenCalledWith(
       expect.objectContaining({ onboarding_completed: true })
     );
+    expect(redirect).toHaveBeenCalledWith("/dashboard");
   });
 
   it("trims and uppercases the home_airport value", async () => {
     const { chain } = makeSupabaseClient();
 
-    await completeOnboarding(fd({ home_airport: "  ord  " }));
+    await expect(completeOnboarding(fd({ home_airport: "  ord  " }))).rejects.toThrow("NEXT_REDIRECT");
 
     expect(chain.update).toHaveBeenCalledWith(
       expect.objectContaining({ home_airport: "ORD" })
     );
   });
 
-  it("transient error: cards upsert fails", async () => {
-    // Provide cards so the upsert runs, then fail on that call
-    makeSupabaseClient({ defaultFromResult: { error: { message: "timeout" } } });
+  it("transient error: cards insert fails (non-duplicate)", async () => {
+    // Provide cards so the insert runs, then fail with a non-23505 error
+    makeSupabaseClient({ defaultFromResult: { error: { message: "timeout", code: "57014" } } });
 
     const result = await completeOnboarding(
       fd({ card_slugs: ["chase-sapphire-preferred"] })
@@ -130,6 +137,25 @@ describe("completeOnboarding", () => {
     if (!result.success) {
       expect(result.error!.category).toBe("transient");
       expect(result.error!.isRetryable).toBe(true);
+    }
+  });
+
+  it("cards insert ignores duplicate key violation (23505) on retry", async () => {
+    // User retried onboarding — cards already exist, 23505 should be ignored
+    makeSupabaseClient({ defaultFromResult: { error: { message: "duplicate key", code: "23505" } } });
+
+    // Should NOT fail — 23505 is expected on retry and should continue to profile update
+    // Profile update also gets 23505 from the mock, but that's a different error path
+    // The key assertion: it doesn't return the "Failed to save your cards" error
+    const result = await completeOnboarding(
+      fd({ card_slugs: ["chase-sapphire-preferred"] })
+    );
+
+    // The mock returns 23505 for ALL from() calls including profile update,
+    // so it will fail on the profile update — but NOT on the cards insert
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error!.message).not.toContain("cards");
     }
   });
 

@@ -8,6 +8,9 @@ const protectedRoutes = [
   "/bonuses",
   "/settings",
   "/portfolio",
+  "/onboarding",
+  "/travel",
+  "/recommend",
 ];
 const authRoutes = ["/login", "/signup", "/forgot-password"];
 

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
 import type { ActionResult } from "@wayloft/shared";
@@ -41,14 +42,11 @@ export async function completeOnboarding(formData: FormData) {
       .filter(Boolean);
 
     if (cardInserts.length > 0) {
-      // Use upsert to skip duplicates
+      // Insert cards — if user retried onboarding, some may already exist (23505 = unique_violation)
       const { error: cardsError } = await supabase
         .from("user_cards")
-        .upsert(cardInserts as Record<string, unknown>[], {
-          onConflict: "user_id,card_slug",
-          ignoreDuplicates: true,
-        });
-      if (cardsError) {
+        .insert(cardInserts as Record<string, unknown>[]);
+      if (cardsError && cardsError.code !== "23505") {
         return { success: false, error: { category: "transient", message: "Failed to save your cards. Please try again.", description: cardsError.message, isRetryable: true } };
       }
     }
@@ -84,7 +82,7 @@ export async function completeOnboarding(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/cards");
-  return { success: true };
+  redirect("/dashboard");
 }
 
 export async function skipOnboarding() {
