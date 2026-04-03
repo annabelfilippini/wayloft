@@ -27,7 +27,7 @@ export async function generateMetadata({
     openGraph: {
       title: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} Worth It? | Wayloft`,
       description: `${af} — Toggle your benefits, see the math. Instant verdict.`,
-      url: `https://wayloft.com/credit-cards/${card.slug}/worth-it`,
+      url: `https://wayloft.app/credit-cards/${card.slug}/worth-it`,
     },
   };
 }

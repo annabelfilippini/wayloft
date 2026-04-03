@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: "Credit Card Reviews & Comparisons | Wayloft",
     description:
       "Browse 50+ credit card reviews with earning rates, transfer partners, perks, and annual fee breakdowns.",
-    url: "https://wayloft.com/credit-cards",
+    url: "https://wayloft.app/credit-cards",
   },
 };
 

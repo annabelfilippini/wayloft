@@ -26,7 +26,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${category.title} | Wayloft`,
       description: category.description,
-      url: `https://wayloft.com/credit-cards/best-for/${slug}`,
+      url: `https://wayloft.app/credit-cards/best-for/${slug}`,
     },
   };
 }

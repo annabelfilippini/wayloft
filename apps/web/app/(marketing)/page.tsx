@@ -195,9 +195,23 @@ export default function MarketingPage() {
         <span className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
           WAYLOFT
         </span>
-        <span className="text-[11px] tracking-[0.1em] text-white/20">
-          &copy; {new Date().getFullYear()}
-        </span>
+        <div className="flex items-center gap-6">
+          <Link
+            href="/privacy"
+            className="text-[11px] text-white/20 transition-colors hover:text-white/50"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/terms"
+            className="text-[11px] text-white/20 transition-colors hover:text-white/50"
+          >
+            Terms
+          </Link>
+          <span className="text-[11px] tracking-[0.1em] text-white/20">
+            &copy; {new Date().getFullYear()}
+          </span>
+        </div>
       </footer>
     </div>
   );

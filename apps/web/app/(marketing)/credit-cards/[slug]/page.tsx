@@ -30,7 +30,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${card.name} Review | Wayloft`,
       description: `${af}${card.signup_bonus ? ` · ${card.signup_bonus.points.toLocaleString()}-point signup bonus` : ""} · ${card.best_for.join(", ")}`,
-      url: `https://wayloft.com/credit-cards/${card.slug}`,
+      url: `https://wayloft.app/credit-cards/${card.slug}`,
     },
   };
 }

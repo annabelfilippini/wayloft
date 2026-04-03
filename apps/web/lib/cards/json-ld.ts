@@ -15,7 +15,7 @@ export function buildCardJsonLd(card: CatalogCard) {
       card.annual_fee_cents > 0
         ? `$${(card.annual_fee_cents / 100).toFixed(0)} annual fee`
         : "No annual fee",
-    url: `https://wayloft.com/credit-cards/${card.slug}`,
+    url: `https://wayloft.app/credit-cards/${card.slug}`,
   };
 
   // Add Review only if editorial rating exists

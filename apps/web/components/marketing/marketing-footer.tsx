@@ -10,9 +10,23 @@ export function MarketingFooter() {
         >
           WAYLOFT
         </Link>
-        <span className="mono text-[10px] tracking-[0.02em] text-muted-foreground">
-          &copy; {new Date().getFullYear()} WAYLOFT
-        </span>
+        <div className="flex items-center gap-6">
+          <Link
+            href="/privacy"
+            className="text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/terms"
+            className="text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Terms
+          </Link>
+          <span className="mono text-[10px] tracking-[0.02em] text-muted-foreground">
+            &copy; {new Date().getFullYear()} WAYLOFT
+          </span>
+        </div>
       </div>
     </footer>
   );

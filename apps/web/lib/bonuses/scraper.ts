@@ -75,7 +75,7 @@ const FETCH_TIMEOUT_MS = 15_000;
 const MAX_RESPONSE_BYTES = 5 * 1024 * 1024; // 5MB
 
 const USER_AGENT =
-  "Wayloft/1.0 (transfer-bonus-tracker; contact@wayloft.com)";
+  "Wayloft/1.0 (transfer-bonus-tracker; contact@wayloft.app)";
 
 const KNOWN_BANKS = ["chase", "amex", "citi", "capital_one", "bilt"] as const;
 type KnownBank = (typeof KNOWN_BANKS)[number];
