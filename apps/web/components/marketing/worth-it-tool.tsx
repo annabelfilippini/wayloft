@@ -78,7 +78,7 @@ export function WorthItTool({ card, hasData }: WorthItToolProps) {
   async function handleShare() {
     const url = window.location.href;
     if (navigator.share) {
-      await navigator.share({ title: `Is the ${card.name} Worth It?`, url });
+      await navigator.share({ title: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} Worth It?`, url });
     } else {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -129,7 +129,7 @@ export function WorthItTool({ card, hasData }: WorthItToolProps) {
         <div>
           <span className="label-signal text-muted-foreground">Card Analyzer</span>
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-[-0.02em] mt-1">
-            Is the {card.name} worth it?
+            Is {card.name.startsWith("The ") ? "" : "the "}{card.name} worth it?
           </h1>
           <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
             Toggle the benefits you actually use. The math updates instantly.

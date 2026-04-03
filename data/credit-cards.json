@@ -61,7 +61,7 @@
       {
         "name": "Lyft Credit",
         "type": "lyft",
-        "amount_cents": 12000,
+        "amount_cents": 1000,
         "period": "monthly",
         "monthly_cap_cents": 1000,
         "enrollment_required": false,
@@ -271,7 +271,7 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The premium travel card that actually pays for itself — if you use the credits.",
+      "tagline": "The premium travel card that actually pays for itself \u2014 if you use the credits.",
       "pros": [
         "8x earning through Chase Travel and Points Boost at 2cpp make portal bookings genuinely valuable",
         "Priority Pass lounge access for you and 2 guests eliminates airport food spending",
@@ -280,9 +280,9 @@
         "Transfer partners (Hyatt, United, Southwest) unlock outsized redemption value"
       ],
       "cons": [
-        "$795 annual fee is steep — you need to actively use credits to come out ahead",
+        "$795 annual fee is steep \u2014 you need to actively use credits to come out ahead",
         "Earning rates outside travel and dining are a flat 1x, which is mediocre for everyday spending",
-        "StubHub and Peloton credits are niche — worthless if you don't use those services",
+        "StubHub and Peloton credits are niche \u2014 worthless if you don't use those services",
         "Chase One Sapphire rule means you can't hold this and the Sapphire Preferred simultaneously"
       ],
       "verdict": "The CSR is the best premium travel card for people who actually travel. The $795 fee sounds intimidating, but between the $300 travel credit, lounge access, and Points Boost redemptions, most frequent travelers come out well ahead. Pair it with a Freedom Unlimited for everyday spending and you have a top-tier setup. If you travel fewer than 5 times a year, the Sapphire Preferred is the smarter pick.",
@@ -339,7 +339,7 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The best first travel rewards card — low fee, flexible points, room to grow.",
+      "tagline": "The best first travel rewards card \u2014 low fee, flexible points, room to grow.",
       "pros": [
         "3x on dining, streaming, and online shopping covers where most people actually spend",
         "$95 annual fee is easy to justify with the 75K signup bonus alone (worth $937+ via transfers)",
@@ -348,7 +348,7 @@
         "10% anniversary bonus on points earned that year adds up quietly"
       ],
       "cons": [
-        "No lounge access — you'll feel the gap at airports compared to the CSR or Venture X",
+        "No lounge access \u2014 you'll feel the gap at airports compared to the CSR or Venture X",
         "1x on groceries and gas means you need a companion card for everyday spending",
         "Foreign transaction fee is absent, but the 1.25cpp portal rate is modest compared to CSR's Points Boost",
         "Chase One Sapphire rule blocks pairing this with the CSR"
@@ -405,7 +405,7 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The best no-fee everyday card — 1.5x on everything feeds the Chase points machine.",
+      "tagline": "The best no-fee everyday card \u2014 1.5x on everything feeds the Chase points machine.",
       "pros": [
         "1.5x on everything with no annual fee is the strongest flat-rate earning in the UR ecosystem",
         "3x on dining and drugstores adds bonus earning where it counts",
@@ -415,11 +415,11 @@
       ],
       "cons": [
         "Foreign transaction fee (3%) makes it a bad choice for international travel",
-        "No transfer partner access on its own — needs a Sapphire card to unlock full value",
+        "No transfer partner access on its own \u2014 needs a Sapphire card to unlock full value",
         "1.5x is good but not spectacular in any single category",
         "Signup bonus is modest (20K points) compared to Sapphire cards"
       ],
-      "verdict": "The CFU is the backbone card of any Chase portfolio. It won't win headlines, but 1.5x on literally everything — with no annual fee — quietly earns more points than most category cards. Pair it with a Sapphire Preferred or Reserve and every dollar you spend becomes transferable to Hyatt, United, and Southwest. If you're only going to have two Chase cards, make this one of them.",
+      "verdict": "The CFU is the backbone card of any Chase portfolio. It won't win headlines, but 1.5x on literally everything \u2014 with no annual fee \u2014 quietly earns more points than most category cards. Pair it with a Sapphire Preferred or Reserve and every dollar you spend becomes transferable to Hyatt, United, and Southwest. If you're only going to have two Chase cards, make this one of them.",
       "rating": 4,
       "updated_at": "2026-03-11"
     }
@@ -477,7 +477,7 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The category bonus hunter — 5x rotating categories keep things interesting.",
+      "tagline": "The category bonus hunter \u2014 5x rotating categories keep things interesting.",
       "pros": [
         "5x on rotating quarterly categories ($1,500/quarter) can net 30,000+ bonus points per year",
         "3x on dining and drugstores is strong for a no-annual-fee card",
@@ -486,7 +486,7 @@
         "5x on Chase Travel portal purchases"
       ],
       "cons": [
-        "Requires quarterly activation and tracking — easy to forget and miss a whole quarter",
+        "Requires quarterly activation and tracking \u2014 easy to forget and miss a whole quarter",
         "$1,500 quarterly cap on 5x categories limits the upside for bigger spenders",
         "Foreign transaction fee (3%) rules it out for international use",
         "1x base rate on non-bonus spending is weak compared to CFU's 1.5x"
@@ -590,7 +590,7 @@
       {
         "name": "Uber Credit",
         "type": "uber",
-        "amount_cents": 12000,
+        "amount_cents": 1000,
         "period": "monthly",
         "monthly_cap_cents": 1000,
         "enrollment_required": false,
@@ -603,7 +603,7 @@
       {
         "name": "Resy Dining Credit",
         "type": "resy_dining",
-        "amount_cents": 40000,
+        "amount_cents": 10000,
         "period": "quarterly",
         "enrollment_required": false,
         "merchants": [
@@ -614,7 +614,7 @@
       {
         "name": "Hotel Credit (FHR/THC)",
         "type": "hotel_fhr",
-        "amount_cents": 60000,
+        "amount_cents": 30000,
         "period": "semi_annual",
         "enrollment_required": false,
         "merchants": [
@@ -664,7 +664,7 @@
       {
         "name": "Lululemon Credit",
         "type": "lululemon",
-        "amount_cents": 30000,
+        "amount_cents": 7500,
         "period": "quarterly",
         "enrollment_required": false,
         "merchants": [
@@ -690,7 +690,7 @@
         "name": "Priority Pass (Select, No Guests)",
         "category": "travel",
         "type": "enrollment_required",
-        "description": "Access to 1,500+ Priority Pass lounges. Cardmember only — no guest access included.",
+        "description": "Access to 1,500+ Priority Pass lounges. Cardmember only \u2014 no guest access included.",
         "setup_instructions": "Enroll at prioritypass.com/amex or through the Amex app under Benefits. Digital card available immediately.",
         "estimated_annual_value_cents": 32900,
         "enrollment_required": true,
@@ -882,22 +882,22 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The ultimate premium card — but only if you'll actually use the avalanche of credits.",
+      "tagline": "The ultimate premium card \u2014 but only if you'll actually use the avalanche of credits.",
       "pros": [
-        "Centurion Lounges are genuinely excellent — better food, drinks, and atmosphere than Priority Pass",
+        "Centurion Lounges are genuinely excellent \u2014 better food, drinks, and atmosphere than Priority Pass",
         "5x on flights booked directly is the highest airline earning rate from any general-purpose card",
         "Over $1,500 in annual credits (hotel, dining, airline, Uber, entertainment, Lululemon) can dwarf the fee",
         "Hilton Gold + Marriott Gold status provides free breakfast and room upgrades at two hotel chains",
-        "Transfer partners include ANA, Singapore, Virgin Atlantic — some of the best sweet spots in award travel"
+        "Transfer partners include ANA, Singapore, Virgin Atlantic \u2014 some of the best sweet spots in award travel"
       ],
       "cons": [
-        "$895 annual fee is the highest of any personal card — you need to actively manage credits to justify it",
+        "$895 annual fee is the highest of any personal card \u2014 you need to actively manage credits to justify it",
         "1x on everything outside flights makes it a terrible everyday spending card",
-        "Many credits are use-it-or-lose-it with specific merchants (Resy, Saks, Oura) — value is only real if you'd spend there anyway",
+        "Many credits are use-it-or-lose-it with specific merchants (Resy, Saks, Oura) \u2014 value is only real if you'd spend there anyway",
         "Amex acceptance is still weaker than Visa/Mastercard, especially internationally and at small businesses",
         "Once-per-lifetime signup bonus rule means you get one shot at the welcome offer"
       ],
-      "verdict": "The Platinum is the gold standard for frequent travelers who fly 10+ times a year and stay at hotels regularly. The Centurion Lounges alone are worth the card if you connect through hubs like DFW, JFK, or SFO. But be honest with yourself: if you won't use the Resy credits, don't care about Oura, and rarely fly — the Venture X gives you 80% of the experience for less than half the fee.",
+      "verdict": "The Platinum is the gold standard for frequent travelers who fly 10+ times a year and stay at hotels regularly. The Centurion Lounges alone are worth the card if you connect through hubs like DFW, JFK, or SFO. But be honest with yourself: if you won't use the Resy credits, don't care about Oura, and rarely fly \u2014 the Venture X gives you 80% of the experience for less than half the fee.",
       "rating": 4,
       "updated_at": "2026-03-11"
     }
@@ -951,7 +951,7 @@
       {
         "name": "Uber Cash",
         "type": "uber_cash",
-        "amount_cents": 12000,
+        "amount_cents": 1000,
         "period": "monthly",
         "monthly_cap_cents": 1000,
         "enrollment_required": false,
@@ -964,7 +964,7 @@
       {
         "name": "Dining Credit",
         "type": "dining",
-        "amount_cents": 12000,
+        "amount_cents": 1000,
         "period": "monthly",
         "monthly_cap_cents": 1000,
         "enrollment_required": false,
@@ -981,7 +981,7 @@
       {
         "name": "Resy Dining Credit",
         "type": "resy_dining",
-        "amount_cents": 10000,
+        "amount_cents": 5000,
         "period": "semi_annual",
         "enrollment_required": false,
         "merchants": [
@@ -992,7 +992,7 @@
       {
         "name": "Dunkin' Credit",
         "type": "dunkin",
-        "amount_cents": 8400,
+        "amount_cents": 700,
         "period": "monthly",
         "monthly_cap_cents": 700,
         "enrollment_required": false,
@@ -1115,22 +1115,22 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The best card for people who eat — 4x on dining and groceries with credits that actually make sense.",
+      "tagline": "The best card for people who eat \u2014 4x on dining and groceries with credits that actually make sense.",
       "pros": [
         "4x on dining worldwide and US supermarkets is the highest combined food earning rate available",
         "$120 Uber Cash + $120 dining credit + $100 Resy credit + $84 Dunkin' = $424/yr in food-related credits",
         "3x on flights booked directly is strong for a mid-tier card",
         "Transfer partners (ANA, Virgin Atlantic, Delta) unlock premium award flights",
-        "Credits are genuinely useful — Uber Eats, restaurants, and groceries are things most people spend on"
+        "Credits are genuinely useful \u2014 Uber Eats, restaurants, and groceries are things most people spend on"
       ],
       "cons": [
         "$325 annual fee has crept up and now requires using most credits to break even",
-        "1x on everything outside dining/groceries/flights — no gas, no streaming, no online shopping bonus",
+        "1x on everything outside dining/groceries/flights \u2014 no gas, no streaming, no online shopping bonus",
         "Monthly credit cadence ($10/mo Uber, $10/mo dining, $7/mo Dunkin') requires consistent use to capture full value",
-        "It's a charge card, not a credit card — balance must be paid in full monthly (Pay Over Time available but not ideal)",
+        "It's a charge card, not a credit card \u2014 balance must be paid in full monthly (Pay Over Time available but not ideal)",
         "Amex acceptance gaps can be frustrating at farmers markets, small shops, and internationally"
       ],
-      "verdict": "The Amex Gold is the best card for people whose biggest spending categories are restaurants and groceries — and that's most people. The 4x earning rate is unmatched, and unlike the Platinum's niche credits, the Gold's credits (Uber, dining, Dunkin') align with how people actually spend. At $325/year it's not cheap, but if you spend $500+/month on food, the math works easily. The ideal Amex setup is Gold for everyday + Platinum for travel.",
+      "verdict": "The Amex Gold is the best card for people whose biggest spending categories are restaurants and groceries \u2014 and that's most people. The 4x earning rate is unmatched, and unlike the Platinum's niche credits, the Gold's credits (Uber, dining, Dunkin') align with how people actually spend. At $325/year it's not cheap, but if you spend $500+/month on food, the math works easily. The ideal Amex setup is Gold for everyday + Platinum for travel.",
       "rating": 5,
       "updated_at": "2026-03-11"
     }
@@ -1324,21 +1324,21 @@
       "late_fee_cents": 4100
     },
     "editorial": {
-      "tagline": "The widest 3x earning spread at $95/year — travel, dining, groceries, and gas all covered.",
+      "tagline": "The widest 3x earning spread at $95/year \u2014 travel, dining, groceries, and gas all covered.",
       "pros": [
-        "3x on travel, dining, groceries, gas, and EV charging — the broadest set of bonus categories at this price",
+        "3x on travel, dining, groceries, gas, and EV charging \u2014 the broadest set of bonus categories at this price",
         "10x on hotels, car rentals, and attractions through Citi Travel is excellent portal earning",
         "$100 annual hotel credit through Citi Travel more than offsets the $95 fee",
-        "Transfer partners include Turkish Airlines, Singapore, and Qatar — strong international sweet spots",
+        "Transfer partners include Turkish Airlines, Singapore, and Qatar \u2014 strong international sweet spots",
         "No foreign transaction fee and Mastercard network means great international acceptance"
       ],
       "cons": [
         "ThankYou Points ecosystem is smaller than Chase UR or Amex MR",
-        "1x on everything outside bonus categories — needs a companion card for general spending",
+        "1x on everything outside bonus categories \u2014 needs a companion card for general spending",
         "Transfer partner list lacks a strong domestic airline option (no United, Delta, or Southwest equivalent)",
         "Citi's app and customer service lag behind Chase and Amex"
       ],
-      "verdict": "The Strata Premier is quietly one of the best mid-tier travel cards available. Where the CSP gives you 3x on dining and travel, the Strata Premier adds groceries and gas to that list — covering nearly all everyday spending at 3x. The $100 hotel credit makes it effectively free. Best for people who want broad bonus earning without the complexity of rotating categories or the cost of a premium card.",
+      "verdict": "The Strata Premier is quietly one of the best mid-tier travel cards available. Where the CSP gives you 3x on dining and travel, the Strata Premier adds groceries and gas to that list \u2014 covering nearly all everyday spending at 3x. The $100 hotel credit makes it effectively free. Best for people who want broad bonus earning without the complexity of rotating categories or the cost of a premium card.",
       "rating": 4,
       "updated_at": "2026-03-11"
     }
@@ -1394,20 +1394,20 @@
       "late_fee_cents": 4100
     },
     "editorial": {
-      "tagline": "The set-it-and-forget-it 5x card — auto-detects your top category every month.",
+      "tagline": "The set-it-and-forget-it 5x card \u2014 auto-detects your top category every month.",
       "pros": [
-        "5x on your top spending category each billing cycle — no activation, no choosing, it just picks the highest one",
+        "5x on your top spending category each billing cycle \u2014 no activation, no choosing, it just picks the highest one",
         "No annual fee with access to ThankYou Points transfers (when paired with Strata Premier)",
-        "Effectively 5% back on gas, groceries, dining, or whatever you spend most on — automatically",
+        "Effectively 5% back on gas, groceries, dining, or whatever you spend most on \u2014 automatically",
         "Low spend requirement for signup bonus ($1,500 in 6 months) makes it very achievable"
       ],
       "cons": [
         "$500/billing cycle cap on 5x earning limits the upside to $25/month in bonus value",
-        "Only 1x on everything that isn't your top category — weak for general spending",
+        "Only 1x on everything that isn't your top category \u2014 weak for general spending",
         "3% foreign transaction fee rules out international use",
-        "Auto-detection means you can't choose — if gas edges out groceries by $10, that's your 5x category whether you wanted it or not"
+        "Auto-detection means you can't choose \u2014 if gas edges out groceries by $10, that's your 5x category whether you wanted it or not"
       ],
-      "verdict": "The Custom Cash is a genius concept: a 5x card that requires zero effort. Slot it into your wallet for one specific category (gas or groceries work best) and stay under $500/month in that category. It's perfect as a specialist card in a larger portfolio. Pair it with a Strata Premier and your ThankYou Points become transferable to airline partners. Don't try to make it your only card — the 1x base rate is too weak.",
+      "verdict": "The Custom Cash is a genius concept: a 5x card that requires zero effort. Slot it into your wallet for one specific category (gas or groceries work best) and stay under $500/month in that category. It's perfect as a specialist card in a larger portfolio. Pair it with a Strata Premier and your ThankYou Points become transferable to airline partners. Don't try to make it your only card \u2014 the 1x base rate is too weak.",
       "rating": 4,
       "updated_at": "2026-03-11"
     }
@@ -1456,18 +1456,18 @@
       "late_fee_cents": 4100
     },
     "editorial": {
-      "tagline": "The simplest rewards card — 2% on everything, no categories, no thinking.",
+      "tagline": "The simplest rewards card \u2014 2% on everything, no categories, no thinking.",
       "pros": [
         "Flat 2% back on every purchase (1% when you buy, 1% when you pay) is best-in-class for a no-fee card",
-        "No annual fee, no category tracking, no activation — pure simplicity",
+        "No annual fee, no category tracking, no activation \u2014 pure simplicity",
         "ThankYou Points transfer to airline partners when paired with a Strata Premier",
-        "No earning caps — 2% on $50,000 in spending is still $1,000/year"
+        "No earning caps \u2014 2% on $50,000 in spending is still $1,000/year"
       ],
       "cons": [
         "3% foreign transaction fee makes it expensive abroad",
-        "2% is competitive but not exceptional — category cards beat it in their specialty areas",
+        "2% is competitive but not exceptional \u2014 category cards beat it in their specialty areas",
         "Signup bonus is modest (20K points for $1,500 spend in 6 months)",
-        "Standalone TYP are worth only 1 cent each — needs a Strata Premier to unlock transfer value"
+        "Standalone TYP are worth only 1 cent each \u2014 needs a Strata Premier to unlock transfer value"
       ],
       "verdict": "The Double Cash is the best card for people who refuse to think about credit card strategy. 2% on everything, no fee, no categories. It's the ultimate backup card and the right default for any spending that doesn't fall into a bonus category on another card. If you're building a Citi setup, pair it with a Strata Premier to turn that 2% into transferable points worth 1.5-2+ cents each.",
       "rating": 4,
@@ -1526,16 +1526,16 @@
     "editorial": {
       "tagline": "Premium lounge access and 2x on everything for half the price of the competition.",
       "pros": [
-        "$300 travel credit + 10,000 anniversary miles ($100) means the effective fee is just $-5 — it literally pays you",
-        "Capital One Lounges + Priority Pass with unlimited guests — the only premium card that covers your whole group",
+        "$300 travel credit + 10,000 anniversary miles ($100) means the effective fee is just $-5 \u2014 it literally pays you",
+        "Capital One Lounges + Priority Pass with unlimited guests \u2014 the only premium card that covers your whole group",
         "2x on everything is simple and competitive, no category tracking required",
         "Transfer partners include Turkish Airlines, Avianca, and Wyndham for outsized value",
         "Hertz President's Circle rental car status is the highest tier any card offers"
       ],
       "cons": [
-        "Capital One does a hard pull on all 3 credit bureaus during application — unusually aggressive",
+        "Capital One does a hard pull on all 3 credit bureaus during application \u2014 unusually aggressive",
         "Transfer partner list is smaller than Chase or Amex, with fewer domestic airline options",
-        "No elevated dining or grocery earning — just 2x flat across the board",
+        "No elevated dining or grocery earning \u2014 just 2x flat across the board",
         "10x portal earning sounds great but Capital One Travel portal has limited inventory compared to Chase"
       ],
       "verdict": "The Venture X is the best value in premium travel cards, full stop. When you factor in the $300 travel credit and anniversary miles, you're paying effectively nothing for lounge access that covers your whole travel group. It's the card I'd recommend to anyone who wants the premium travel experience without the $800+ annual fee of the CSR or Amex Platinum. The only real weakness is the smaller transfer partner ecosystem.",
@@ -1634,21 +1634,21 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The no-fee card that covers dining, groceries, entertainment, and streaming — all at 3x.",
+      "tagline": "The no-fee card that covers dining, groceries, entertainment, and streaming \u2014 all at 3x.",
       "pros": [
         "3x on dining, entertainment, streaming, AND groceries covers four major spending categories for $0/year",
         "No annual fee makes it a pure value add to any wallet",
         "Points transfer to Capital One partners when paired with a Venture or Venture X",
-        "No foreign transaction fee is unusual for a no-fee card — great for international dining",
+        "No foreign transaction fee is unusual for a no-fee card \u2014 great for international dining",
         "5x on hotels and car rentals through the Capital One portal"
       ],
       "cons": [
-        "Only 1x on gas and general purchases — you'll want a companion card for non-bonus spending",
-        "Standalone value is limited — points are worth just 1 cent each without a Venture card to unlock transfers",
+        "Only 1x on gas and general purchases \u2014 you'll want a companion card for non-bonus spending",
+        "Standalone value is limited \u2014 points are worth just 1 cent each without a Venture card to unlock transfers",
         "Signup bonus is modest (20K points = $200)",
         "No travel protections (trip delay, rental car insurance) that come with fee-bearing cards"
       ],
-      "verdict": "The SavorOne is a top-tier no-fee card that earns 3x on the categories that matter most for everyday life. It's the perfect companion to a Venture X — you earn 3x on food and fun, 2x on everything else, and funnel all points into the same transferable pool. Even standalone, 3% back on dining and groceries beats most cash back cards. If you're building a Capital One setup, start here.",
+      "verdict": "The SavorOne is a top-tier no-fee card that earns 3x on the categories that matter most for everyday life. It's the perfect companion to a Venture X \u2014 you earn 3x on food and fun, 2x on everything else, and funnel all points into the same transferable pool. Even standalone, 3% back on dining and groceries beats most cash back cards. If you're building a Capital One setup, start here.",
       "rating": 4,
       "updated_at": "2026-03-11"
     }
@@ -1695,21 +1695,21 @@
       "late_fee_cents": 0
     },
     "editorial": {
-      "tagline": "The only card that earns points on rent — and transfers 1:1 to Hyatt.",
+      "tagline": "The only card that earns points on rent \u2014 and transfers 1:1 to Hyatt.",
       "pros": [
-        "Earn points on rent with no fee and no processing surcharge — literally no other card does this",
-        "1:1 transfer to Hyatt, American Airlines, United, Air Canada, and more — premium transfer partners",
-        "No annual fee and no late fees — unusually renter-friendly terms",
+        "Earn points on rent with no fee and no processing surcharge \u2014 literally no other card does this",
+        "1:1 transfer to Hyatt, American Airlines, United, Air Canada, and more \u2014 premium transfer partners",
+        "No annual fee and no late fees \u2014 unusually renter-friendly terms",
         "No foreign transaction fee is a nice bonus for a no-fee card",
         "$100 Bilt Cash welcome bonus requires no spending threshold"
       ],
       "cons": [
-        "Only 1x on everything — the earning rate is mediocre for non-rent spending",
+        "Only 1x on everything \u2014 the earning rate is mediocre for non-rent spending",
         "No signup bonus in the traditional sense (no points for meeting a spend threshold)",
-        "Must make 5 transactions per month to earn points on rent — forces usage on other purchases",
+        "Must make 5 transactions per month to earn points on rent \u2014 forces usage on other purchases",
         "Bilt's transfer partners are strong but the program is young and could change terms"
       ],
-      "verdict": "If you pay rent, you should have this card. Period. The average American renter pays $1,700/month — that's 20,400 Bilt points per year on money you're already spending, transferable 1:1 to Hyatt where they're worth 2+ cents each. That's $400+/year in travel value from rent alone. The 1x rate on other purchases is weak, so use it only for rent and housing payments. Pair with a CSP or Amex Gold for everything else.",
+      "verdict": "If you pay rent, you should have this card. Period. The average American renter pays $1,700/month \u2014 that's 20,400 Bilt points per year on money you're already spending, transferable 1:1 to Hyatt where they're worth 2+ cents each. That's $400+/year in travel value from rent alone. The 1x rate on other purchases is weak, so use it only for rent and housing payments. Pair with a CSP or Amex Gold for everything else.",
       "rating": 4,
       "updated_at": "2026-03-11"
     }
@@ -1902,7 +1902,7 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "A 140K signup bonus and a free night every year — IHG's best card is underrated.",
+      "tagline": "A 140K signup bonus and a free night every year \u2014 IHG's best card is underrated.",
       "pros": [
         "Free night award (up to 40,000 points) on anniversary is worth $100-200+ and covers the $99 fee",
         "4th night free on award stays is a 25% discount on every points redemption of 4+ nights",
@@ -1911,9 +1911,9 @@
         "Platinum Elite status gets you room upgrades, late checkout, and welcome amenity"
       ],
       "cons": [
-        "IHG points are worth ~0.5 cents each — earning rate looks huge but real value is more modest",
+        "IHG points are worth ~0.5 cents each \u2014 earning rate looks huge but real value is more modest",
         "40,000-point free night cap excludes premium IHG properties (InterContinental, Kimpton peak rates)",
-        "Only useful if you actually stay at IHG — worthless for Hilton or Marriott loyalists",
+        "Only useful if you actually stay at IHG \u2014 worthless for Hilton or Marriott loyalists",
         "5x on travel, dining, and gas is decent but not competitive with general travel cards"
       ],
       "verdict": "The IHG Premier is the best hotel card you've never heard of. The 4th-night-free benefit alone can save hundreds on a single vacation, and the annual free night more than covers the fee. IHG has the largest hotel portfolio in the world (Holiday Inn, Kimpton, InterContinental, Crowne Plaza), so chances are there's an IHG property wherever you're going. If you stay at IHG 3+ nights a year, this card is a must-have.",
@@ -2062,22 +2062,22 @@
       "late_fee_cents": 4000
     },
     "editorial": {
-      "tagline": "The card for Delta loyalists — free bags, priority boarding, and a path to status.",
+      "tagline": "The card for Delta loyalists \u2014 free bags, priority boarding, and a path to status.",
       "pros": [
-        "Free first checked bag saves $35-70 per round trip — pays for the card in 2-3 trips",
+        "Free first checked bag saves $35-70 per round trip \u2014 pays for the card in 2-3 trips",
         "Priority boarding gets you overhead bin space on full flights",
         "70K signup bonus for $3,000 spend in 6 months is very achievable",
         "$200 flight credit after $10K annual spend rewards loyal Delta spenders",
         "20% back on inflight purchases (food, Wi-Fi, drinks) adds up on long flights"
       ],
       "cons": [
-        "Only 2x on Delta purchases and dining — modest earning rates compared to general travel cards",
+        "Only 2x on Delta purchases and dining \u2014 modest earning rates compared to general travel cards",
         "SkyMiles are worth ~1 cent each, making the earning effectively 2% in limited categories",
-        "Locks your points into Delta — no transfer partners, no flexibility",
+        "Locks your points into Delta \u2014 no transfer partners, no flexibility",
         "$150 annual fee is reasonable but higher than many comparable airline cards",
         "Amex network limits where you can use it"
       ],
-      "verdict": "The Delta Gold is a straightforward value proposition: if you fly Delta 3+ times a year, the free checked bag alone covers the $150 fee. The priority boarding and inflight savings are nice bonuses. But be honest about whether you're truly a Delta loyalist — if you price-shop airlines, a flexible points card like the CSP or Venture X will serve you better. This card is for people who've already decided Delta is their airline.",
+      "verdict": "The Delta Gold is a straightforward value proposition: if you fly Delta 3+ times a year, the free checked bag alone covers the $150 fee. The priority boarding and inflight savings are nice bonuses. But be honest about whether you're truly a Delta loyalist \u2014 if you price-shop airlines, a flexible points card like the CSP or Venture X will serve you better. This card is for people who've already decided Delta is their airline.",
       "rating": 3,
       "updated_at": "2026-03-11"
     }
@@ -3286,9 +3286,9 @@
         "15 elite night credits help you reach Silver or Gold status faster"
       ],
       "cons": [
-        "35,000-point free night cap limits you to Category 5 and below — no luxury redemptions",
+        "35,000-point free night cap limits you to Category 5 and below \u2014 no luxury redemptions",
         "Marriott points are worth ~0.7 cents each, so 2x base earning is effectively 1.4% back",
-        "Silver Elite status is barely noticeable — no real upgrades or perks until Gold",
+        "Silver Elite status is barely noticeable \u2014 no real upgrades or perks until Gold",
         "Marriott/Chase cross-issuer rules with the Bonvoy Brilliant complicate having both"
       ],
       "verdict": "The Boundless is the best mid-tier hotel card because the math is dead simple: the free night is worth $150-250 at most Marriott properties, and the fee is $95. You come out ahead every year without trying. The 3x on dining and groceries makes it useful beyond just hotel stays. If you stay at Marriott even 2-3 times a year, this card is an easy yes.",

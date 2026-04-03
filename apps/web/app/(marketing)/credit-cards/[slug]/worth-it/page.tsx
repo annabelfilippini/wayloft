@@ -22,10 +22,10 @@ export async function generateMetadata({
       : `$${(card.annual_fee_cents / 100).toFixed(0)}/yr`;
 
   return {
-    title: `Is the ${card.name} Worth It? — Free Card Analyzer | Wayloft`,
-    description: `Find out if the ${card.name} (${af}) is worth keeping. Toggle the benefits you actually use and get an instant verdict: keep, call for retention, or downgrade.`,
+    title: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} Worth It? — Free Card Analyzer | Wayloft`,
+    description: `Find out if ${card.name.startsWith("The ") ? "" : "the "}${card.name} (${af}) is worth keeping. Toggle the benefits you actually use and get an instant verdict: keep, call for retention, or downgrade.`,
     openGraph: {
-      title: `Is the ${card.name} Worth It? | Wayloft`,
+      title: `Is ${card.name.startsWith("The ") ? "" : "the "}${card.name} Worth It? | Wayloft`,
       description: `${af} — Toggle your benefits, see the math. Instant verdict.`,
       url: `https://wayloft.com/credit-cards/${card.slug}/worth-it`,
     },
