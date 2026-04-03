@@ -93,7 +93,7 @@ describe("addLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -106,7 +106,7 @@ describe("addLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -119,8 +119,8 @@ describe("addLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.field).toBe("program_type");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.field).toBe("program_type");
     }
   });
 
@@ -131,8 +131,8 @@ describe("addLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 
@@ -145,8 +145,8 @@ describe("addLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.message).toContain("already exists");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.message).toContain("already exists");
     }
   });
 
@@ -157,7 +157,7 @@ describe("addLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 });
@@ -185,7 +185,7 @@ describe("updateLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -198,7 +198,7 @@ describe("updateLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -211,8 +211,8 @@ describe("updateLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -237,7 +237,7 @@ describe("removeLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -248,8 +248,8 @@ describe("removeLoyaltyBalance", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });

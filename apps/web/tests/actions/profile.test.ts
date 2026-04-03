@@ -118,7 +118,7 @@ describe("updateProfile", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 
@@ -129,8 +129,8 @@ describe("updateProfile", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -163,7 +163,7 @@ describe("updateNotificationPreferences", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 
@@ -174,8 +174,8 @@ describe("updateNotificationPreferences", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -216,7 +216,7 @@ describe("exportUserData", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 
@@ -231,8 +231,8 @@ describe("exportUserData", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.message).toContain("card");
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.message).toContain("card");
     }
   });
 
@@ -247,8 +247,8 @@ describe("exportUserData", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.message).toContain("balance");
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.message).toContain("balance");
     }
   });
 
@@ -263,8 +263,8 @@ describe("exportUserData", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.message).toContain("profile");
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.message).toContain("profile");
     }
   });
 });
@@ -289,7 +289,7 @@ describe("deleteAccount", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 
@@ -302,8 +302,8 @@ describe("deleteAccount", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
     // signOut should not be called if the delete failed
     expect(client.auth.signOut).not.toHaveBeenCalled();

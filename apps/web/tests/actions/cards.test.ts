@@ -114,7 +114,7 @@ describe("addCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -126,8 +126,8 @@ describe("addCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.message).toContain("not found");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.message).toContain("not found");
     }
   });
 
@@ -142,8 +142,8 @@ describe("addCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 
@@ -158,8 +158,8 @@ describe("addCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.message).toContain("already have this card");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.message).toContain("already have this card");
     }
   });
 
@@ -170,7 +170,7 @@ describe("addCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 });
@@ -212,7 +212,7 @@ describe("updateSpendProgress", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -223,8 +223,8 @@ describe("updateSpendProgress", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.field).toBe("increment");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.field).toBe("increment");
     }
   });
 
@@ -238,8 +238,8 @@ describe("updateSpendProgress", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -267,7 +267,7 @@ describe("removeCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -278,8 +278,8 @@ describe("removeCard", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -307,7 +307,7 @@ describe("logLifecycleEvent", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -318,7 +318,7 @@ describe("logLifecycleEvent", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -331,8 +331,8 @@ describe("logLifecycleEvent", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -361,7 +361,7 @@ describe("logAnnualFeeEvent", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -374,8 +374,8 @@ describe("logAnnualFeeEvent", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -411,7 +411,7 @@ describe("markCreditUsed", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -423,8 +423,8 @@ describe("markCreditUsed", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.message).toBe("Credit not found.");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.message).toBe("Credit not found.");
     }
   });
 
@@ -445,8 +445,8 @@ describe("markCreditUsed", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -470,7 +470,7 @@ describe("enrollCredit", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -481,8 +481,8 @@ describe("enrollCredit", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -519,8 +519,8 @@ describe("markPerkSetup", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.field).toBe("status");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.field).toBe("status");
     }
   });
 
@@ -531,7 +531,7 @@ describe("markPerkSetup", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -542,8 +542,8 @@ describe("markPerkSetup", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -567,7 +567,7 @@ describe("dismissPerk", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -578,8 +578,8 @@ describe("dismissPerk", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -619,8 +619,8 @@ describe("addPaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.field).toBe("due_day");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.field).toBe("due_day");
     }
   });
 
@@ -631,7 +631,7 @@ describe("addPaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -644,8 +644,8 @@ describe("addPaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 
@@ -660,8 +660,8 @@ describe("addPaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.message).toContain("already exists");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.message).toContain("already exists");
     }
   });
 });
@@ -687,8 +687,8 @@ describe("updatePaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
-      expect(result.error.message).toBe("No changes provided.");
+      expect(result.error!.category).toBe("validation");
+      expect(result.error!.message).toBe("No changes provided.");
     }
   });
 
@@ -699,7 +699,7 @@ describe("updatePaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -712,8 +712,8 @@ describe("updatePaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });
@@ -738,7 +738,7 @@ describe("deletePaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("validation");
+      expect(result.error!.category).toBe("validation");
     }
   });
 
@@ -749,8 +749,8 @@ describe("deletePaymentInfo", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 });

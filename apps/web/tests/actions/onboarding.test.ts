@@ -128,8 +128,8 @@ describe("completeOnboarding", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 
@@ -141,8 +141,8 @@ describe("completeOnboarding", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 
@@ -154,8 +154,8 @@ describe("completeOnboarding", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("transient");
-      expect(result.error.isRetryable).toBe(true);
+      expect(result.error!.category).toBe("transient");
+      expect(result.error!.isRetryable).toBe(true);
     }
   });
 
@@ -166,7 +166,7 @@ describe("completeOnboarding", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 });
@@ -190,7 +190,7 @@ describe("skipOnboarding", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.category).toBe("permission");
+      expect(result.error!.category).toBe("permission");
     }
   });
 });
