@@ -9,9 +9,10 @@ interface Message {
 }
 
 const SUGGESTED_QUESTIONS = [
-  "Which card should I use for dining?",
-  "What perks am I not using?",
-  "Any transfer bonuses right now?",
+  "Which card for dining?",
+  "What perks am I missing?",
+  "Transfer bonuses?",
+  "Am I under 5/24?",
 ];
 
 export function ChatSection() {
@@ -107,7 +108,25 @@ export function ChatSection() {
   };
 
   return (
-    <div className="rounded-lg border bg-card">
+    <div>
+      <h2 className="text-2xl font-semibold tracking-[-0.01em] mb-6">Ask Wayloft</h2>
+
+      {/* Suggested questions — only shown before first message */}
+      {!hasMessages && (
+        <div className="flex flex-wrap gap-2.5 mb-7">
+          {SUGGESTED_QUESTIONS.map((q) => (
+            <button
+              key={q}
+              onClick={() => sendMessage(q)}
+              disabled={isLoading}
+              className="mono text-xs px-4 py-2.5 bg-background text-muted-foreground hover:text-primary transition-colors tracking-[0.01em] disabled:opacity-50"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Message area — only shown when there are messages */}
       {hasMessages && (
         <div className="max-h-[300px] overflow-y-auto px-4 py-3 space-y-3">
@@ -151,7 +170,7 @@ export function ChatSection() {
       )}
 
       {/* Input area */}
-      <div className={`flex items-end gap-2 px-4 py-3${hasMessages ? " border-t" : ""}`}>
+      <div className="flex items-center bg-card p-1 pl-3.5">
         <textarea
           ref={textareaRef}
           value={input}
@@ -160,36 +179,20 @@ export function ChatSection() {
           placeholder="Ask about your cards, points, or spending..."
           disabled={isLoading}
           rows={1}
-          className="flex-1 resize-none bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none disabled:opacity-50"
+          className="flex-1 resize-none bg-transparent text-[15px] placeholder:text-muted-foreground focus:outline-none disabled:opacity-50 py-2.5"
         />
         <button
           onClick={() => sendMessage(input)}
           disabled={isLoading || !input.trim()}
-          className="shrink-0 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+          className="shrink-0 w-9 h-9 bg-primary flex items-center justify-center hover:brightness-110 transition-[filter] disabled:opacity-40"
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-[18px] w-[18px] animate-spin text-primary-foreground" />
           ) : (
-            <Send className="h-4 w-4" />
+            <Send className="h-[18px] w-[18px] text-primary-foreground" />
           )}
         </button>
       </div>
-
-      {/* Suggested questions — only shown before first message */}
-      {!hasMessages && (
-        <div className="flex flex-wrap gap-2 border-t px-4 py-3">
-          {SUGGESTED_QUESTIONS.map((q) => (
-            <button
-              key={q}
-              onClick={() => sendMessage(q)}
-              disabled={isLoading}
-              className="rounded-full border bg-background px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
-            >
-              {q}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

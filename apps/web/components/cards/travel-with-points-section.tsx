@@ -2,202 +2,212 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import {
-  ChevronDown,
-  ChevronRight,
-  Plane,
-  Building2,
-  Compass,
-} from "lucide-react";
+import Link from "next/link";
+import { ChevronDown } from "lucide-react";
 import { getTravelGuide } from "@/lib/cards/sweet-spots";
-import type { SweetSpot, RecommendedProgram } from "@/lib/cards/sweet-spots";
+import type { SweetSpot } from "@/lib/cards/sweet-spots";
 import type { TransferPartnerData } from "./transfer-partners-content";
-import { TransferProgramsModal } from "./transfer-programs-modal";
-
-// --- Props ---
 
 interface TravelWithPointsSectionProps {
   currency: string;
   transferPartners: TransferPartnerData;
 }
 
-// --- Destination Card ---
+const ALLIANCE_CODES: Record<string, string> = {
+  star_alliance: "Star Alliance",
+  oneworld: "oneworld",
+  skyteam: "SkyTeam",
+};
 
 function DestinationCard({ spot }: { spot: SweetSpot }) {
   const [imgError, setImgError] = useState(false);
+  const href = spot.airportCode ? `/travel?to=${spot.airportCode}` : undefined;
 
-  return (
-    <div className="group relative h-48 w-48 shrink-0 overflow-hidden rounded-xl">
-      {/* Gradient fallback (always renders underneath) */}
-      <div
-        className={`absolute inset-0 bg-gradient-to-br ${spot.gradient}`}
-      />
-
-      {/* Photo (overlays gradient when loaded) */}
-      {spot.image && !imgError && (
-        <Image
-          src={spot.image}
-          alt={spot.destination}
-          fill
-          className="object-cover"
-          sizes="192px"
-          onError={() => setImgError(true)}
-        />
-      )}
-
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-      {/* Content */}
-      <div className="relative flex h-full flex-col justify-end p-4">
-        <h3 className="text-lg font-bold text-white">{spot.destination}</h3>
-        <p className="mt-0.5 text-xs text-white/80">{spot.via}</p>
-        <p className="mt-1 text-sm font-semibold text-white">{spot.points}</p>
-        <span className="mt-2 inline-block self-start rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm">
-          {spot.badge}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// --- Program Card ---
-
-function ProgramCard({ program }: { program: RecommendedProgram }) {
-  const Icon = program.type === "airline" ? Plane : Building2;
-
-  return (
-    <div className="flex items-center gap-4 rounded-xl border p-4">
-      {/* Icon placeholder */}
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted/50">
-        <Icon className="h-5 w-5 text-muted-foreground" />
+  const content = (
+    <>
+      {/* Image / gradient fallback */}
+      <div className="h-44 relative overflow-hidden">
+        <div className={`absolute inset-0 bg-gradient-to-br ${spot.gradient}`} />
+        {spot.image && !imgError && (
+          <Image
+            src={spot.image}
+            alt={spot.destination}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            onError={() => setImgError(true)}
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        {href && (
+          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="material-symbols-outlined text-white/70 text-lg">arrow_forward</span>
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium">{program.name}</p>
-        <p className="text-xs text-muted-foreground">{program.descriptor}</p>
+      <div className="p-5">
+        <span className="label-signal text-primary">{spot.via}</span>
+        <h3 className="text-base font-semibold mt-1">{spot.destination}</h3>
+        <p className="text-xs text-muted-foreground mt-1">{spot.points}</p>
+        <p className="text-xs text-success font-semibold mt-2">{spot.badge}</p>
       </div>
+    </>
+  );
 
-      {/* Badges */}
-      <div className="flex shrink-0 items-center gap-1.5">
-        {program.badges.map((badge) => (
-          <span
-            key={badge}
-            className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
-          >
-            {badge}
-          </span>
-        ))}
-      </div>
+  if (href) {
+    return (
+      <Link href={href} className="group relative overflow-hidden border hover:border-muted-foreground transition-colors block">
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div className="group relative overflow-hidden border">
+      {content}
     </div>
   );
 }
-
-// --- Main Section ---
 
 export function TravelWithPointsSection({
   currency,
   transferPartners,
 }: TravelWithPointsSectionProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-
+  const [showPartners, setShowPartners] = useState(false);
   const guide = getTravelGuide(currency);
-  const airlineCount = transferPartners.transfer_partners.airlines.length;
-  const hotelCount = transferPartners.transfer_partners.hotels.length;
-
-  const cardClass = "rounded-2xl bg-card shadow-sm border overflow-hidden";
+  const airlines = transferPartners.transfer_partners.airlines;
+  const hotels = transferPartners.transfer_partners.hotels;
 
   return (
     <>
-      <section className={cardClass}>
-        {/* Header */}
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center justify-between p-5 transition-colors hover:bg-muted/30"
-        >
-          <div className="flex items-center gap-2">
-            <Compass className="h-5 w-5 text-muted-foreground" />
-            <h2 className="font-semibold">Travel With Your Points</h2>
-            {!isOpen && (
-              <span className="text-sm text-muted-foreground">
-                · {airlineCount} airlines · {hotelCount} hotels
+      <section className="pb-10">
+        {/* Sweet Spots — destination images first */}
+        {guide && guide.sweetSpots.length > 0 && (
+          <div className="mb-10">
+            <div className="flex items-baseline justify-between mb-2">
+              <span className="text-lg font-semibold tracking-[-0.01em]">Where Your Points Go Further</span>
+              <span className="text-xs text-muted-foreground">
+                {airlines.length} airlines · {hotels.length} hotels
               </span>
-            )}
-          </div>
-          <ChevronDown
-            className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-
-        {/* Expanded content */}
-        {isOpen && (
-          <div className="border-t">
-            {/* Layer 1: Destination Inspiration */}
-            {guide && guide.sweetSpots.length > 0 && (
-              <div className="px-5 pt-5">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Popular redemption paths
-                </p>
-                <div className="-mx-5 flex gap-3 overflow-x-auto px-5 pb-1">
-                  {guide.sweetSpots.map((spot) => (
-                    <DestinationCard key={spot.destination} spot={spot} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Layer 2: Recommended Programs */}
-            {guide && guide.recommended.length > 0 && (
-              <div className="px-5 pb-2 pt-5">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Recommended programs
-                </p>
-                <div className="space-y-2">
-                  {guide.recommended.map((program) => (
-                    <ProgramCard key={program.code} program={program} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Fallback: if no guide, show partner counts */}
-            {!guide && (
-              <div className="px-5 pt-5">
-                <p className="text-sm text-muted-foreground">
-                  Transfer to {airlineCount} airline
-                  {airlineCount !== 1 ? "s" : ""} and {hotelCount} hotel
-                  {hotelCount !== 1 ? "s" : ""} to maximize your points.
-                </p>
-              </div>
-            )}
-
-            {/* Layer 3: Explore all — opens modal */}
-            <div className="border-t px-5 py-3">
-              <button
-                type="button"
-                onClick={() => setShowModal(true)}
-                className="flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80"
-              >
-                Explore all transfer programs
-                <ChevronRight className="h-4 w-4" />
-              </button>
+            </div>
+            <p className="text-sm text-muted-foreground mb-6">
+              Use your points to book these trips for a fraction of the cash price
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {guide.sweetSpots.slice(0, 6).map((spot) => (
+                <DestinationCard key={spot.destination} spot={spot} />
+              ))}
             </div>
           </div>
         )}
+
+        {/* Airlines & Hotels — expandable */}
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowPartners(!showPartners)}
+            className="flex items-center gap-2 mb-6 group"
+          >
+            <span className="text-lg font-semibold tracking-[-0.01em]">Transfer Partners</span>
+            <span className="mono text-xs text-muted-foreground">
+              {airlines.length + hotels.length} PROGRAMS
+            </span>
+            <ChevronDown
+              className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${showPartners ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          {showPartners && (
+            <div>
+              {/* Recommended programs */}
+              {guide && guide.recommended.length > 0 && (
+                <div className="mb-6">
+                  <span className="label-signal text-muted-foreground/60 block mb-3">Recommended Programs</span>
+                  <div className="space-y-px bg-border">
+                    {guide.recommended.map((program) => (
+                      <div key={program.code} className="bg-card p-5 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-muted-foreground text-xl">
+                            {program.type === "airline" ? "flight" : "hotel"}
+                          </span>
+                          <div>
+                            <span className="text-sm font-medium">{program.name}</span>
+                            <p className="text-[11px] text-muted-foreground mt-0.5">{program.descriptor}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          {program.badges.map((badge) => (
+                            <span key={badge} className="mono text-[9px] font-bold px-2.5 py-0.5 uppercase tracking-wider bg-primary/10 text-primary">
+                              {badge}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Airlines */}
+              {airlines.length > 0 && (
+                <div className="mb-6">
+                  <span className="label-signal text-muted-foreground/60 block mb-3">Airlines</span>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-border">
+                    {airlines.map((airline) => {
+                      const code = airline.code?.toUpperCase() ?? airline.partner.slice(0, 2).toUpperCase();
+                      const alliance = airline.alliance ? ALLIANCE_CODES[airline.alliance] : null;
+                      const speed = airline.transfer_time === "instant" ? "Instant" : airline.transfer_time ?? "";
+
+                      return (
+                        <div key={airline.code ?? airline.partner} className="bg-card p-4 text-center">
+                          <span className="mono text-lg font-semibold block">{code}</span>
+                          <span className="text-[11px] text-muted-foreground block mt-1">{airline.partner}</span>
+                          <span className="label-signal text-muted-foreground/40 mt-1 block">
+                            {alliance ?? "\u00A0"}
+                          </span>
+                          <span className={`text-[9px] mt-1 block ${speed === "Instant" ? "text-success" : "text-primary"}`}>
+                            {speed}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Hotels */}
+              {hotels.length > 0 && (
+                <div className="mb-6">
+                  <span className="label-signal text-muted-foreground/60 block mb-3">Hotels</span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
+                    {hotels.map((hotel) => {
+                      const speed = hotel.transfer_time === "instant" ? "Instant transfer" : hotel.transfer_time ?? "";
+
+                      return (
+                        <div key={hotel.code ?? hotel.partner} className="bg-card p-5 flex items-center justify-between">
+                          <div>
+                            <span className="text-base font-semibold">{hotel.partner}</span>
+                            <span className={`text-[9px] block mt-1 ${speed.includes("Instant") ? "text-success" : "text-primary"}`}>
+                              {speed}
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <span className="mono text-lg font-light">1:1</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* Transfer Programs Modal */}
-      <TransferProgramsModal
-        open={showModal}
-        onOpenChange={setShowModal}
-        transferPartners={transferPartners}
-        currency={currency}
-      />
     </>
   );
 }

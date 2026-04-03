@@ -54,6 +54,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CardArtPlaceholder } from "./card-art-placeholder";
+import { getIssuerGradient } from "@/lib/cards/issuer-colors";
 import { SpendUpdateForm } from "./spend-update-form";
 import { AFDecisionHelper } from "./af-decision-helper";
 import { PaymentTracker } from "./payment-tracker";
@@ -249,329 +250,316 @@ export function CardDetail({
   const [showSettings, setShowSettings] = useState(false);
   const [settingsTab, setSettingsTab] = useState<SettingsTab>(null);
 
-  const cardClass = "rounded-2xl bg-card shadow-sm border overflow-hidden";
+  // Hero gradient from issuer colors
+  const issuerGradientRaw = getIssuerGradient(userCard.issuer);
+  const heroGradient = issuerGradientRaw.replace("linear-gradient(135deg, ", "").replace(")", "");
+
+  const cardClass = "bg-card border overflow-hidden";
 
   return (
-    <div className="space-y-4">
-      {/* Back link */}
-      <Link
-        href="/cards"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to cards
-      </Link>
-
-      {/* ═══════ HERO CARD ═══════ */}
-      <section className={cardClass}>
-        {/* Card identity header */}
-        <div className="flex items-start gap-4 p-6">
-          <div className="w-32 shrink-0">
-            <CardArtPlaceholder
-              issuer={userCard.issuer}
-              network={catalogCard.network}
-              cardName={userCard.card_name}
-            />
-          </div>
-          <div className="min-w-0 flex-1 pt-1">
-            <h1 className="text-lg font-bold leading-tight">
-              {userCard.card_name}
-            </h1>
-            <p className="mt-0.5 text-sm text-muted-foreground">
-              {annualFeeDollars > 0
-                ? `Annual fee · $${annualFeeDollars}/yr`
-                : `${formatIssuerName(userCard.issuer)} · No annual fee`}
-            </p>
-          </div>
-          {annualFeeDollars > 0 && (
-            <button
-              type="button"
-              onClick={() => {
-                setShowSettings(true);
-                setSettingsTab("af");
-                setTimeout(
-                  () =>
-                    settingsRef.current?.scrollIntoView({
-                      behavior: "smooth",
-                    }),
-                  100,
-                );
-              }}
-              className="flex shrink-0 items-center gap-1 pt-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+    <div>
+      {/* ═══════ HERO — extends to top of screen ═══════ */}
+      <section className="text-white overflow-hidden relative -mt-[52px]" style={{ background: `linear-gradient(135deg, ${heroGradient})` }}>
+        {/* Dark overlay to ensure text readability on all issuer gradients */}
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="relative px-8 pt-[52px]">
+          {/* Back link inside hero */}
+          <div className="pt-6 pb-6">
+            <Link
+              href="/cards"
+              className="inline-flex items-center gap-1.5 text-sm text-white/50 hover:text-white/80 transition-colors"
             >
-              ${annualFeeDollars}/yr
-              <ChevronRight className="h-3.5 w-3.5" />
-            </button>
-          )}
+              <ArrowLeft className="h-4 w-4" />
+              My Cards
+            </Link>
+          </div>
         </div>
+        <div className="relative px-8 pb-16">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
+            {/* Left: Card Identity */}
+            <div className="flex-1">
+              <span className="label-signal text-white/50 mb-4 block">
+                {formatIssuerName(userCard.issuer)} {userCard.currency.toUpperCase()}
+              </span>
+              <h1 className="text-4xl md:text-5xl font-semibold leading-[0.95] tracking-tight mb-6">
+                {userCard.card_name}
+              </h1>
+              <div className="flex items-center gap-3">
+                <Badge className="bg-emerald-400/20 text-emerald-300 border-transparent">Active</Badge>
+                <span className="text-white/40 text-xs">
+                  {catalogCard.network} · Member since {userCard.card_since ? new Date(userCard.card_since).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "—"}
+                </span>
+              </div>
+            </div>
 
-        {/* Active bonus hero */}
+            {/* Right: Card Art */}
+            <div className="shrink-0">
+              <div className="w-[318px]">
+                <CardArtPlaceholder
+                  issuer={userCard.issuer}
+                  network={catalogCard.network}
+                  cardName={userCard.card_name}
+                  className=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ STATS BAR ═══════ */}
+      <section className="border-b bg-card">
+        <div className="grid grid-cols-3 divide-x divide-border">
+          <div className="py-6 px-6">
+            <span className="text-[10px] font-medium uppercase tracking-[0.05em] text-muted-foreground block mb-1">Annual Fee</span>
+            <span className="text-2xl font-light">
+              {annualFeeDollars > 0 ? `$${annualFeeDollars}` : "$0"}
+              {annualFeeDollars > 0 && <span className="text-sm text-muted-foreground font-normal">/yr</span>}
+            </span>
+          </div>
+          <div className="py-6 px-6">
+            <span className="text-[10px] font-medium uppercase tracking-[0.05em] text-muted-foreground block mb-1">Next Fee Date</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-light">
+                {userCard.annual_fee_date
+                  ? new Date(userCard.annual_fee_date).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+                  : "—"}
+              </span>
+              {afDaysRemaining != null && afDaysRemaining > 0 && (
+                <span className="text-[10px] text-muted-foreground">{afDaysRemaining} days</span>
+              )}
+            </div>
+          </div>
+          <div className="py-6 px-6">
+            <span className="text-[10px] font-medium uppercase tracking-[0.05em] text-muted-foreground block mb-1">Member Since</span>
+            <span className="text-2xl font-light">
+              {userCard.card_since
+                ? new Date(userCard.card_since).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+                : "—"}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ SIGNUP BONUS ═══════ */}
+      <section className="border bg-card p-8 mt-10">
         {hasActiveBonus && (
-          <div className="border-t">
-            <div className="space-y-4 px-6 pb-6 pt-5">
+          <>
+            <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold tracking-tight">
+                <span className="label-signal text-muted-foreground block mb-2">Signup Bonus</span>
+                <h2 className="text-2xl font-semibold tracking-[-0.01em]">
                   Earn{" "}
-                  {(userCard.signup_bonus_points ?? 0).toLocaleString()}{" "}
+                  <span className="mono">{(userCard.signup_bonus_points ?? 0).toLocaleString()}</span>{" "}
                   points
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Spend ${requirementDollars.toLocaleString()} by{" "}
-                  {bonusDeadline?.toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  }) ?? "deadline"}
+                  Spend <span className="mono">${requirementDollars.toLocaleString()}</span> by{" "}
+                  {bonusDeadline?.toLocaleDateString("en-US", { month: "short", day: "numeric" }) ?? "deadline"}
                 </p>
               </div>
-
-              {/* Progress bar */}
-              <div className="space-y-1.5">
-                <div className="flex items-baseline justify-between">
-                  <span className="text-lg font-bold tabular-nums">
-                    ${progressDollars.toLocaleString()} / $
-                    {requirementDollars.toLocaleString()}
-                  </span>
-                  <span className="text-sm tabular-nums text-muted-foreground">
-                    ${requirementDollars.toLocaleString()}
-                  </span>
-                </div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-amber-400 transition-all duration-500"
-                    style={{ width: `${progressPct}%` }}
-                  />
-                </div>
-                {bonusDaysRemaining !== null && (
-                  <p className="text-xs text-muted-foreground">
-                    {bonusWeeksRemaining !== null && bonusWeeksRemaining > 0
-                      ? `${bonusWeeksRemaining} week${bonusWeeksRemaining !== 1 ? "s" : ""} left`
-                      : bonusDaysRemaining > 0
-                        ? `${bonusDaysRemaining} day${bonusDaysRemaining !== 1 ? "s" : ""} left`
-                        : "Due today"}
-                    {dailySpendNeeded !== null &&
-                      ` · ~$${dailySpendNeeded}/day`}
-                  </p>
-                )}
+              <div className="text-right">
+                <span className="mono text-3xl font-light">{Math.round(progressPct)}<span className="text-lg">%</span></span>
+                <span className="label-signal text-muted-foreground block mt-1">Complete</span>
               </div>
+            </div>
 
-              {/* Log purchase action */}
+            <div className="space-y-1.5">
+              <div className="flex items-baseline justify-between">
+                <span className="mono text-sm">${progressDollars.toLocaleString()} spent</span>
+                <span className="mono text-sm text-muted-foreground">${(requirementDollars - progressDollars).toLocaleString()} remaining</span>
+              </div>
+              <div className="h-[3px] overflow-hidden bg-border">
+                <div className="h-full bg-primary transition-all duration-500" style={{ width: `${progressPct}%` }} />
+              </div>
+              {bonusDaysRemaining !== null && (
+                <p className="mono text-xs text-muted-foreground">
+                  {bonusWeeksRemaining !== null && bonusWeeksRemaining > 0
+                    ? `${bonusWeeksRemaining} week${bonusWeeksRemaining !== 1 ? "s" : ""} left`
+                    : bonusDaysRemaining > 0
+                      ? `${bonusDaysRemaining} day${bonusDaysRemaining !== 1 ? "s" : ""} left`
+                      : "Due today"}
+                  {dailySpendNeeded !== null && ` · ~$${dailySpendNeeded}/day`}
+                </p>
+              )}
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-border">
               {!showSpendForm ? (
-                <Button
-                  variant="outline"
-                  className="rounded-xl"
-                  onClick={() => setShowSpendForm(true)}
-                >
-                  <Plus className="mr-1.5 h-4 w-4" />
-                  Log Recent Purchase
-                </Button>
+                <div>
+                  <span className="text-sm font-medium">Log a Purchase</span>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">Track your progress toward the spending requirement</p>
+                  <Button variant="outline" className="mt-3" onClick={() => setShowSpendForm(true)}>
+                    <Plus className="mr-1.5 h-4 w-4" />
+                    Log Purchase
+                  </Button>
+                </div>
               ) : (
                 <div className="space-y-2">
-                  <SpendUpdateForm
-                    cardId={userCard.id}
-                    currentCents={progressCents}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowSpendForm(false)}
-                    className="text-xs"
-                  >
+                  <SpendUpdateForm cardId={userCard.id} currentCents={progressCents} />
+                  <Button variant="ghost" size="sm" onClick={() => setShowSpendForm(false)} className="text-xs">
                     Cancel
                   </Button>
                 </div>
               )}
             </div>
-          </div>
+          </>
         )}
 
-        {/* Bonus met — celebration + timeline */}
+        {/* Bonus met — celebration */}
         {userCard.signup_bonus_met && !userCard.signup_bonus_earned && (
-          <div className="border-t">
-            <div className="space-y-4 px-6 pb-6 pt-5">
-              {/* Completed progress bar */}
-              <div className="h-2.5 overflow-hidden rounded-full bg-muted">
-                <div className="h-full w-full rounded-full bg-green-500" />
+          <>
+            <div className="h-[3px] overflow-hidden bg-border mt-6">
+              <div className="h-full w-full bg-success" />
+            </div>
+            <div className="flex items-start gap-3 mt-4">
+              <span className="material-symbols-outlined text-success text-2xl">emoji_events</span>
+              <div>
+                <h2 className="text-lg font-semibold tracking-[-0.01em]">
+                  You did it!
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  <span className="mono">{(userCard.signup_bonus_points ?? 0).toLocaleString()}</span> points are on the way.
+                  Typically posts within 1–2 statement cycles.
+                </p>
               </div>
+            </div>
+            {hasTransferPartners && (
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={() =>
+                  document.getElementById("travel-section")?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
+                Start planning where to use your points
+              </Button>
+            )}
+          </>
+        )}
 
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 shrink-0 rounded-full bg-green-100 p-2 dark:bg-green-900/30">
-                  <Trophy className="h-5 w-5 text-green-600 dark:text-green-400" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold tracking-tight">
-                    You did it!
-                  </h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {(userCard.signup_bonus_points ?? 0).toLocaleString()}{" "}
-                    points are on the way
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    Points typically post within 1–2 statement cycles
-                  </p>
-                </div>
-              </div>
-
-              {hasTransferPartners && (
-                <Button
-                  variant="outline"
-                  className="rounded-xl"
-                  onClick={() =>
-                    document
-                      .getElementById("travel-section")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  Start planning where to use your points
-                </Button>
+        {/* Bonus earned — permanent */}
+        {userCard.signup_bonus_earned && (
+          <div className="flex items-start gap-3 mt-6">
+            <span className="material-symbols-outlined text-success text-2xl">emoji_events</span>
+            <div>
+              <h2 className="text-lg font-semibold tracking-[-0.01em]">
+                <span className="mono">{(userCard.signup_bonus_points ?? 0).toLocaleString()}</span> bonus points earned
+              </h2>
+              {catalogCard.portal_cpp > 0 && (userCard.signup_bonus_points ?? 0) > 0 && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Worth ~<span className="mono">${Math.round((userCard.signup_bonus_points ?? 0) * catalogCard.portal_cpp / 100).toLocaleString()}</span> through the travel portal
+                </p>
               )}
             </div>
           </div>
         )}
 
-        {/* Bonus earned — permanent celebration */}
-        {userCard.signup_bonus_earned && (
-          <div className="border-t">
-            <div className="space-y-4 px-6 pb-6 pt-5">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 shrink-0 rounded-full bg-green-100 p-2 dark:bg-green-900/30">
-                  <Trophy className="h-5 w-5 text-green-600 dark:text-green-400" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold tracking-tight">
-                    {(userCard.signup_bonus_points ?? 0).toLocaleString()}{" "}
-                    bonus points earned
-                  </h2>
-                  {catalogCard.portal_cpp > 0 && (userCard.signup_bonus_points ?? 0) > 0 && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Worth ~$
-                      {Math.round(
-                        (userCard.signup_bonus_points ?? 0) *
-                          catalogCard.portal_cpp /
-                          100,
-                      ).toLocaleString()}{" "}
-                      through the travel portal, or potentially more
-                      through transfer partners
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {hasTransferPartners && (
-                <Button
-                  variant="outline"
-                  className="rounded-xl"
-                  onClick={() =>
-                    document
-                      .getElementById("travel-section")
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                >
-                  See where your points can take you
-                </Button>
-              )}
+        {/* No bonus data */}
+        {!hasActiveBonus && !userCard.signup_bonus_met && !userCard.signup_bonus_earned && (
+          <div className="flex items-baseline justify-between">
+            <div>
+              <span className="label-signal text-muted-foreground block mb-2">Signup Bonus</span>
+              <p className="text-sm text-muted-foreground">No active signup bonus</p>
             </div>
           </div>
         )}
       </section>
 
-      {/* ═══════ PAYMENT DUE ═══════ */}
-      {paymentInfo && nextPaymentDate && (
-        <section className={`${cardClass} p-5`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <CreditCard className="h-5 w-5 text-muted-foreground" />
-              <span className="font-semibold">Payment Due</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {paymentDaysUntil !== null && paymentDaysUntil <= 7 && (
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-              )}
-              <span className="font-semibold">
-                {nextPaymentDate.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center justify-between border-t border-dashed pt-3">
-            {paymentInfo.autopay_enabled ? (
-              <div className="flex items-center gap-2 text-sm text-green-600">
-                <Bell className="h-4 w-4" />
-                <span>Autopay enabled</span>
-              </div>
-            ) : catalogCard.payment_info?.autopay_url ? (
-              <a
-                href={catalogCard.payment_info.autopay_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <Bell className="h-4 w-4" />
-                Enable Autopay
-              </a>
-            ) : (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Bell className="h-4 w-4" />
-                <span>No autopay</span>
-              </div>
-            )}
-            <span className="text-xs text-muted-foreground">
-              {paymentDaysUntil !== null && paymentDaysUntil > 0
-                ? `${paymentDaysUntil} day${paymentDaysUntil !== 1 ? "s" : ""} away`
-                : "Due today"}
-            </span>
-          </div>
-        </section>
-      )}
+      {/* Payment section moved to Card Management below */}
 
-      {/* ═══════ EARNINGS ═══════ */}
-      <section className={`${cardClass} space-y-3 p-5`}>
-        <div className="flex items-center gap-2">
-          <Star className="h-5 w-5 fill-amber-500 text-amber-500" />
-          <h2 className="font-semibold">Earnings</h2>
-        </div>
-        {bonusCategories.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
-            {bonusCategories.map(([category, rate]) => {
-              const Icon = CATEGORY_ICONS[category] ?? CreditCard;
-              return (
-                <div
-                  key={category}
-                  className="flex items-center gap-2 rounded-xl bg-muted/50 px-4 py-2.5"
-                >
-                  <Icon className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-bold tabular-nums">{rate}x</span>
-                  <span className="text-sm text-muted-foreground">
-                    {getCategoryDisplay(category, userCard.issuer)}
+      {/* ═══════ TWO-COLUMN: Earning Velocity (left) | Card Benefits (right) ═══════ */}
+      <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] mt-10">
+        {/* LEFT: Earning Velocity */}
+        <div className="pr-0 lg:pr-8 pb-10">
+          <div className="flex items-center justify-between mb-5">
+            <span className="text-lg font-semibold tracking-[-0.01em]">Earning Velocity</span>
+            <span className="mono text-[10px] text-muted-foreground">EARN RATE BY CATEGORY</span>
+          </div>
+
+          {/* Portal rate featured row */}
+          {catalogCard.portal_cpp > 0 && (
+            <div className="flex items-center justify-between py-2.5 border-b border-border mb-1">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-xl">travel_explore</span>
+                <div>
+                  <span className="text-[15px] font-medium">{ISSUER_PORTAL_NAMES[userCard.issuer] ?? "Travel Portal"}</span>
+                  <span className="mono text-[13px] text-primary"> · {catalogCard.portal_cpp / 100}x</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Category rows — matching dashboard optimizer format */}
+          {(() => {
+            const MATERIAL_ICONS: Record<string, string> = {
+              dining: "restaurant",
+              travel: "flight",
+              flights: "flight",
+              hotels: "hotel",
+              groceries: "shopping_cart",
+              online_groceries: "shopping_cart",
+              gas: "local_gas_station",
+              streaming: "subscriptions",
+              transit: "directions_bus",
+              online_shopping: "shopping_bag",
+              car_rentals: "directions_car",
+            };
+
+            return (
+              <div>
+                {earningRates
+                  .filter(([cat]) => cat !== "other" && cat !== "brand_portal" && cat !== "brand_property")
+                  .map(([category, rate]) => {
+                    const iconName = MATERIAL_ICONS[category] ?? "category";
+                    const isBonusRate = rate > 1;
+                    return (
+                      <div key={category} className="flex items-center justify-between py-2.5">
+                        <div className="flex items-center gap-3">
+                          <span className="material-symbols-outlined text-muted-foreground text-xl">{iconName}</span>
+                          <span className="text-[15px]">{getCategoryDisplay(category, userCard.issuer)}</span>
+                        </div>
+                        <span className={`mono text-[13px] ${isBonusRate ? "text-primary" : "text-muted-foreground"}`}>
+                          {rate}x {userCard.currency.toUpperCase()}
+                        </span>
+                      </div>
+                    );
+                  })}
+                {/* Everything else */}
+                <div className="flex items-center justify-between py-2.5">
+                  <div className="flex items-center gap-3">
+                    <span className="material-symbols-outlined text-muted-foreground text-xl">more_horiz</span>
+                    <span className="text-[15px]">Everything else</span>
+                  </div>
+                  <span className="mono text-[13px] text-muted-foreground">
+                    {baseRate}x {userCard.currency.toUpperCase()}
                   </span>
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            Earns {baseRate}x on all purchases
-          </p>
-        )}
-        {!isBeginner && catalogCard.earning_caps.length > 0 && (
-          <p className="text-xs text-muted-foreground">
-            {catalogCard.earning_caps
-              .map(
-                (cap) =>
-                  `${cap.category}: up to $${(cap.limit_cents / 100).toLocaleString()}/${cap.period}`,
-              )
-              .join(" · ")}
-          </p>
-        )}
-      </section>
+              </div>
+            );
+          })()}
 
-      {/* ═══════ CARD BENEFITS ═══════ */}
-      <CardBenefitsSection
-        catalogCard={catalogCard}
-        creditUsage={creditUsage}
-        perkSetup={perkSetup}
-      />
+          {!isBeginner && catalogCard.earning_caps.length > 0 && (
+            <p className="text-[11px] text-muted-foreground mt-3">
+              {catalogCard.earning_caps
+                .map(
+                  (cap) =>
+                    `${cap.category}: up to $${(cap.limit_cents / 100).toLocaleString()}/${cap.period}`,
+                )
+                .join(" · ")}
+            </p>
+          )}
+        </div>
+
+        {/* RIGHT: Card Benefits */}
+        <div className="pl-0 lg:pl-8 lg:border-l border-border">
+          <CardBenefitsSection
+            catalogCard={catalogCard}
+            creditUsage={creditUsage}
+            perkSetup={perkSetup}
+          />
+        </div>
+      </div>
 
       {/* ═══════ TRAVEL WITH YOUR POINTS ═══════ */}
       {hasTransferPartners && (
@@ -583,31 +571,32 @@ export function CardDetail({
         </div>
       )}
 
-      {/* ═══════ CARD SETTINGS ═══════ */}
-      <section className={cardClass} ref={settingsRef}>
-        <button
-          type="button"
-          onClick={() => {
-            setShowSettings(!showSettings);
-            if (showSettings) setSettingsTab(null);
-          }}
-          className="flex w-full items-center justify-between p-5 transition-colors hover:bg-muted/30"
-        >
-          <div className="flex items-center gap-2">
-            <Settings className="h-5 w-5 text-muted-foreground" />
-            <h2 className="font-semibold">Card Settings</h2>
-          </div>
-          <ChevronDown
-            className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-              showSettings ? "rotate-180" : ""
-            }`}
-          />
-        </button>
+      {/* ═══════ CARD MANAGEMENT ═══════ */}
+      <section className="pb-10" ref={settingsRef}>
+        <span className="label-signal text-muted-foreground block mb-6">Card Management</span>
 
-        {showSettings && (
-          <div className="border-t">
-            {/* Annual Fee */}
-            <SettingsRow
+        <div className="space-y-px bg-border">
+          {/* Payment Info (always visible) */}
+          {paymentInfo && nextPaymentDate && (
+            <div className="bg-card p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-muted-foreground text-xl">credit_card</span>
+                <div>
+                  <span className="text-sm font-medium">Payment Due</span>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {nextPaymentDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    {paymentInfo.autopay_enabled ? " · Autopay on" : ""}
+                  </p>
+                </div>
+              </div>
+              {paymentDaysUntil != null && paymentDaysUntil > 0 && (
+                <span className="mono text-[10px] font-semibold text-primary">{paymentDaysUntil} days</span>
+              )}
+            </div>
+          )}
+
+          {/* Annual Fee */}
+          <SettingsRow
               icon={Calendar}
               label={
                 userCard.annual_fee_date
@@ -669,7 +658,7 @@ export function CardDetail({
             </SettingsRow>
 
             {/* Payment Tracking */}
-            <SettingsRow
+          <SettingsRow
               icon={CreditCard}
               label="Payment Tracking"
               isOpen={settingsTab === "payment"}
@@ -686,8 +675,7 @@ export function CardDetail({
                 cardSlug={userCard.card_slug}
               />
             </SettingsRow>
-          </div>
-        )}
+        </div>
       </section>
     </div>
   );
@@ -700,32 +688,48 @@ export function CardDetail({
 function SettingsRow({
   icon: Icon,
   label,
+  subtitle,
+  badge,
   isOpen,
   onToggle,
   children,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
+  subtitle?: string;
+  badge?: React.ReactNode;
   isOpen: boolean;
   onToggle: () => void;
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-b last:border-b-0">
+    <div className="bg-card">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center px-5 py-3.5 transition-colors hover:bg-muted/30"
+        className="w-full p-5 flex items-center justify-between text-left"
       >
-        <Icon className="mr-3 h-4 w-4 text-muted-foreground" />
-        <span className="flex-1 text-left text-sm">{label}</span>
-        <ChevronRight
-          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
-            isOpen ? "rotate-90" : ""
-          }`}
-        />
+        <div className="flex items-center gap-3">
+          <Icon className="h-5 w-5 text-muted-foreground" />
+          <div>
+            <span className="text-sm font-medium">{label}</span>
+            {subtitle && (
+              <p className="text-[11px] text-muted-foreground mt-0.5">{subtitle}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          {badge}
+          <span className="material-symbols-outlined text-muted-foreground/30 text-lg">
+            {isOpen ? "expand_less" : "expand_more"}
+          </span>
+        </div>
       </button>
-      {isOpen && <div className="px-5 pb-5 pt-1">{children}</div>}
+      {isOpen && (
+        <div className="px-5 pb-5">
+          <div className="border-t pt-5">{children}</div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1025,7 +1029,7 @@ const EVENT_CONFIG: Record<
     icon: ArrowDown,
     color: "text-orange-500",
   },
-  upgrade: { label: "Upgraded", icon: ArrowUp, color: "text-purple-600" },
+  upgrade: { label: "Upgraded", icon: ArrowUp, color: "text-info" },
   cancelled: { label: "Cancelled", icon: Ban, color: "text-red-600" },
   retention_offer: {
     label: "Retention Offer",

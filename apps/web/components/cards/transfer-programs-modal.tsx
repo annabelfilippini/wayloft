@@ -160,7 +160,7 @@ function ProgramGridCard({ program }: { program: ProgramEntry }) {
   const Icon = program.type === "airline" ? Plane : Building2;
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border p-4">
+    <div className="flex items-center gap-3 border p-4">
       {/* Logo placeholder */}
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted/50">
         <Icon className="h-5 w-5 text-muted-foreground" />
@@ -246,7 +246,7 @@ export function TransferProgramsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="flex max-h-[85vh] flex-col gap-0 rounded-2xl p-0 sm:max-w-3xl"
+        className="flex max-h-[85vh] flex-col gap-0 p-0 sm:max-w-3xl"
       >
         {/* Header */}
         <div className="flex items-start justify-between border-b px-6 pb-4 pt-6">

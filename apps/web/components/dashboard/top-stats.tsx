@@ -88,7 +88,7 @@ export async function TopStats({ userId }: TopStatsProps) {
     deadlines.push({
       label: `${tb.bank} → ${tb.partner} bonus ends`,
       days: tb.days_remaining,
-      href: "/bonuses",
+      href: "/travel",
     });
   }
 

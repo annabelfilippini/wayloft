@@ -11,66 +11,7 @@ import type {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Phone, ArrowDown, Shield, CheckCircle2, XCircle } from "lucide-react";
-
-// ── Verdict Logic ──
-
-type Verdict = "keep" | "call" | "downgrade";
-
-interface ValueBreakdownResult {
-  creditsValueCents: number;
-  perksValueCents: number;
-  totalValueCents: number;
-  netValueCents: number;
-  verdict: Verdict;
-}
-
-function computeValueBreakdown(
-  annualFeeCents: number,
-  creditUsage: UserCreditUsage[],
-  perkSetup: UserPerkSetup[]
-): ValueBreakdownResult {
-  const creditsValueCents = creditUsage.reduce(
-    (sum, c) => sum + c.amount_used_cents,
-    0
-  );
-  const perksValueCents = perkSetup
-    .filter((p) => p.status === "completed")
-    .reduce((sum, p) => sum + p.estimated_annual_value_cents, 0);
-  const totalValueCents = creditsValueCents + perksValueCents;
-  const netValueCents = totalValueCents - annualFeeCents;
-
-  let verdict: Verdict;
-  if (netValueCents >= 5000) {
-    verdict = "keep";
-  } else if (netValueCents >= -5000) {
-    verdict = "call";
-  } else {
-    verdict = "downgrade";
-  }
-
-  return { creditsValueCents, perksValueCents, totalValueCents, netValueCents, verdict };
-}
-
-const verdictConfig: Record<
-  Verdict,
-  { label: string; color: string; bgColor: string }
-> = {
-  keep: {
-    label: "KEEP",
-    color: "text-green-700 dark:text-green-400",
-    bgColor: "bg-green-100 dark:bg-green-900/30",
-  },
-  call: {
-    label: "CALL FOR RETENTION",
-    color: "text-amber-700 dark:text-amber-400",
-    bgColor: "bg-amber-100 dark:bg-amber-900/30",
-  },
-  downgrade: {
-    label: "CONSIDER DOWNGRADE",
-    color: "text-red-700 dark:text-red-400",
-    bgColor: "bg-red-100 dark:bg-red-900/30",
-  },
-};
+import { computeValueBreakdown, verdictConfig, type Verdict } from "@/lib/cards/worth-it";
 
 // ── Props ──
 
@@ -89,10 +30,18 @@ export function AFDecisionHelper({
   perkSetup,
   lifecycleEvents,
 }: AFDecisionHelperProps) {
+  const creditsUsedCents = creditUsage.reduce(
+    (sum, c) => sum + c.amount_used_cents,
+    0
+  );
+  const perksActivatedCents = perkSetup
+    .filter((p) => p.status === "completed")
+    .reduce((sum, p) => sum + p.estimated_annual_value_cents, 0);
+
   const breakdown = computeValueBreakdown(
     catalogCard.annual_fee_cents,
-    creditUsage,
-    perkSetup
+    creditsUsedCents,
+    perksActivatedCents
   );
   const config = verdictConfig[breakdown.verdict];
 

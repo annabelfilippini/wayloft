@@ -25,7 +25,7 @@ export function FlightCard({ flight, priceView = "cash" }: FlightCardProps) {
   const portal = flight.bestPortalOption;
 
   return (
-    <div className="rounded-lg border bg-card transition-colors hover:border-foreground/20">
+    <div className="border bg-card transition-colors hover:border-foreground/20">
       {/* Main row */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -105,9 +105,9 @@ export function FlightCard({ flight, priceView = "cash" }: FlightCardProps) {
           {/* Card recommendations */}
           {flight.cardRecommendations.length > 0 && (
             <div>
-              <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <CreditCard className="h-3.5 w-3.5" />
-                Best cards for this flight
+              <h4 className="flex items-center gap-1.5">
+                <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="label-signal text-muted-foreground">BEST CARDS FOR THIS FLIGHT</span>
               </h4>
               <div className="mt-2 space-y-1.5">
                 {flight.cardRecommendations.slice(0, 3).map((rec, i) => (
@@ -126,10 +126,10 @@ export function FlightCard({ flight, priceView = "cash" }: FlightCardProps) {
                       )}
                     </div>
                     <div className="text-right">
-                      <span>
+                      <span className="mono">
                         {rec.multiplier}x {rec.currency}
                       </span>
-                      <span className="ml-2 text-xs text-muted-foreground">
+                      <span className="mono ml-2 text-xs text-muted-foreground">
                         (~${rec.pointsValue.toFixed(0)} back)
                       </span>
                     </div>
@@ -142,32 +142,32 @@ export function FlightCard({ flight, priceView = "cash" }: FlightCardProps) {
           {/* Cash vs points comparison */}
           {portal && (
             <div>
-              <h4 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <ArrowRight className="h-3.5 w-3.5" />
-                Cash vs points
+              <h4 className="flex items-center gap-1.5">
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="label-signal text-muted-foreground">CASH VS POINTS</span>
               </h4>
               <div className="mt-2 grid grid-cols-2 gap-2">
-                <div className="rounded-md border px-3 py-2">
-                  <p className="text-[10px] font-medium uppercase text-muted-foreground">
-                    Pay cash
+                <div className="border px-3 py-2">
+                  <p className="label-signal text-muted-foreground">
+                    PAY CASH
                   </p>
-                  <p className="text-sm font-semibold">
+                  <p className="mono text-sm font-semibold mt-1">
                     ${cashPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </p>
                   {bestCard && (
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="mono text-[10px] text-muted-foreground">
                       Earn {bestCard.pointsEarned.toLocaleString()} {bestCard.currency} ({bestCard.multiplier}x)
                     </p>
                   )}
                 </div>
-                <div className="rounded-md border px-3 py-2">
-                  <p className="text-[10px] font-medium uppercase text-muted-foreground">
-                    Pay with points
+                <div className="border px-3 py-2">
+                  <p className="label-signal text-muted-foreground">
+                    PAY WITH POINTS
                   </p>
-                  <p className="text-sm font-semibold">
+                  <p className="mono text-sm font-semibold mt-1">
                     {portal.pointsCost.toLocaleString()} {portal.currency}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="mono text-[10px] text-muted-foreground">
                     via {portal.cardName} portal ({portal.portalCpp}cpp)
                   </p>
                 </div>
@@ -210,13 +210,13 @@ function PriceDisplay({
   if (priceView === "points" && portal) {
     return (
       <>
-        <p className="text-lg font-bold">
+        <p className="mono text-lg">
           {portal.pointsCost.toLocaleString()} pts
         </p>
         <p className="text-xs text-muted-foreground">
           {portal.currency} via {portal.cardName.split(" ").slice(-1)}
         </p>
-        <p className="text-[10px] text-muted-foreground">
+        <p className="mono text-[10px] text-muted-foreground">
           ${cashPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })} cash
         </p>
       </>
@@ -228,13 +228,13 @@ function PriceDisplay({
     const isGoodDeal = effectiveCpp >= portal.portalCpp;
     return (
       <>
-        <p className={`text-lg font-bold ${isGoodDeal ? "text-green-600 dark:text-green-400" : ""}`}>
+        <p className={`mono text-lg ${isGoodDeal ? "text-success" : ""}`}>
           {effectiveCpp.toFixed(1)}cpp
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="mono text-xs text-muted-foreground">
           {portal.pointsCost.toLocaleString()} {portal.currency}
         </p>
-        <p className="text-[10px] text-muted-foreground">
+        <p className="mono text-[10px] text-muted-foreground">
           ${cashPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })} cash
         </p>
       </>
@@ -244,11 +244,11 @@ function PriceDisplay({
   // Default: cash view
   return (
     <>
-      <p className="text-lg font-bold">
+      <p className="mono text-lg">
         ${cashPrice.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
       </p>
       {bestCard && (
-        <p className="text-xs text-muted-foreground">
+        <p className="mono text-xs text-muted-foreground">
           {bestCard.multiplier}x on {bestCard.cardName.split(" ").slice(-1)}
         </p>
       )}

@@ -63,12 +63,12 @@ export function BonusProgress({
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">
+        <span className="text-muted-foreground font-mono tabular-nums">
           ${progressDollars} of ${requirementDollars}
         </span>
         <div className="flex items-center gap-2">
           {bonusPoints && (
-            <span className="font-medium">
+            <span className="font-medium font-mono tabular-nums">
               {bonusPoints.toLocaleString()} pts
             </span>
           )}
@@ -89,9 +89,9 @@ export function BonusProgress({
           )}
         </div>
       </div>
-      <Progress value={percent} className="h-2" />
+      <Progress value={percent} className="h-[3px] bg-border" />
       <div className="flex items-center justify-between text-xs">
-        <span className="text-muted-foreground">
+        <span className="text-muted-foreground font-mono tabular-nums">
           {percent >= 100 ? (
             "Spend met"
           ) : (
@@ -102,12 +102,12 @@ export function BonusProgress({
           <span
             className={
               urgency === "overdue"
-                ? "font-medium text-destructive line-through"
+                ? "font-medium font-mono tabular-nums text-destructive line-through"
                 : urgency === "critical"
-                  ? "font-medium text-destructive"
+                  ? "font-medium font-mono tabular-nums text-destructive"
                   : urgency === "warning"
-                    ? "font-medium text-yellow-600"
-                    : "text-muted-foreground"
+                    ? "font-medium font-mono tabular-nums text-yellow-600"
+                    : "font-mono tabular-nums text-muted-foreground"
             }
           >
             {formatCountdown(daysRemaining)}
@@ -115,7 +115,7 @@ export function BonusProgress({
         )}
       </div>
       {dailyRate !== null && dailyRate > 0 && percent < 100 && (
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-[11px] text-muted-foreground font-mono tabular-nums">
           ~${dailyRate}/day to hit target
         </p>
       )}
@@ -159,14 +159,14 @@ export function BonusUrgencyBadge({
 
   if (urgency === "critical") {
     return (
-      <Badge variant="destructive" className="shrink-0 text-xs">
+      <Badge variant="destructive" className="shrink-0 text-xs font-mono tabular-nums">
         {daysRemaining}d left
       </Badge>
     );
   }
   if (urgency === "warning") {
     return (
-      <Badge variant="secondary" className="shrink-0 text-xs text-yellow-700">
+      <Badge variant="secondary" className="shrink-0 text-xs font-mono tabular-nums text-yellow-700">
         {daysRemaining}d left
       </Badge>
     );

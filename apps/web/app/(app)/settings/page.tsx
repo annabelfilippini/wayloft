@@ -48,8 +48,8 @@ export default async function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-2xl font-bold">Settings</h1>
+    <div className="mx-auto max-w-[1200px] px-8 py-8">
+      <h1 className="text-lg font-semibold tracking-[-0.01em]">Settings</h1>
 
       {/* Profile */}
       <ProfileForm profile={profile} email={user.email ?? ""} />
@@ -58,8 +58,8 @@ export default async function SettingsPage() {
       <NotificationForm notifications={notifications} />
 
       {/* Subscription */}
-      <div className="mt-4 rounded-lg border p-5">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+      <div className="mt-4 border p-5">
+        <h2 className="text-[10px] font-mono uppercase tracking-wide text-muted-foreground">
           Subscription
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">

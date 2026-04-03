@@ -99,7 +99,7 @@ export default async function CardDetailPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-[1200px] px-8 py-8">
       <CardDetail
         userCard={userCard}
         catalogCard={catalogCard}

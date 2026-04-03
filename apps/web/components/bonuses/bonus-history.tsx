@@ -46,7 +46,7 @@ function PatternCardWithHistory({
     pattern.daysSinceLastSeen > 30;
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="transition-colors hover:border-muted-foreground/30">
       <CardContent className="pt-5">
         <button
           onClick={() => setExpanded(!expanded)}

@@ -1,4 +1,4 @@
-import { getIssuerColors } from "@/lib/cards/issuer-colors";
+import { getIssuerGradient } from "@/lib/cards/issuer-colors";
 import { cn } from "@/lib/utils";
 
 interface CardArtPlaceholderProps {
@@ -17,34 +17,41 @@ export function CardArtPlaceholder({
   className,
   hideLabels,
 }: CardArtPlaceholderProps) {
-  const colors = getIssuerColors(issuer);
+  const gradient = getIssuerGradient(issuer);
 
   return (
     <div
       className={cn(
         "relative aspect-[1.586/1] w-full overflow-hidden rounded-lg",
-        colors.bg,
-        colors.text,
         className
       )}
+      style={{ background: gradient }}
     >
-      {/* Accent stripe */}
-      <div className={cn("absolute top-0 right-0 h-full w-1/3 opacity-30", colors.accent)} />
+      {/* Gold chip */}
+      <div
+        className="absolute top-[14%] left-[6.5%] w-[11%] rounded"
+        style={{
+          aspectRatio: "44/30",
+          background:
+            "linear-gradient(135deg, #d4af37 0%, #f5d682 40%, #c5a028 70%, #e8c84a 100%)",
+          boxShadow: "inset 0 1px 2px rgba(255,255,255,0.3)",
+        }}
+      />
 
       {!hideLabels && (
         <>
-          {/* Issuer name */}
-          <div className="absolute top-2 left-3 text-[10px] font-bold uppercase tracking-wider opacity-80">
+          {/* Issuer name — top right */}
+          <div className="absolute top-[14%] right-[6.5%] mono text-[11px] uppercase tracking-[0.06em] text-white/50">
             {issuer.replace("_", " ")}
           </div>
 
-          {/* Card name */}
-          <div className="absolute bottom-4 left-3 right-3 text-[11px] font-semibold leading-snug">
-            {cardName}
+          {/* Card name — bottom left */}
+          <div className="absolute bottom-[19%] left-[6.5%] text-[14px] font-semibold tracking-[0.04em] text-white/90">
+            {cardName.toUpperCase()}
           </div>
 
-          {/* Network badge */}
-          <div className="absolute right-2.5 bottom-1.5 text-[9px] font-medium uppercase opacity-60">
+          {/* Network badge — bottom right */}
+          <div className="absolute bottom-[8.5%] right-[6.5%] mono text-[11px] uppercase tracking-[0.06em] text-white/40">
             {network}
           </div>
         </>

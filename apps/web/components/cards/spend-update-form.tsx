@@ -35,14 +35,14 @@ export function SpendUpdateForm({ cardId, currentCents }: SpendUpdateFormProps) 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1.5">
-        <span className="text-xs text-muted-foreground">Quick add:</span>
+        <span className="text-[10px] font-mono uppercase tracking-wide text-muted-foreground">Quick add</span>
         {QUICK_INCREMENTS.map((amt) => (
           <Button
             key={amt}
             type="button"
             size="sm"
             variant="outline"
-            className="h-7 px-2 text-xs"
+            className="h-7 px-2 text-xs font-mono tabular-nums"
             disabled={isPending}
             onClick={() => handleQuickAdd(amt)}
           >
@@ -53,7 +53,7 @@ export function SpendUpdateForm({ cardId, currentCents }: SpendUpdateFormProps) 
       <form action={formAction} className="flex items-center gap-2">
         <input type="hidden" name="card_id" value={cardId} />
         <div className="relative flex-1">
-          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-mono">
             $
           </span>
           <Input
@@ -64,7 +64,7 @@ export function SpendUpdateForm({ cardId, currentCents }: SpendUpdateFormProps) 
             step="1"
             defaultValue={currentDollars}
             placeholder="0"
-            className="pl-6 text-sm"
+            className="pl-6 text-sm font-mono tabular-nums"
           />
         </div>
         <Button type="submit" size="sm" variant="secondary" disabled={isPending}>

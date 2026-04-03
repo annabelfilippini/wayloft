@@ -48,8 +48,8 @@ export function CardPickerSearch({ catalog, onSelect }: CardPickerSearchProps) {
                   <CardArtPlaceholder
                     issuer={card.issuer}
                     network={card.network}
-                    cardName=""
-                    className="text-[6px]"
+                    cardName={card.name}
+                    hideLabels
                   />
                 </div>
                 <div className="min-w-0 flex-1">

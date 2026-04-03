@@ -27,7 +27,7 @@ const features = [
 
 export default function MarketingPage() {
   return (
-    <div className="relative min-h-screen bg-[#0c1220] text-white">
+    <div className="relative min-h-screen bg-[#0F0F0F] text-white">
       {/* Subtle top-down ambient gradient */}
       <div
         className="pointer-events-none fixed inset-0"
@@ -41,8 +41,8 @@ export default function MarketingPage() {
       {/*  NAV                            */}
       {/* ═══════════════════════════════ */}
       <nav className="relative z-10 mx-auto flex max-w-[1120px] items-center justify-between px-6 pt-8 md:px-10 md:pt-12">
-        <span className="font-[family-name:var(--font-display)] text-[19px] tracking-[0.04em] text-white/90">
-          Wayloft
+        <span className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
+          WAYLOFT
         </span>
         <div className="flex items-center gap-6 text-[13px] text-white/40 md:gap-8">
           <Link href="/credit-cards" className="hidden transition-colors hover:text-white/70 md:block">
@@ -56,7 +56,7 @@ export default function MarketingPage() {
           </Link>
           <Link
             href="/signup"
-            className="rounded-full border border-white/[0.12] px-4 py-1.5 text-white/60 transition-all hover:border-white/25 hover:text-white/90"
+            className="border border-white/[0.12] px-4 py-1.5 text-white/60 transition-all hover:border-white/25 hover:text-white/90"
           >
             Join
           </Link>
@@ -68,7 +68,7 @@ export default function MarketingPage() {
       {/* ═══════════════════════════════ */}
       <section className="relative z-10 mx-auto flex max-w-[1120px] flex-col items-center px-6 pb-28 pt-32 text-center md:px-10 md:pb-36 md:pt-44">
         {/* Eyebrow */}
-        <p className="mb-6 text-[11px] font-medium uppercase tracking-[0.25em] text-amber-400/70">
+        <p className="mb-6 text-[11px] font-medium uppercase tracking-[0.25em] text-[#D4A020]/70">
           Travel rewards, optimized
         </p>
 
@@ -86,7 +86,7 @@ export default function MarketingPage() {
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
           <Link
             href="/signup"
-            className="group flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-[13px] font-medium text-[#0c1220] transition-all hover:bg-white/90"
+            className="group flex items-center gap-2.5 bg-[#D4A020] px-7 py-3 text-[13px] font-medium text-[#0F0F0F] transition-all hover:brightness-110"
           >
             Get Started
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -107,7 +107,7 @@ export default function MarketingPage() {
             ["Real-time", "Bonus alerts"],
           ].map(([value, label]) => (
             <div key={label} className="text-center">
-              <p className="font-[family-name:var(--font-display)] text-[28px] tracking-[-0.01em] text-white/80 md:text-[32px]">
+              <p className="mono text-[28px] font-bold tracking-[-0.02em] text-white/80 md:text-[32px]">
                 {value}
               </p>
               <p className="mt-1 text-[11px] uppercase tracking-[0.15em] text-white/25">
@@ -130,7 +130,7 @@ export default function MarketingPage() {
         id="features"
         className="relative z-10 mx-auto max-w-[1120px] px-6 py-28 md:px-10 md:py-36"
       >
-        <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.25em] text-amber-400/70">
+        <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.25em] text-[#D4A020]/70">
           Built for points nerds
         </p>
         <h2 className="max-w-[480px] text-[clamp(1.8rem,4vw,2.8rem)] font-normal leading-[1] tracking-[-0.02em] text-white/90">
@@ -143,10 +143,10 @@ export default function MarketingPage() {
           {features.map((feature) => (
             <div
               key={feature.label}
-              className="group rounded-2xl border border-white/[0.04] bg-white/[0.015] p-8 transition-colors hover:border-white/[0.08] hover:bg-white/[0.025] md:p-10"
+              className="group border border-white/[0.04] bg-white/[0.015] p-8 transition-colors hover:border-white/[0.08] hover:bg-white/[0.025] md:p-10"
             >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.03]">
-                <feature.icon className="h-[18px] w-[18px] text-amber-400/80" />
+              <div className="mb-6 flex h-10 w-10 items-center justify-center border border-white/[0.08] bg-white/[0.03]">
+                <feature.icon className="h-[18px] w-[18px] text-[#D4A020]/80" />
               </div>
               <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.2em] text-white/25">
                 {feature.label}
@@ -181,7 +181,7 @@ export default function MarketingPage() {
         </p>
         <Link
           href="/signup"
-          className="group mt-10 flex items-center gap-2.5 rounded-full bg-white px-7 py-3 text-[13px] font-medium text-[#0c1220] transition-all hover:bg-white/90"
+          className="group mt-10 flex items-center gap-2.5 bg-[#D4A020] px-7 py-3 text-[13px] font-medium text-[#0F0F0F] transition-all hover:brightness-110"
         >
           Get Started Free
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -192,8 +192,8 @@ export default function MarketingPage() {
       {/*  FOOTER                         */}
       {/* ═══════════════════════════════ */}
       <footer className="relative z-10 mx-auto flex max-w-[1120px] items-center justify-between border-t border-white/[0.06] px-6 py-8 md:px-10">
-        <span className="font-[family-name:var(--font-display)] text-[15px] tracking-[0.04em] text-white/30">
-          Wayloft
+        <span className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
+          WAYLOFT
         </span>
         <span className="text-[11px] tracking-[0.1em] text-white/20">
           &copy; {new Date().getFullYear()}

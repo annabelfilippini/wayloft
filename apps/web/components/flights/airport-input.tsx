@@ -106,7 +106,7 @@ export function AirportInput({
         className="w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
       />
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-lg">
+        <div className="absolute z-50 mt-1 w-full border bg-popover">
           {results.map((airport) => (
             <button
               key={airport.iata}
@@ -114,7 +114,7 @@ export function AirportInput({
               onClick={() => selectAirport(airport)}
               className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
             >
-              <span className="font-mono font-semibold">{airport.iata}</span>
+              <span className="mono font-semibold">{airport.iata}</span>
               <span className="text-muted-foreground">
                 {airport.city} — {airport.name}
               </span>

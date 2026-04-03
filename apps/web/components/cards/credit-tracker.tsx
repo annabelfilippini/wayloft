@@ -54,7 +54,7 @@ export function CreditTracker({ credits }: CreditTrackerProps) {
     <div className="space-y-6">
       {groups.map(([period, periodCredits]) => (
         <div key={period}>
-          <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <h4 className="mb-3 text-[10px] font-mono font-semibold uppercase tracking-wide text-muted-foreground">
             {PERIOD_LABELS[period] ?? period}
           </h4>
           <div className="space-y-3">
@@ -88,11 +88,11 @@ function CreditRow({ credit }: { credit: UserCreditUsage }) {
       : `$${amountDollars}/yr`;
 
   return (
-    <div className="rounded-md border p-3 space-y-2">
+    <div className="border p-3 space-y-2">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="text-sm font-medium">
-            {amountLabel} {credit.credit_name}
+            <span className="font-mono tabular-nums">{amountLabel}</span> {credit.credit_name}
           </p>
         </div>
         <StatusBadge credit={credit} daysLeft={daysLeft} />
@@ -100,8 +100,8 @@ function CreditRow({ credit }: { credit: UserCreditUsage }) {
 
       {/* Progress bar */}
       <div className="space-y-1">
-        <Progress value={progressPct} className="h-2" />
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <Progress value={progressPct} className="h-[3px] bg-border" />
+        <div className="flex justify-between text-xs text-muted-foreground font-mono tabular-nums">
           <span>${usedDollars.toFixed(0)} used</span>
           <span>${remainingDollars.toFixed(0)} remaining</span>
         </div>
@@ -144,18 +144,18 @@ function StatusBadge({ credit, daysLeft }: { credit: UserCreditUsage; daysLeft: 
   if (credit.status === "partial") {
     const remaining = (credit.credit_amount_cents - credit.amount_used_cents) / 100;
     if (daysLeft <= 14) {
-      return <Badge variant="destructive">${remaining} left · {daysLeft}d</Badge>;
+      return <Badge variant="destructive" className="font-mono tabular-nums">${remaining} left · {daysLeft}d</Badge>;
     }
-    return <Badge className="bg-amber-100 text-amber-800 border-0 dark:bg-amber-900/30 dark:text-amber-300">${remaining} left</Badge>;
+    return <Badge className="bg-amber-100 text-amber-800 border-0 dark:bg-amber-900/30 dark:text-amber-300 font-mono tabular-nums">${remaining} left</Badge>;
   }
   // available
   if (daysLeft <= 14) {
-    return <Badge variant="destructive">Expiring in {daysLeft}d</Badge>;
+    return <Badge variant="destructive" className="font-mono tabular-nums">Expiring in {daysLeft}d</Badge>;
   }
   if (daysLeft <= 30) {
-    return <Badge className="bg-amber-100 text-amber-800 border-0 dark:bg-amber-900/30 dark:text-amber-300">{daysLeft}d left</Badge>;
+    return <Badge className="bg-amber-100 text-amber-800 border-0 dark:bg-amber-900/30 dark:text-amber-300 font-mono tabular-nums">{daysLeft}d left</Badge>;
   }
-  return <Badge variant="outline">{daysLeft}d left</Badge>;
+  return <Badge variant="outline" className="font-mono tabular-nums">{daysLeft}d left</Badge>;
 }
 
 type ActionState = { success?: boolean; error?: { message: string; isRetryable: boolean; category: string } | null };
@@ -190,14 +190,14 @@ function PartialForm({ creditId, onDone }: { creditId: string; onDone: () => voi
   return (
     <form action={formAction} className="flex items-center gap-1.5">
       <input type="hidden" name="credit_id" value={creditId} />
-      <span className="text-xs text-muted-foreground">$</span>
+      <span className="text-xs text-muted-foreground font-mono">$</span>
       <Input
         name="amount"
         type="number"
         step="0.01"
         min="0.01"
         placeholder="0"
-        className="h-7 w-20 text-xs"
+        className="h-7 w-20 text-xs font-mono tabular-nums"
       />
       <Button type="submit" size="sm" variant="outline" className="h-7 text-xs" disabled={isPending}>
         {isPending ? "..." : "Add"}

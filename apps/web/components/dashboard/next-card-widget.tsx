@@ -36,11 +36,11 @@ export async function NextCardWidget({
       <Card>
         <CardContent className="pt-6">
           <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-950/40">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-amber-100 dark:bg-amber-950/40">
               <Lightbulb className="h-5 w-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <h2 className="text-lg font-bold">Find Your Next Card</h2>
+              <h2 className="text-lg font-semibold tracking-[-0.01em]">Find Your Next Card</h2>
               <p className="mt-1 text-sm text-muted-foreground">
                 Take a 2-minute quiz to get personalized recommendations.
               </p>
@@ -85,7 +85,7 @@ export async function NextCardWidget({
     return (
       <Card>
         <CardContent className="pt-6">
-          <h2 className="text-lg font-bold">Cards to Consider</h2>
+          <h2 className="text-lg font-semibold tracking-[-0.01em]">Cards to Consider</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             No new card recommendations right now.{" "}
             <Link
@@ -107,7 +107,7 @@ export async function NextCardWidget({
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Cards to Consider</h2>
+          <h2 className="text-lg font-semibold tracking-[-0.01em]">Cards to Consider</h2>
           <Link
             href="/recommend"
             className="text-xs font-medium text-primary hover:underline"
@@ -126,7 +126,7 @@ export async function NextCardWidget({
             return (
               <div
                 key={result.card.slug}
-                className="flex items-start gap-3 rounded-md border p-3"
+                className="flex items-start gap-3 border p-3"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
@@ -148,14 +148,14 @@ export async function NextCardWidget({
                   ) : (
                     // Intermediate + Advanced: value + top category
                     <>
-                      <p className="mt-1 text-sm font-medium text-primary">
+                      <p className="mono mt-1 text-sm font-medium text-primary">
                         +{formatDollars(result.breakdown.firstYearValue)}{" "}
                         <span className="font-normal text-muted-foreground">
                           first-year value
                         </span>
                       </p>
                       {topEarning && (
-                        <p className="text-xs text-muted-foreground">
+                        <p className="mono text-xs text-muted-foreground">
                           {topEarning.multiplier}x on your $
                           {topEarning.monthlySpend.toLocaleString()}/mo{" "}
                           {topEarning.displayName.toLowerCase()}

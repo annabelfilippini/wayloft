@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Loader2, ArrowRightLeft } from "lucide-react";
 import { AirportInput } from "./airport-input";
 import type { EnrichedFlight } from "@/lib/flights/types";
@@ -9,16 +9,22 @@ interface SearchFormProps {
   onResults: (flights: EnrichedFlight[]) => void;
   onError: (message: string) => void;
   onLoading: (loading: boolean) => void;
+  initialDestination?: string;
 }
 
-export function SearchForm({ onResults, onError, onLoading }: SearchFormProps) {
+export function SearchForm({ onResults, onError, onLoading, initialDestination }: SearchFormProps) {
   const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
+  const [destination, setDestination] = useState(initialDestination ?? "");
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
   const [cabinClass, setCabinClass] = useState<string>("economy");
   const [isSearching, setIsSearching] = useState(false);
+
+  // Sync destination when initialDestination changes (e.g. sweet spot click)
+  useEffect(() => {
+    if (initialDestination) setDestination(initialDestination);
+  }, [initialDestination]);
 
   function swapAirports() {
     const temp = origin;

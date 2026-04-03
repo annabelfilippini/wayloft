@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCards, getCardBySlug } from "@/lib/cards/catalog";
-import type { UserCard } from "@wayloft/shared";
-import { CardGrid } from "@/components/cards/card-grid";
-import { EmptyState } from "@/components/cards/empty-state";
+import { generateWalletGuide } from "@/lib/optimizer/engine";
+import type { UserCard, ExperienceLevel } from "@wayloft/shared";
 import { AddCardDropdown } from "@/components/cards/add-card-dropdown";
 import { CompactFiveTwentyFour } from "@/components/dashboard/compact-five-twenty-four";
+import { CardsTabView } from "@/components/cards/cards-tab-view";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function computePortfolioSummary(cards: UserCard[]) {
@@ -35,37 +35,65 @@ function computePortfolioSummary(cards: UserCard[]) {
   return { totalAF, totalCredits, effectiveCost };
 }
 
-export default async function CardsPage() {
+export default async function CardsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string }>;
+}) {
+  const { view } = await searchParams;
   const user = await requireUser();
   const supabase = await createClient();
 
-  const { data: userCards } = await supabase
-    .from("user_cards")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("status", "active")
-    .is("deleted_at", null)
-    .order("created_at", { ascending: false });
+  const [{ data: userCards }, { data: profile }] = await Promise.all([
+    supabase
+      .from("user_cards")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("profiles")
+      .select("experience_level")
+      .eq("id", user.id)
+      .single(),
+  ]);
 
   const cards = (userCards ?? []) as UserCard[];
   const catalog = getAllCards();
   const summary = cards.length > 0 ? computePortfolioSummary(cards) : null;
+  const experienceLevel =
+    (profile?.experience_level as ExperienceLevel) ?? null;
+
+  // Generate optimizer data
+  const slugs = cards.map((c) => c.card_slug);
+  const guide = cards.length > 0 ? generateWalletGuide(slugs, catalog) : null;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-[1200px] px-8 py-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">My Cards</h1>
+          <h1 className="text-lg font-semibold tracking-[-0.01em]">My Cards</h1>
           <p className="text-sm text-muted-foreground">
-            {cards.length} card{cards.length !== 1 ? "s" : ""} in your portfolio
+            <span className="mono">{cards.length}</span> card
+            {cards.length !== 1 ? "s" : ""} in your portfolio
           </p>
           {summary && (
             <p className="text-xs text-muted-foreground">
-              Total annual fees: ${summary.totalAF.toLocaleString()}/yr
+              Total annual fees:{" "}
+              <span className="mono">
+                ${summary.totalAF.toLocaleString()}/yr
+              </span>
               {summary.totalCredits > 0 && (
                 <>
-                  {" · "}Total credits: ${summary.totalCredits.toLocaleString()}/yr
-                  {" · "}Effective cost: ${summary.effectiveCost.toLocaleString()}/yr
+                  {" · "}Total credits:{" "}
+                  <span className="mono">
+                    ${summary.totalCredits.toLocaleString()}/yr
+                  </span>
+                  {" · "}Effective cost:{" "}
+                  <span className="mono">
+                    ${summary.effectiveCost.toLocaleString()}/yr
+                  </span>
                 </>
               )}
             </p>
@@ -76,18 +104,20 @@ export default async function CardsPage() {
 
       {cards.length > 0 && (
         <div className="mt-4">
-          <Suspense fallback={<Skeleton className="h-12 w-full rounded-lg" />}>
+          <Suspense fallback={<Skeleton className="h-12 w-full" />}>
             <CompactFiveTwentyFour userId={user.id} />
           </Suspense>
         </div>
       )}
 
       <div className="mt-6">
-        {cards.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <CardGrid cards={cards} catalog={catalog} />
-        )}
+        <CardsTabView
+          defaultTab={view === "optimizer" ? "optimizer" : "cards"}
+          cards={cards}
+          catalog={catalog}
+          guide={guide}
+          experienceLevel={experienceLevel}
+        />
       </div>
     </div>
   );

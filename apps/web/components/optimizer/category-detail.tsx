@@ -16,14 +16,14 @@ export function CategoryDetail({ rankings, catalogMap }: CategoryDetailProps) {
         return (
           <div
             key={card.cardSlug}
-            className={`flex items-center gap-3 rounded-md px-3 py-2.5 ${
+            className={`flex items-center gap-3 px-3 py-2.5 ${
               idx === 0
                 ? "bg-accent/10 border border-accent/20"
                 : "bg-muted/50"
             }`}
           >
             {/* Rank */}
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
+            <span className="mono flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground">
               {idx + 1}
             </span>
 
@@ -33,17 +33,18 @@ export function CategoryDetail({ rankings, catalogMap }: CategoryDetailProps) {
                 issuer={card.issuer}
                 network={meta?.network ?? "visa"}
                 cardName={card.cardName}
+                hideLabels
               />
             </div>
 
             {/* Card info */}
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium">{card.cardName}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="mono text-xs text-muted-foreground">
                 {card.notes}
               </p>
               {card.capWarning && (
-                <p className="mt-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+                <p className="mono mt-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
                   Cap: {card.capWarning}
                 </p>
               )}
@@ -51,10 +52,10 @@ export function CategoryDetail({ rankings, catalogMap }: CategoryDetailProps) {
 
             {/* Value badges */}
             <div className="shrink-0 text-right">
-              <span className="inline-block rounded-md bg-accent/15 px-2 py-0.5 text-sm font-bold text-accent-foreground">
+              <span className="mono inline-block bg-accent/15 px-2 py-0.5 text-sm font-bold text-accent-foreground">
                 {card.multiplier}x
               </span>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <p className="mono mt-0.5 text-xs text-muted-foreground">
                 {card.effectiveCents.toFixed(1)}¢/$
               </p>
             </div>

@@ -52,7 +52,7 @@ function generateTips(
     );
     tips.push({
       text: `Transfer bonus active: +${best.bonus_percentage}% when you move points to ${best.partner}. Don't transfer without a specific trip in mind.`,
-      href: "/bonuses",
+      href: "/travel",
     });
   }
 

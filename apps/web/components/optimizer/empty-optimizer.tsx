@@ -3,7 +3,7 @@ import { Wallet, Plus } from "lucide-react";
 
 export function EmptyOptimizer() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card px-6 py-16 text-center">
+    <div className="flex flex-col items-center justify-center border border-dashed border-border bg-card px-6 py-16 text-center">
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
         <Wallet className="h-6 w-6 text-muted-foreground" />
       </div>

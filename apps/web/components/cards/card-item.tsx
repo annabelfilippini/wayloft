@@ -35,7 +35,7 @@ export function CardItem({ card, catalogCard }: CardItemProps) {
     card.annual_fee_cents > 0;
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden gap-0 py-0 rounded-lg">
       <div className="relative">
         <Link href={`/cards/${card.id}`}>
           <CardArtPlaceholder
@@ -49,7 +49,7 @@ export function CardItem({ card, catalogCard }: CardItemProps) {
         </div>
       </div>
 
-      <CardContent className="space-y-3 pt-4">
+      <CardContent className="space-y-3 p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <Link
@@ -59,8 +59,8 @@ export function CardItem({ card, catalogCard }: CardItemProps) {
               {card.card_name}
             </Link>
             <p className="text-xs text-muted-foreground">
-              {card.currency} &middot;{" "}
-              {annualFeeDollars > 0 ? `$${annualFeeDollars}/yr` : "No AF"}
+              <span className="mono">{card.currency}</span> &middot;{" "}
+              <span className="mono">{annualFeeDollars > 0 ? `$${annualFeeDollars}/yr` : "No AF"}</span>
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
@@ -72,7 +72,7 @@ export function CardItem({ card, catalogCard }: CardItemProps) {
             {showAfBadge && (
               <Badge
                 variant={afDaysRemaining <= 14 ? "destructive" : "secondary"}
-                className="text-xs"
+                className="text-xs mono"
               >
                 AF {afDaysRemaining}d
               </Badge>

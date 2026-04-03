@@ -17,7 +17,7 @@ const OPTIONS: { value: PriceView; label: string; icon: typeof DollarSign }[] = 
 
 export function PriceToggle({ value, onChange }: PriceToggleProps) {
   return (
-    <div className="flex rounded-md border bg-muted/50 p-0.5">
+    <div className="flex border bg-muted/50 p-0.5">
       {OPTIONS.map((opt) => {
         const Icon = opt.icon;
         const active = value === opt.value;
@@ -26,9 +26,9 @@ export function PriceToggle({ value, onChange }: PriceToggleProps) {
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
-            className={`flex items-center gap-1 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
               active
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-background text-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

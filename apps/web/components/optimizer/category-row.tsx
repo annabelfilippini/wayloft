@@ -70,8 +70,8 @@ export function CategoryRow({
   if (!top) {
     const suggestion = GAP_SUGGESTIONS[category] ?? "No bonus card — consider adding one";
     return (
-      <div className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-md bg-muted">
+      <div className="flex items-center gap-4 border bg-card px-4 py-3">
+        <div className="flex h-9 w-9 items-center justify-center bg-muted">
           <IconComponent className="h-4 w-4 text-muted-foreground" />
         </div>
         <span className="text-sm font-medium text-muted-foreground">
@@ -88,13 +88,13 @@ export function CategoryRow({
   const meta = catalogMap.get(top.cardSlug);
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div className="border bg-card">
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-4 px-4 py-3 text-left transition-colors hover:bg-muted/30"
       >
         {/* Category icon */}
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-muted">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-muted">
           <IconComponent className="h-4 w-4 text-muted-foreground" />
         </div>
 
@@ -112,15 +112,16 @@ export function CategoryRow({
             issuer={top.issuer}
             network={meta?.network ?? "visa"}
             cardName={top.cardName}
+            hideLabels
           />
         </div>
 
         {/* Multiplier badge */}
         <div className="shrink-0 text-right">
-          <span className="inline-block rounded-md bg-accent/15 px-2 py-0.5 text-sm font-bold text-accent-foreground">
+          <span className="mono inline-block bg-accent/15 px-2 py-0.5 text-sm font-bold text-accent-foreground">
             {top.multiplier}x
           </span>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <p className="mono mt-0.5 text-xs text-muted-foreground">
             <JargonTip term="effective_cents" experienceLevel={experienceLevel}>
               {top.effectiveCents.toFixed(1)}¢/$
             </JargonTip>

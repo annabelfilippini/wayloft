@@ -20,7 +20,7 @@ export default function CreditCardsIndexPage() {
   return (
     <div className="mx-auto max-w-[1120px] px-6 py-12 md:px-10">
       <div className="mb-10">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl tracking-tight md:text-4xl">
+        <h1 className="text-3xl font-bold tracking-[-0.02em] md:text-4xl">
           Credit Card Reviews
         </h1>
         <p className="mt-2 text-muted-foreground">

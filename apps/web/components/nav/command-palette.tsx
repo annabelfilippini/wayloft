@@ -6,7 +6,7 @@ import {
   CreditCard,
   Wallet,
   Compass,
-  ArrowLeftRight,
+  Plane,
   Newspaper,
   Settings,
   Plus,
@@ -32,9 +32,9 @@ interface CommandPaletteProps {
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "My Cards", href: "/cards", icon: CreditCard },
-  { label: "Optimizer", href: "/optimizer", icon: Wallet },
+  { label: "Optimizer", href: "/cards?view=optimizer", icon: Wallet },
   { label: "Find a Card", href: "/recommend", icon: Compass },
-  { label: "Bonuses", href: "/bonuses", icon: ArrowLeftRight },
+  { label: "Travel", href: "/travel", icon: Plane },
   { label: "Reviews", href: "/credit-cards", icon: Newspaper },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

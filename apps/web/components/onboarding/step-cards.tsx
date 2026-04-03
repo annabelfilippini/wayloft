@@ -116,8 +116,8 @@ export function StepCards({
                     <CardArtPlaceholder
                       issuer={card.issuer}
                       network={card.network}
-                      cardName=""
-                      className="text-[5px]"
+                      cardName={card.name}
+                      hideLabels
                     />
                   </div>
                   <div className="min-w-0 flex-1">

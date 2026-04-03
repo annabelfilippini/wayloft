@@ -5,9 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   CreditCard,
-  Wallet,
   Compass,
-  ArrowLeftRight,
   Newspaper,
   Plane,
   Settings,
@@ -22,10 +20,8 @@ import type { User } from "@supabase/supabase-js";
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/cards", label: "My Cards", icon: CreditCard },
-  { href: "/optimizer", label: "Optimizer", icon: Wallet },
   { href: "/recommend", label: "Find a Card", icon: Compass },
-  { href: "/search", label: "Flights", icon: Plane },
-  { href: "/bonuses", label: "Bonuses", icon: ArrowLeftRight },
+  { href: "/travel", label: "Travel", icon: Plane },
   { href: "/credit-cards", label: "Reviews", icon: Newspaper },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

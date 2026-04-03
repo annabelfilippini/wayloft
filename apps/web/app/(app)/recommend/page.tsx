@@ -31,7 +31,7 @@ export default async function RecommendPage() {
   );
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12">
+    <div className="mx-auto max-w-[1200px] px-8 py-12">
       <QuizWizard
         catalog={catalog}
         existingResponse={(existingQuiz as QuizResponse) ?? null}

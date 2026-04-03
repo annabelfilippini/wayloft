@@ -28,7 +28,7 @@ export function BonusCard({ bonus, personalization }: BonusCardProps) {
   const PartnerIcon = bonus.partner_type === "airline" ? Plane : Building2;
 
   return (
-    <Card className="relative overflow-hidden transition-shadow hover:shadow-md">
+    <Card className="relative overflow-hidden transition-colors hover:border-muted-foreground/30">
       <CardContent className="pt-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">

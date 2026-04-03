@@ -1,10 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import type { CardAction, ExperienceLevel } from "@wayloft/shared";
-import { isBeginnerOrBelow } from "@/lib/experience";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, CreditCard, Gift, Clock } from "lucide-react";
 import { getCardBySlug } from "@/lib/cards/catalog";
 
 interface ActionsWidgetProps {
@@ -79,6 +75,7 @@ interface UnifiedAction {
   urgency: "critical" | "warning" | "info" | "ok";
   daysRemaining: number | null;
   href: string;
+  progress?: number;
 }
 
 const urgencyOrder: Record<string, number> = {
@@ -88,8 +85,15 @@ const urgencyOrder: Record<string, number> = {
   ok: 3,
 };
 
+function urgencyBarColor(urgency: string): string {
+  switch (urgency) {
+    case "critical": return "bg-destructive";
+    case "warning": return "bg-primary";
+    default: return "bg-muted-foreground";
+  }
+}
 
-export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetProps) {
+export async function ActionsWidget({ userId }: ActionsWidgetProps) {
   const supabase = await createClient();
 
   const [cardActionsRes, expiringRes, expiringCreditsRes, unusedPerksRes, upcomingPaymentsRes, missingAutopayRes] = await Promise.all([
@@ -128,56 +132,33 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
   for (const row of rows) {
     if (row.signup_action) {
       const sa = row.signup_action as CardAction;
+      const progress = sa.spend_remaining_cents != null && sa.spend_total_cents
+        ? Math.min(100, Math.round(((sa.spend_total_cents - sa.spend_remaining_cents) / sa.spend_total_cents) * 100))
+        : undefined;
       actions.push({
         key: `${row.user_card_id}-signup`,
         type: "signup_spend",
-        title: row.card_name,
-        subtitle:
-          sa.spend_remaining_cents != null
-            ? `$${(sa.spend_remaining_cents / 100).toLocaleString()} left to spend — ${sa.days_remaining} days`
-            : "Signup spend deadline coming up",
+        title: `Spend $${sa.spend_remaining_cents != null ? (sa.spend_remaining_cents / 100).toLocaleString() : "?"} more for signup bonus`,
+        subtitle: `${row.card_name} · ${sa.days_remaining ?? "?"} DAYS`,
         urgency: sa.urgency ?? "info",
         daysRemaining: sa.days_remaining ?? null,
         href: `/cards/${row.user_card_id}`,
+        progress,
       });
     }
     if (row.af_action) {
       const af = row.af_action as CardAction;
-      const catalogCard = row.card_slug ? getCardBySlug(row.card_slug) : undefined;
-      const hasDecisionData = !!(catalogCard?.downgrade_options?.length || catalogCard?.retention_data);
       const afDollars = af.annual_fee_cents != null ? af.annual_fee_cents / 100 : null;
-
       actions.push({
         key: `${row.user_card_id}-af`,
         type: "annual_fee",
-        title: row.card_name,
-        subtitle:
-          afDollars != null && hasDecisionData
-            ? `$${afDollars} AF coming up — review your keep/downgrade options`
-            : afDollars != null
-              ? `$${afDollars} annual fee coming up`
-              : "Annual fee reminder",
+        title: "Annual fee decision",
+        subtitle: `${row.card_name}${afDollars ? ` · $${afDollars}` : ""} · ${af.days_remaining ?? "?"} DAYS`,
         urgency: af.urgency ?? "info",
-        daysRemaining: null,
+        daysRemaining: af.days_remaining ?? null,
         href: `/cards/${row.user_card_id}`,
       });
     }
-  }
-
-  // Expiring points
-  const expiring = (expiringRes.data ?? []) as ExpiringPoint[];
-  for (const ep of expiring) {
-    actions.push({
-      key: `exp-${ep.balance_id}`,
-      type: "points_expiring",
-      title: ep.program_name,
-      subtitle: `${ep.balance.toLocaleString()} ${ep.currency} expiring${
-        ep.days_until_expiration != null ? ` in ${ep.days_until_expiration} days` : ""
-      }`,
-      urgency: ep.urgency === "ok" ? "info" : ep.urgency,
-      daysRemaining: ep.days_until_expiration,
-      href: "/settings",
-    });
   }
 
   // Expiring credits
@@ -186,11 +167,25 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     actions.push({
       key: `credit-${ec.id}`,
       type: "credit_expiring",
-      title: ec.card_name,
-      subtitle: `$${(ec.remaining_cents / 100).toFixed(0)} ${ec.credit_name} expires in ${ec.days_until_expiration} days`,
+      title: `Use $${(ec.remaining_cents / 100).toFixed(0)} ${ec.credit_name.toLowerCase()}`,
+      subtitle: `${ec.card_name} · ${ec.days_until_expiration} DAYS LEFT`,
       urgency: ec.urgency,
       daysRemaining: ec.days_until_expiration,
       href: `/cards/${ec.user_card_id}`,
+    });
+  }
+
+  // Expiring points
+  const expiring = (expiringRes.data ?? []) as ExpiringPoint[];
+  for (const ep of expiring) {
+    actions.push({
+      key: `exp-${ep.balance_id}`,
+      type: "points_expiring",
+      title: `${ep.balance.toLocaleString()} ${ep.currency} expiring`,
+      subtitle: `${ep.program_name}${ep.days_until_expiration != null ? ` · ${ep.days_until_expiration} DAYS` : ""}`,
+      urgency: ep.urgency === "ok" ? "info" : ep.urgency,
+      daysRemaining: ep.days_until_expiration,
+      href: "/settings",
     });
   }
 
@@ -201,8 +196,8 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     actions.push({
       key: `perk-${up.id}`,
       type: "perk_setup",
-      title: up.card_name,
-      subtitle: `${up.perk_name} — set up to save ~$${valueDollars}/yr`,
+      title: `Set up ${up.perk_name}`,
+      subtitle: `${up.card_name} · ~$${valueDollars}/YR VALUE`,
       urgency: "info",
       daysRemaining: null,
       href: `/cards/${up.user_card_id}`,
@@ -212,14 +207,11 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
   // Upcoming payments
   const upcomingPayments = (upcomingPaymentsRes.data ?? []) as UpcomingPayment[];
   for (const up of upcomingPayments) {
-    const catalogCard = up.card_slug ? getCardBySlug(up.card_slug) : undefined;
-    const lateFee = catalogCard?.payment_info?.late_fee_cents;
-    const lateFeeStr = lateFee ? ` — $${(lateFee / 100).toFixed(0)} late fee` : "";
     actions.push({
       key: `payment-${up.id}`,
       type: "payment_due",
-      title: up.card_name,
-      subtitle: `Payment due in ${up.days_until_due} days${lateFeeStr}`,
+      title: `${up.card_name} payment due Apr ${new Date(up.next_due_date).getDate()}`,
+      subtitle: up.card_name.toUpperCase(),
       urgency: up.urgency,
       daysRemaining: up.days_until_due,
       href: `/cards/${up.user_card_id}`,
@@ -233,134 +225,57 @@ export async function ActionsWidget({ userId, experienceLevel }: ActionsWidgetPr
     actions.push({
       key: `autopay-${ma.user_card_id}`,
       type: "payment_due",
-      title: ma.card_name,
-      subtitle: ma.reason === "no_payment_info"
-        ? "Add your payment due date to avoid late fees"
-        : "Set up autopay to avoid late fees",
+      title: ma.reason === "no_payment_info"
+        ? "Add payment due date"
+        : "Set up autopay",
+      subtitle: ma.card_name.toUpperCase(),
       urgency: "info",
       daysRemaining: null,
       href: `/cards/${ma.user_card_id}`,
     });
   }
 
-  // Group actions by category
-  const deadlines = actions
-    .filter((a) => ["signup_spend", "annual_fee", "points_expiring", "credit_expiring"].includes(a.type))
-    .sort((a, b) => {
-      const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
-      if (urgDiff !== 0) return urgDiff;
-      return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
-    });
-
-  const perkActions = actions.filter((a) => a.type === "perk_setup");
-
-  const paymentActions = actions
-    .filter((a) => a.type === "payment_due")
-    .sort((a, b) => {
-      const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
-      if (urgDiff !== 0) return urgDiff;
-      return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
-    });
+  // Sort all by urgency then days remaining
+  actions.sort((a, b) => {
+    const urgDiff = (urgencyOrder[a.urgency] ?? 9) - (urgencyOrder[b.urgency] ?? 9);
+    if (urgDiff !== 0) return urgDiff;
+    return (a.daysRemaining ?? 999) - (b.daysRemaining ?? 999);
+  });
 
   if (actions.length === 0) return null;
 
-  const isBeginner = isBeginnerOrBelow(experienceLevel);
-
   return (
-    <div className="space-y-4">
-      {deadlines.length > 0 && (
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              <h3 className="text-lg font-bold">Deadlines &amp; Reminders</h3>
-              <span className="text-sm text-muted-foreground">({deadlines.length})</span>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {isBeginner
-                ? "Things you need to do soon to avoid losing value or paying extra"
-                : "Act before you lose value — spending deadlines, expiring points, upcoming fees"}
-            </p>
-
-            <div className="mt-3 space-y-1.5">
-              {deadlines.map((action) => (
-                <ActionRow key={action.key} action={action} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {perkActions.length > 0 && (
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Gift className="h-5 w-5 text-green-500" />
-              <h3 className="text-lg font-bold">Perks to Activate</h3>
-              <span className="text-sm text-muted-foreground">({perkActions.length})</span>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {isBeginner
-                ? "Free benefits included with your cards — set them up to start saving"
-                : "Benefits you're paying for but haven't set up yet"}
-            </p>
-
-            <div className="mt-3 space-y-1.5">
-              {perkActions.map((action) => (
-                <ActionRow key={action.key} action={action} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {paymentActions.length > 0 && (
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <CreditCard className="h-5 w-5 text-blue-500" />
-              <h3 className="text-lg font-bold">Payments</h3>
-              <span className="text-sm text-muted-foreground">({paymentActions.length})</span>
-            </div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Upcoming due dates and autopay status
-            </p>
-
-            <div className="mt-3 space-y-1.5">
-              {paymentActions.map((action) => (
-                <ActionRow key={action.key} action={action} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
-  );
-}
-
-function ActionRow({ action }: { action: UnifiedAction }) {
-  return (
-    <Link
-      href={action.href}
-      className="flex items-start justify-between gap-2 rounded-md p-2 transition-colors hover:bg-muted/50"
-    >
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{action.title}</p>
-        <p className="text-sm leading-tight text-muted-foreground">
-          {action.subtitle}
-        </p>
+    <div className="rounded-md p-7" style={{ background: "var(--tasks-bg)" }}>
+      <div className="flex items-center justify-between mb-5">
+        <span className="text-lg font-semibold tracking-[-0.01em]">Tasks</span>
+        <span className="mono text-xs text-muted-foreground">{actions.length} ACTIVE</span>
       </div>
-      {action.daysRemaining != null && (
-        <div className="flex shrink-0 items-center gap-1 text-sm text-muted-foreground">
-          <Clock className="h-3.5 w-3.5" />
-          <span>{action.daysRemaining}d</span>
-        </div>
-      )}
-      {action.urgency === "critical" && (
-        <Badge variant="destructive" className="shrink-0 text-xs">
-          Urgent
-        </Badge>
-      )}
-    </Link>
+      <div>
+        {actions.map((action) => (
+          <Link
+            key={action.key}
+            href={action.href}
+            className="group flex items-center gap-3.5 py-3 cursor-pointer transition-opacity hover:opacity-80"
+          >
+            <div className={`w-[3px] h-10 shrink-0 rounded-sm ${urgencyBarColor(action.urgency)}`} />
+            <div className="flex-1 min-w-0">
+              <div className="text-[15px]">{action.title}</div>
+              <div className="mono text-xs text-muted-foreground tracking-[0.03em] uppercase mt-0.5 flex items-center gap-2">
+                <span>{action.subtitle}</span>
+                {action.progress != null && (
+                  <span className="mono text-[10px] text-primary">{action.progress}%</span>
+                )}
+              </div>
+              {action.progress != null && (
+                <div className="h-[3px] bg-border mt-1.5 overflow-hidden">
+                  <div className="h-full bg-primary" style={{ width: `${action.progress}%` }} />
+                </div>
+              )}
+            </div>
+            <span className="text-muted-foreground text-xl opacity-30 group-hover:opacity-100 transition-opacity">&rsaquo;</span>
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }

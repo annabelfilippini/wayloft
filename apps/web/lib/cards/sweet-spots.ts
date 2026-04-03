@@ -8,6 +8,7 @@ export interface SweetSpot {
   badge: string;
   gradient: string; // Tailwind bg-gradient classes (also used as fallback)
   image?: string; // Unsplash photo URL
+  airportCode?: string; // Destination airport/city code for flight search link
 }
 
 export interface RecommendedProgram {
@@ -57,14 +58,16 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Instant transfer",
         gradient: "from-rose-500 to-pink-700",
         image: PHOTOS.tokyo,
+        airportCode: "NRT",
       },
       {
         destination: "Paris",
         via: "via Air France",
         points: "55k pts",
         badge: "Award deals available",
-        gradient: "from-indigo-500 to-purple-700",
+        gradient: "from-slate-500 to-slate-700",
         image: PHOTOS.paris,
+        airportCode: "CDG",
       },
       {
         destination: "NYC → LA",
@@ -73,6 +76,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Best domestic deal",
         gradient: "from-amber-500 to-orange-600",
         image: PHOTOS.nyc_la,
+        airportCode: "LAX",
       },
       {
         destination: "Hyatt Beach Resort",
@@ -116,6 +120,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Best business class",
         gradient: "from-rose-500 to-pink-700",
         image: PHOTOS.tokyo,
+        airportCode: "NRT",
       },
       {
         destination: "Caribbean",
@@ -124,6 +129,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "No blackout dates",
         gradient: "from-emerald-500 to-teal-700",
         image: PHOTOS.caribbean,
+        airportCode: "SJU",
       },
       {
         destination: "London",
@@ -132,13 +138,14 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Instant transfer",
         gradient: "from-slate-500 to-slate-700",
         image: PHOTOS.london,
+        airportCode: "LHR",
       },
       {
         destination: "Hilton Resort",
         via: "via Hilton Honors",
         points: "50k pts/night",
         badge: "Bonus often available",
-        gradient: "from-violet-500 to-purple-700",
+        gradient: "from-amber-600 to-amber-800",
         image: PHOTOS.hotel_pool,
       },
     ],
@@ -173,8 +180,9 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         via: "via Air France",
         points: "55k pts",
         badge: "Promo awards",
-        gradient: "from-indigo-500 to-purple-700",
+        gradient: "from-slate-500 to-slate-700",
         image: PHOTOS.paris,
+        airportCode: "CDG",
       },
       {
         destination: "Singapore",
@@ -183,6 +191,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Great availability",
         gradient: "from-amber-400 to-red-600",
         image: PHOTOS.singapore,
+        airportCode: "SIN",
       },
       {
         destination: "NYC → Miami",
@@ -191,6 +200,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Best domestic deal",
         gradient: "from-amber-500 to-orange-600",
         image: PHOTOS.miami,
+        airportCode: "MIA",
       },
       {
         destination: "Turkish Riviera",
@@ -199,6 +209,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Partner awards",
         gradient: "from-cyan-500 to-teal-700",
         image: PHOTOS.turkish_coast,
+        airportCode: "AYT",
       },
     ],
     recommended: [
@@ -234,6 +245,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Partner awards",
         gradient: "from-amber-600 to-red-700",
         image: PHOTOS.istanbul,
+        airportCode: "IST",
       },
       {
         destination: "Canada",
@@ -242,6 +254,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Direct transfer",
         gradient: "from-cyan-500 to-teal-700",
         image: PHOTOS.canada,
+        airportCode: "YVR",
       },
       {
         destination: "Australia",
@@ -250,13 +263,14 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Great value",
         gradient: "from-orange-500 to-red-600",
         image: PHOTOS.sydney,
+        airportCode: "SYD",
       },
       {
         destination: "Wyndham Stay",
         via: "via Wyndham",
         points: "15k pts/night",
         badge: "Easy redemption",
-        gradient: "from-violet-500 to-purple-700",
+        gradient: "from-amber-600 to-amber-800",
         image: PHOTOS.hotel_pool,
       },
     ],
@@ -301,14 +315,16 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Best domestic value",
         gradient: "from-amber-500 to-orange-600",
         image: PHOTOS.domestic_us,
+        airportCode: "LAX",
       },
       {
         destination: "Europe",
         via: "via Air France",
         points: "55k pts",
         badge: "Transfer bonus often",
-        gradient: "from-indigo-500 to-purple-700",
+        gradient: "from-slate-500 to-slate-700",
         image: PHOTOS.europe,
+        airportCode: "CDG",
       },
       {
         destination: "Hawaii",
@@ -317,6 +333,7 @@ const GUIDES: Record<string, CurrencyTravelGuide> = {
         badge: "Popular route",
         gradient: "from-rose-500 to-pink-700",
         image: PHOTOS.hawaii,
+        airportCode: "HNL",
       },
     ],
     recommended: [
