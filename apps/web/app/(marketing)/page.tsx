@@ -1,218 +1,219 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CreditCard, ArrowLeftRight, Search } from "lucide-react";
+import { ArrowRight, CreditCard, Search, BarChart3 } from "lucide-react";
+import { getAllCards } from "@/lib/cards/catalog";
+import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
+import { MarketingHeader } from "@/components/marketing/marketing-header";
+import { MarketingFooter } from "@/components/marketing/marketing-footer";
 
-const features = [
+export const metadata: Metadata = {
+  title: "Wayloft — Credit Card Rewards, Optimized",
+  description:
+    "Is your card worth the annual fee? Toggle the benefits you actually use and get a verdict in 30 seconds. Plus card reviews, comparisons, and a spending-based recommendation quiz.",
+  openGraph: {
+    title: "Wayloft — Credit Card Rewards, Optimized",
+    description:
+      "Is your card worth the annual fee? Analyze any premium card in 30 seconds. Free, no signup required.",
+    url: "https://wayloft.app",
+  },
+};
+
+const featuredSlugs = [
+  "chase-sapphire-reserve",
+  "amex-platinum",
+  "amex-gold",
+];
+
+const tools = [
   {
     icon: CreditCard,
-    label: "Card Portfolio",
-    heading: "Every card, one view",
+    href: "/credit-cards",
+    title: "Card Reviews",
+    stat: "52 cards",
     description:
-      "Track signup bonuses, annual fee dates, and spending progress across your entire portfolio. Never miss a deadline again.",
+      "Earning rates, transfer partners, perks, and annual fee breakdowns for every major rewards card.",
   },
   {
-    icon: ArrowLeftRight,
-    label: "Transfer Bonuses",
-    heading: "Catch every bonus",
+    icon: BarChart3,
+    href: "/credit-cards/best-for/travel",
+    title: "Best Cards",
+    stat: "5 categories",
     description:
-      "Real-time alerts when airlines and hotels run transfer promotions. Know exactly when your points are worth more.",
+      "Top picks for dining, travel, cash-back, hotels, and no-annual-fee. Ranked by first-year value.",
   },
   {
     icon: Search,
-    label: "Flight Search",
-    heading: "Book for less",
+    href: "/recommend",
+    title: "Find Your Card",
+    stat: "5 questions",
     description:
-      "Search award flights across programs and see the true cost in points. Find routes others miss.",
+      "Tell us how you spend. Get a ranked list of cards scored against your actual spending patterns.",
   },
 ];
 
-export default function MarketingPage() {
+export default function HomePage() {
+  const allCards = getAllCards();
+
+  const featuredCards = featuredSlugs
+    .map((slug) => allCards.find((c) => c.slug === slug))
+    .filter(
+      (c): c is NonNullable<typeof c> => c !== undefined
+    );
+
   return (
-    <div className="relative min-h-screen bg-[#0F0F0F] text-white">
-      {/* Subtle top-down ambient gradient */}
-      <div
-        className="pointer-events-none fixed inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(30,50,90,0.4) 0%, transparent 70%)",
-        }}
-      />
+    <div className="min-h-screen bg-background">
+      <MarketingHeader />
 
-      {/* ═══════════════════════════════ */}
-      {/*  NAV                            */}
-      {/* ═══════════════════════════════ */}
-      <nav className="relative z-10 mx-auto flex max-w-[1120px] items-center justify-between px-6 pt-8 md:px-10 md:pt-12">
-        <span className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
-          WAYLOFT
-        </span>
-        <div className="flex items-center gap-6 text-[13px] text-white/40 md:gap-8">
-          <Link href="/credit-cards" className="hidden transition-colors hover:text-white/70 md:block">
-            Cards
-          </Link>
-          <Link href="#features" className="hidden transition-colors hover:text-white/70 md:block">
-            Features
-          </Link>
-          <Link href="/login" className="transition-colors hover:text-white/70">
-            Sign In
-          </Link>
-          <Link
-            href="/signup"
-            className="border border-white/[0.12] px-4 py-1.5 text-white/60 transition-all hover:border-white/25 hover:text-white/90"
-          >
-            Join
-          </Link>
-        </div>
-      </nav>
-
-      {/* ═══════════════════════════════ */}
-      {/*  HERO                           */}
-      {/* ═══════════════════════════════ */}
-      <section className="relative z-10 mx-auto flex max-w-[1120px] flex-col items-center px-6 pb-28 pt-32 text-center md:px-10 md:pb-36 md:pt-44">
-        {/* Eyebrow */}
-        <p className="mb-6 text-[11px] font-medium uppercase tracking-[0.25em] text-[#D4A020]/70">
-          Travel rewards, optimized
-        </p>
-
-        <h1 className="mx-auto max-w-[720px] text-[clamp(2.6rem,6.5vw,5.4rem)] font-normal leading-[0.92] tracking-[-0.02em] text-white/95">
-          Your points are
-          <br />
-          <span className="text-white/40">worth more</span>
+      {/* ── Hero ── */}
+      <section className="mx-auto max-w-[1120px] px-6 pb-14 pt-16 md:px-10 md:pb-20 md:pt-24">
+        <span className="label-signal text-primary">FREE TOOL</span>
+        <h1 className="mt-3 max-w-[560px] text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
+          Is your card worth it?
         </h1>
-
-        <p className="mx-auto mt-8 max-w-[420px] text-[15px] leading-[1.7] text-white/30">
-          Track every card, catch every transfer bonus, and book flights
-          for fewer points than you thought possible.
+        <p className="mt-4 max-w-[460px] text-[15px] leading-[1.7] text-muted-foreground">
+          Toggle the benefits you actually use. See if your annual fee pays for
+          itself&mdash;or if it&apos;s time to downgrade. Free, no signup.
         </p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href="/credit-cards/worth-it"
+            className="flex items-center gap-2 bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
+          >
+            Analyze a Card
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+          <Link
+            href="/credit-cards"
+            className="flex items-center gap-2 border px-6 py-3 text-sm text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
+          >
+            Browse {allCards.length} Cards
+          </Link>
+        </div>
+      </section>
 
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+      {/* ── Featured Cards ── */}
+      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
+        <div className="border-t pb-14 pt-12 md:pb-20 md:pt-16">
+          <span className="label-signal text-muted-foreground">
+            ANALYZE NOW
+          </span>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            {featuredCards.map((card) => {
+              const benefitCount =
+                (card.credits?.length ?? 0) + (card.perks?.length ?? 0);
+              return (
+                <Link
+                  key={card.slug}
+                  href={`/credit-cards/${card.slug}/worth-it`}
+                  className="group border p-5 transition-colors hover:border-primary/30 hover:bg-primary/[0.03]"
+                >
+                  <div className="w-[100px]">
+                    <CardArtPlaceholder
+                      issuer={card.issuer}
+                      network={card.network}
+                      cardName={card.name}
+                      hideLabels
+                    />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold">{card.name}</p>
+                  <div className="mt-1 flex items-center gap-3">
+                    <span className="mono text-xs text-muted-foreground">
+                      ${(card.annual_fee_cents / 100).toFixed(0)}/yr
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {benefitCount} benefits to analyze
+                    </span>
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                    Analyze
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Tools ── */}
+      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
+        <div className="border-t pb-14 pt-12 md:pb-20 md:pt-16">
+          <span className="label-signal text-muted-foreground">EXPLORE</span>
+          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.015em]">
+            More tools
+          </h2>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {tools.map((tool) => (
+              <Link
+                key={tool.href}
+                href={tool.href}
+                className="group border p-6 transition-colors hover:border-foreground/15"
+              >
+                <div className="flex items-center gap-3">
+                  <tool.icon className="h-4 w-4 text-muted-foreground" />
+                  <span className="mono text-[10px] text-muted-foreground">
+                    {tool.stat}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm font-semibold">{tool.title}</p>
+                <p className="mt-1.5 text-[13px] leading-[1.6] text-muted-foreground">
+                  {tool.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Ellis Church ── */}
+      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
+        <div className="border-t pb-14 pt-12 md:pb-16 md:pt-14">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+            <div className="max-w-[480px]">
+              <span className="label-signal text-muted-foreground">
+                ANALYSIS BY
+              </span>
+              <p className="mt-2 text-lg font-semibold tracking-[-0.01em]">
+                Ellis Church
+              </p>
+              <p className="mt-2 text-[14px] leading-[1.7] text-muted-foreground">
+                Every number on this site is computed, not guessed. Ellis shows
+                the math first, tells you when a card isn&apos;t worth it, and
+                never manufactures urgency. If the data says downgrade, that&apos;s the
+                recommendation&mdash;affiliate link or not.
+              </p>
+            </div>
+            <Link
+              href="/about"
+              className="shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              About Wayloft &rarr;
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Sign Up CTA ── */}
+      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
+        <div className="border-t pb-16 pt-12 text-center md:pb-24 md:pt-16">
+          <h2 className="text-2xl font-semibold tracking-[-0.015em]">
+            Track your full portfolio
+          </h2>
+          <p className="mx-auto mt-3 max-w-[400px] text-[14px] leading-[1.7] text-muted-foreground">
+            Spending optimizer, transfer bonus alerts, annual fee reminders,
+            statement credit trackers. Free to start.
+          </p>
           <Link
             href="/signup"
-            className="group flex items-center gap-2.5 bg-[#D4A020] px-7 py-3 text-[13px] font-medium text-[#0F0F0F] transition-all hover:brightness-110"
+            className="mt-8 inline-flex items-center gap-2 bg-primary px-7 py-3 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
           >
-            Get Started
-            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            Get Started Free
+            <ArrowRight className="h-3.5 w-3.5" />
           </Link>
-          <Link
-            href="#features"
-            className="text-[13px] text-white/35 transition-colors hover:text-white/60"
-          >
-            See how it works
-          </Link>
-        </div>
-
-        {/* Stat pills */}
-        <div className="mt-20 flex flex-wrap justify-center gap-x-10 gap-y-4 md:mt-28">
-          {[
-            ["52+", "Cards tracked"],
-            ["5", "Bank currencies"],
-            ["Real-time", "Bonus alerts"],
-          ].map(([value, label]) => (
-            <div key={label} className="text-center">
-              <p className="mono text-[28px] font-bold tracking-[-0.02em] text-white/80 md:text-[32px]">
-                {value}
-              </p>
-              <p className="mt-1 text-[11px] uppercase tracking-[0.15em] text-white/25">
-                {label}
-              </p>
-            </div>
-          ))}
         </div>
       </section>
 
-      {/* Divider line */}
-      <div className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="h-px bg-white/[0.06]" />
-      </div>
-
-      {/* ═══════════════════════════════ */}
-      {/*  FEATURES                       */}
-      {/* ═══════════════════════════════ */}
-      <section
-        id="features"
-        className="relative z-10 mx-auto max-w-[1120px] px-6 py-28 md:px-10 md:py-36"
-      >
-        <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.25em] text-[#D4A020]/70">
-          Built for points nerds
-        </p>
-        <h2 className="max-w-[480px] text-[clamp(1.8rem,4vw,2.8rem)] font-normal leading-[1] tracking-[-0.02em] text-white/90">
-          Everything you need,
-          <br />
-          <span className="text-white/35">nothing you don&apos;t</span>
-        </h2>
-
-        <div className="mt-16 grid gap-1 md:grid-cols-3 md:mt-20">
-          {features.map((feature) => (
-            <div
-              key={feature.label}
-              className="group border border-white/[0.04] bg-white/[0.015] p-8 transition-colors hover:border-white/[0.08] hover:bg-white/[0.025] md:p-10"
-            >
-              <div className="mb-6 flex h-10 w-10 items-center justify-center border border-white/[0.08] bg-white/[0.03]">
-                <feature.icon className="h-[18px] w-[18px] text-[#D4A020]/80" />
-              </div>
-              <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.2em] text-white/25">
-                {feature.label}
-              </p>
-              <h3 className="text-[22px] font-normal leading-[1.15] tracking-[-0.01em] text-white/85 md:text-[24px]">
-                {feature.heading}
-              </h3>
-              <p className="mt-3 text-[13.5px] leading-[1.65] text-white/30">
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Divider line */}
-      <div className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="h-px bg-white/[0.06]" />
-      </div>
-
-      {/* ═══════════════════════════════ */}
-      {/*  CTA                            */}
-      {/* ═══════════════════════════════ */}
-      <section className="relative z-10 mx-auto flex max-w-[1120px] flex-col items-center px-6 py-28 text-center md:px-10 md:py-36">
-        <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-normal leading-[1] tracking-[-0.02em] text-white/90">
-          Stop leaving value
-          <br />
-          <span className="text-white/35">on the table</span>
-        </h2>
-        <p className="mx-auto mt-6 max-w-[380px] text-[14px] leading-[1.7] text-white/30">
-          Join Wayloft and start making every point count. Free to start, no credit card required.
-        </p>
-        <Link
-          href="/signup"
-          className="group mt-10 flex items-center gap-2.5 bg-[#D4A020] px-7 py-3 text-[13px] font-medium text-[#0F0F0F] transition-all hover:brightness-110"
-        >
-          Get Started Free
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-        </Link>
-      </section>
-
-      {/* ═══════════════════════════════ */}
-      {/*  FOOTER                         */}
-      {/* ═══════════════════════════════ */}
-      <footer className="relative z-10 mx-auto flex max-w-[1120px] items-center justify-between border-t border-white/[0.06] px-6 py-8 md:px-10">
-        <span className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
-          WAYLOFT
-        </span>
-        <div className="flex items-center gap-6">
-          <Link
-            href="/privacy"
-            className="text-[11px] text-white/20 transition-colors hover:text-white/50"
-          >
-            Privacy
-          </Link>
-          <Link
-            href="/terms"
-            className="text-[11px] text-white/20 transition-colors hover:text-white/50"
-          >
-            Terms
-          </Link>
-          <span className="text-[11px] tracking-[0.1em] text-white/20">
-            &copy; {new Date().getFullYear()}
-          </span>
-        </div>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }

@@ -1,10 +1,5 @@
 ---
-paths:
-  - "lib/bonuses/scraper.ts"
-  - "scrapers/**"
-  - "scripts/**"
-  - "data/**"
-  - "apps/web/app/api/cron/**"
+globs: ["apps/web/lib/bonuses/**", "scrapers/**", "scripts/**", "data/**", "apps/web/app/api/cron/**"]
 ---
 
 # Extraction and Attribution Rules

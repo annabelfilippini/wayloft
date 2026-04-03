@@ -1,3 +1,7 @@
+---
+globs: ["apps/web/components/**", "apps/web/app/**/*.tsx", "apps/web/app/globals.css"]
+---
+
 # Typography Rules
 
 ## Font Consistency

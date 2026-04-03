@@ -1,9 +1,5 @@
 ---
-paths:
-  - "data/**"
-  - "apps/web/lib/bonuses/**/*.ts"
-  - "apps/web/app/api/cron/**/*.ts"
-  - "scrapers/**"
+globs: ["data/**", "apps/web/lib/bonuses/**", "apps/web/app/api/cron/**", "scrapers/**", "apps/web/lib/cards/catalog.ts"]
 ---
 
 # Data Pipeline Rules

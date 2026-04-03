@@ -1,9 +1,5 @@
 ---
-paths:
-  - "packages/db/migrations/*.sql"
-  - "apps/web/lib/supabase/**/*.ts"
-  - "apps/web/app/actions/**/*.ts"
-  - "apps/web/app/api/**/*.ts"
+globs: ["packages/db/migrations/**", "apps/web/lib/supabase/**", "apps/web/app/actions/**", "apps/web/app/api/**"]
 ---
 
 # Database Rules

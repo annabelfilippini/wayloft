@@ -1,10 +1,5 @@
 ---
-paths:
-  - "tests/**"
-  - "**/*.test.ts"
-  - "**/*.spec.ts"
-  - "apps/web/lib/**/*.ts"
-  - "apps/web/app/actions/**/*.ts"
+globs: ["tests/**", "**/*.test.ts", "**/*.spec.ts"]
 ---
 
 # Testing Rules

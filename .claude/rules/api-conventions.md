@@ -1,7 +1,5 @@
 ---
-paths:
-  - "apps/web/app/actions/**/*.ts"
-  - "apps/web/app/api/**/*.ts"
+globs: ["apps/web/app/actions/**", "apps/web/app/api/**"]
 ---
 
 # API Conventions

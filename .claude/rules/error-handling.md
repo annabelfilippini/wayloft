@@ -1,11 +1,5 @@
 ---
-paths:
-  - "apps/web/app/actions/**/*.ts"
-  - "apps/web/app/api/**/*.ts"
-  - "apps/web/components/**/*.tsx"
-  - "lib/bonuses/scraper.ts"
-  - "scrapers/**/*.ts"
-  - "scrapers/**/*.py"
+globs: ["apps/web/app/actions/**", "apps/web/app/api/**", "apps/web/lib/bonuses/**", "scrapers/**"]
 ---
 
 # Error Handling Rules

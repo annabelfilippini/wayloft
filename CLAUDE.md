@@ -413,9 +413,5 @@ In QA mode, flag any code that doesn't match DESIGN.md.
 
 ## Rules
 
-@.claude/rules/database.md
-@.claude/rules/error-handling.md
-@.claude/rules/extraction-and-attribution.md
-@.claude/rules/data-pipeline.md
-@.claude/rules/testing.md
-@.claude/rules/api-conventions.md
+Rules auto-load via `.claude/rules/` glob matching — no need to reference them here.
+Available: database, error-handling, extraction-and-attribution, data-pipeline, testing, api-conventions, typography.
