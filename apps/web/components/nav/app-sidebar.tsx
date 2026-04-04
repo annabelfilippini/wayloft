@@ -36,7 +36,7 @@ export function AppSidebar({ user }: { user: User }) {
     <aside className="hidden md:flex w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
       {/* Logo */}
       <div className="flex h-16 items-center px-5">
-        <Link href="/dashboard" className="text-2xl font-bold tracking-tight font-[family-name:var(--font-display)]">
+        <Link href="/dashboard" className="text-2xl font-bold tracking-tight">
           Wayloft
         </Link>
       </div>
