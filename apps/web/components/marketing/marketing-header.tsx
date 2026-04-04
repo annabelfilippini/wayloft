@@ -11,7 +11,7 @@ const navLinks = [
 export function MarketingHeader() {
   return (
     <header className="sticky top-0 z-50 h-[52px] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="mx-auto flex max-w-[1120px] h-full items-center justify-between px-6 md:px-10">
+      <nav className="flex h-full items-center justify-between px-6 font-sans md:px-8">
         {/* Left: Wordmark + Nav */}
         <div className="flex items-center gap-8">
           <Link

@@ -49,7 +49,7 @@ export function AppTopNav({ user }: { user: SupabaseUser }) {
   return (
     <>
       {/* Desktop top nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[52px] bg-background flex items-center justify-between px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-[52px] bg-background flex items-center justify-between px-8 font-sans">
         <div className="flex items-center gap-8">
           <Link href="/dashboard" className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
             WAYLOFT
@@ -123,7 +123,7 @@ export function AppTopNav({ user }: { user: SupabaseUser }) {
       </nav>
 
       {/* Mobile bottom tab bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background border-t border-border">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background border-t border-border font-sans">
         <div className="flex items-center justify-around h-14">
           {mobileLinks.map(({ href, label, icon: Icon }) => {
             const active = pathname === href || pathname.startsWith(href + "/");

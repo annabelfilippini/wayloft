@@ -24,16 +24,9 @@ const worthItCards = [
   { slug: "amex-gold", issuer: "amex", network: "amex", name: "Gold" },
 ];
 
-/**
- * Landing page uses Playfair Display (--font-display) for all text,
- * with Geist Mono for data and labels. The serif treatment is
- * intentionally different from the rest of the site.
- */
-const serif = "var(--font-display), Georgia, serif";
-
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background" style={{ fontFamily: serif }}>
+    <div className="min-h-screen bg-background">
       <MarketingHeader />
 
       {/* ── Hero ── */}
