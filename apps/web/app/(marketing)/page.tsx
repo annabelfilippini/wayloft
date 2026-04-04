@@ -1,211 +1,265 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CreditCard, Search, BarChart3 } from "lucide-react";
-import { getAllCards } from "@/lib/cards/catalog";
+import { ArrowRight } from "lucide-react";
 import { CardArtPlaceholder } from "@/components/cards/card-art-placeholder";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 
 export const metadata: Metadata = {
-  title: "Wayloft — Credit Card Rewards, Optimized",
+  title: "Wayloft — Your Points, Properly Spent",
   description:
-    "Is your card worth the annual fee? Toggle the benefits you actually use and get a verdict in 30 seconds. Plus card reviews, comparisons, and a spending-based recommendation quiz.",
+    "Wayloft connects your credit cards, points, and flights into one view. See what your rewards are worth — and where to spend them.",
   openGraph: {
-    title: "Wayloft — Credit Card Rewards, Optimized",
+    title: "Wayloft — Your Points, Properly Spent",
     description:
-      "Is your card worth the annual fee? Analyze any premium card in 30 seconds. Free, no signup required.",
+      "Credit card rewards optimization. Track your portfolio, find the best value, and travel smarter.",
     url: "https://wayloft.app",
   },
 };
 
-const featuredSlugs = [
-  "chase-sapphire-reserve",
-  "amex-platinum",
-  "amex-gold",
+/** Worth-It section: cards with actual worth-it pages */
+const worthItCards = [
+  { slug: "chase-sapphire-reserve", issuer: "chase", network: "visa", name: "Sapphire Reserve" },
+  { slug: "amex-platinum", issuer: "amex", network: "amex", name: "Platinum" },
+  { slug: "amex-gold", issuer: "amex", network: "amex", name: "Gold" },
 ];
 
-const tools = [
-  {
-    icon: CreditCard,
-    href: "/credit-cards",
-    title: "Card Reviews",
-    stat: "52 cards",
-    description:
-      "Earning rates, transfer partners, perks, and annual fee breakdowns for every major rewards card.",
-  },
-  {
-    icon: BarChart3,
-    href: "/credit-cards/best-for/travel",
-    title: "Best Cards",
-    stat: "5 categories",
-    description:
-      "Top picks for dining, travel, cash-back, hotels, and no-annual-fee. Ranked by first-year value.",
-  },
-  {
-    icon: Search,
-    href: "/recommend",
-    title: "Find Your Card",
-    stat: "5 questions",
-    description:
-      "Tell us how you spend. Get a ranked list of cards scored against your actual spending patterns.",
-  },
-];
+/**
+ * Landing page uses Playfair Display (--font-display) for all text,
+ * with Geist Mono for data and labels. The serif treatment is
+ * intentionally different from the rest of the site.
+ */
+const serif = "var(--font-display), Georgia, serif";
 
 export default function HomePage() {
-  const allCards = getAllCards();
-
-  const featuredCards = featuredSlugs
-    .map((slug) => allCards.find((c) => c.slug === slug))
-    .filter(
-      (c): c is NonNullable<typeof c> => c !== undefined
-    );
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{ fontFamily: serif }}>
       <MarketingHeader />
 
       {/* ── Hero ── */}
-      <section className="mx-auto max-w-[1120px] px-6 pb-14 pt-16 md:px-10 md:pb-20 md:pt-24">
-        <span className="label-signal text-primary">FREE TOOL</span>
-        <h1 className="mt-3 max-w-[560px] text-4xl font-semibold tracking-[-0.025em] sm:text-5xl">
-          Is your card worth it?
-        </h1>
-        <p className="mt-4 max-w-[460px] text-[15px] leading-[1.7] text-muted-foreground">
-          Toggle the benefits you actually use. See if your annual fee pays for
-          itself&mdash;or if it&apos;s time to downgrade. Free, no signup.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/credit-cards/worth-it"
-            className="flex items-center gap-2 bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
-          >
-            Analyze a Card
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-          <Link
-            href="/credit-cards"
-            className="flex items-center gap-2 border px-6 py-3 text-sm text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
-          >
-            Browse {allCards.length} Cards
-          </Link>
-        </div>
-      </section>
-
-      {/* ── Featured Cards ── */}
       <section className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="border-t pb-14 pt-12 md:pb-20 md:pt-16">
-          <span className="label-signal text-muted-foreground">
-            ANALYZE NOW
-          </span>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {featuredCards.map((card) => {
-              const benefitCount =
-                (card.credits?.length ?? 0) + (card.perks?.length ?? 0);
-              return (
-                <Link
-                  key={card.slug}
-                  href={`/credit-cards/${card.slug}/worth-it`}
-                  className="group border p-5 transition-colors hover:border-primary/30 hover:bg-primary/[0.03]"
-                >
-                  <div className="w-[100px]">
-                    <CardArtPlaceholder
-                      issuer={card.issuer}
-                      network={card.network}
-                      cardName={card.name}
-                      hideLabels
-                    />
-                  </div>
-                  <p className="mt-4 text-sm font-semibold">{card.name}</p>
-                  <div className="mt-1 flex items-center gap-3">
-                    <span className="mono text-xs text-muted-foreground">
-                      ${(card.annual_fee_cents / 100).toFixed(0)}/yr
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {benefitCount} benefits to analyze
-                    </span>
-                  </div>
-                  <div className="mt-3 flex items-center gap-1.5 text-xs text-primary opacity-0 transition-opacity group-hover:opacity-100">
-                    Analyze
-                    <ArrowRight className="h-3 w-3" />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Tools ── */}
-      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="border-t pb-14 pt-12 md:pb-20 md:pt-16">
-          <span className="label-signal text-muted-foreground">EXPLORE</span>
-          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.015em]">
-            More tools
-          </h2>
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {tools.map((tool) => (
-              <Link
-                key={tool.href}
-                href={tool.href}
-                className="group border p-6 transition-colors hover:border-foreground/15"
-              >
-                <div className="flex items-center gap-3">
-                  <tool.icon className="h-4 w-4 text-muted-foreground" />
-                  <span className="mono text-[10px] text-muted-foreground">
-                    {tool.stat}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm font-semibold">{tool.title}</p>
-                <p className="mt-1.5 text-[13px] leading-[1.6] text-muted-foreground">
-                  {tool.description}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Ellis Church ── */}
-      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="border-t pb-14 pt-12 md:pb-16 md:pt-14">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-            <div className="max-w-[480px]">
-              <span className="label-signal text-muted-foreground">
-                ANALYSIS BY
-              </span>
-              <p className="mt-2 text-lg font-semibold tracking-[-0.01em]">
-                Ellis Church
-              </p>
-              <p className="mt-2 text-[14px] leading-[1.7] text-muted-foreground">
-                Every number on this site is computed, not guessed. Ellis shows
-                the math first, tells you when a card isn&apos;t worth it, and
-                never manufactures urgency. If the data says downgrade, that&apos;s the
-                recommendation&mdash;affiliate link or not.
-              </p>
-            </div>
+        <div className="pb-20 pt-24 md:pb-32 md:pt-32">
+          <h1 className="text-[clamp(3rem,7vw,5rem)] font-medium leading-[1.05] tracking-[-0.02em]">
+            Your points,
+            <br />
+            properly spent.
+          </h1>
+          <p className="mt-8 max-w-[480px] text-[17px] leading-[1.7] text-muted-foreground">
+            Wayloft connects your credit cards, points, and travel into one
+            view. See exactly what your rewards are worth&mdash;and where to
+            spend them.
+          </p>
+          <div className="mt-10 flex flex-wrap gap-3">
             <Link
-              href="/about"
-              className="shrink-0 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              href="/signup"
+              className="flex items-center gap-2 bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
+              style={{ fontFamily: "var(--font-sans)" }}
             >
-              About Wayloft &rarr;
+              Get Started Free
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href="/credit-cards/worth-it"
+              className="flex items-center gap-2 border px-8 py-3.5 text-sm text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
+              style={{ fontFamily: "var(--font-sans)" }}
+            >
+              Try Worth It?
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Sign Up CTA ── */}
-      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="border-t pb-16 pt-12 text-center md:pb-24 md:pt-16">
-          <h2 className="text-2xl font-semibold tracking-[-0.015em]">
-            Track your full portfolio
+      {/* ── Platform ── */}
+      <section className="border-t">
+        <div className="mx-auto max-w-[1120px] px-6 py-16 md:px-10 md:py-24">
+          <span className="label-signal text-muted-foreground">
+            THE PLATFORM
+          </span>
+          <h2 className="mt-3 max-w-[520px] text-[clamp(1.5rem,3vw,2rem)] font-medium tracking-[-0.01em]">
+            Cards, points, and flights.{" "}
+            <span className="text-muted-foreground">Connected.</span>
           </h2>
-          <p className="mx-auto mt-3 max-w-[400px] text-[14px] leading-[1.7] text-muted-foreground">
-            Spending optimizer, transfer bonus alerts, annual fee reminders,
-            statement credit trackers. Free to start.
+
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {/* Portfolio Preview */}
+            <div className="border p-6">
+              <span className="label-signal text-primary">PORTFOLIO</span>
+              <div className="mt-5 flex items-baseline gap-2">
+                <span className="mono text-3xl font-light">$12,450</span>
+              </div>
+              <p className="mono mt-1 text-xs text-muted-foreground">
+                estimated annual value
+              </p>
+              <div className="mt-4 flex gap-1.5">
+                <div
+                  className="h-1.5 w-10"
+                  style={{
+                    background: "linear-gradient(90deg, #1a1f71, #0a0e3a)",
+                  }}
+                />
+                <div
+                  className="h-1.5 w-10"
+                  style={{
+                    background: "linear-gradient(90deg, #c6993e, #b8922f)",
+                  }}
+                />
+                <div
+                  className="h-1.5 w-10"
+                  style={{
+                    background: "linear-gradient(90deg, #c6993e, #a67c2e)",
+                  }}
+                />
+              </div>
+              <p className="mt-6 text-[14px] leading-[1.6] text-muted-foreground">
+                Add your cards. Wayloft calculates what every point, mile,
+                and credit is worth across your entire portfolio.
+              </p>
+            </div>
+
+            {/* Optimizer Preview */}
+            <div className="border p-6">
+              <span className="label-signal text-primary">OPTIMIZER</span>
+              <div className="mt-5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px]">Dining</span>
+                  <span className="mono text-xs text-muted-foreground">
+                    Gold &middot;{" "}
+                    <span className="text-foreground">4x</span>
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px]">Travel</span>
+                  <span className="mono text-xs text-muted-foreground">
+                    CSR &middot;{" "}
+                    <span className="text-foreground">3x</span>
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px]">Groceries</span>
+                  <span className="mono text-xs text-muted-foreground">
+                    Gold &middot;{" "}
+                    <span className="text-foreground">4x</span>
+                  </span>
+                </div>
+              </div>
+              <p className="mt-6 text-[14px] leading-[1.6] text-muted-foreground">
+                For every purchase category, see which card earns the most.
+                Never use the wrong card again.
+              </p>
+            </div>
+
+            {/* Bonuses Preview */}
+            <div className="border p-6">
+              <span className="label-signal text-primary">BONUSES</span>
+              <div className="mt-5 space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px]">Amex → Delta</span>
+                  <span className="mono text-xs font-medium text-primary">
+                    +30%
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[14px]">Chase → Hyatt</span>
+                  <span className="mono text-xs font-medium text-primary">
+                    +25%
+                  </span>
+                </div>
+                <div className="mono mt-1 text-[10px] text-destructive">
+                  6 days left
+                </div>
+              </div>
+              <p className="mt-6 text-[14px] leading-[1.6] text-muted-foreground">
+                Real-time transfer bonus tracking across every bank. Get
+                alerts before bonuses expire.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Stats Strip ── */}
+      <section className="border-t">
+        <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-between gap-x-12 gap-y-6 px-6 py-10 md:px-10 md:py-12">
+          {[
+            { number: "52", label: "cards analyzed" },
+            { number: "15", label: "transfer partners" },
+            { number: "13", label: "spending categories" },
+            { number: "24/7", label: "bonus monitoring" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <span className="mono text-2xl font-light">{stat.number}</span>
+              <p className="mt-0.5 text-[12px] text-muted-foreground">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Worth-It Tool ── */}
+      <section className="border-t">
+        <div className="mx-auto max-w-[1120px] px-6 md:px-10">
+          <div className="flex flex-col gap-10 py-16 md:flex-row md:items-center md:gap-16 md:py-24">
+            <div className="flex-1">
+              <span className="label-signal text-primary">FREE TOOL</span>
+              <h2 className="mt-3 text-[clamp(1.4rem,2.5vw,1.75rem)] font-medium tracking-[-0.01em]">
+                Is your card worth the annual fee?
+              </h2>
+              <p className="mt-4 max-w-[400px] text-[15px] leading-[1.7] text-muted-foreground">
+                Toggle the credits and perks you actually use. Get an instant
+                verdict&mdash;keep, call for a retention offer, or downgrade.
+                No signup required.
+              </p>
+              <Link
+                href="/credit-cards/worth-it"
+                className="mt-8 inline-flex items-center gap-2 bg-primary px-7 py-3 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Analyze a Card
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid w-full grid-cols-3 gap-3 md:w-auto md:flex md:shrink-0">
+              {worthItCards.map((card) => (
+                <Link
+                  key={card.slug}
+                  href={`/credit-cards/${card.slug}/worth-it`}
+                  className="group border p-3 transition-colors hover:border-primary/30 md:w-[130px]"
+                >
+                  <CardArtPlaceholder
+                    issuer={card.issuer}
+                    network={card.network}
+                    cardName={card.name}
+                    hideLabels
+                  />
+                  <p className="mt-2.5 text-xs font-medium">{card.name}</p>
+                  <span className="mono mt-0.5 block text-[10px] text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                    Analyze &rarr;
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Closing CTA ── */}
+      <section className="border-t">
+        <div className="mx-auto max-w-[1120px] px-6 py-24 text-center md:px-10 md:py-32">
+          <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.015em]">
+            Your next first-class seat
+            <br />
+            is already paid for.
+          </h2>
+          <p className="mx-auto mt-5 max-w-[400px] text-[15px] leading-[1.7] text-muted-foreground">
+            Stop leaving value on the table. Wayloft shows you what your cards
+            are worth and how to use every point.
           </p>
           <Link
             href="/signup"
-            className="mt-8 inline-flex items-center gap-2 bg-primary px-7 py-3 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
+            className="mt-10 inline-flex items-center gap-2 bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
+            style={{ fontFamily: "var(--font-sans)" }}
           >
             Get Started Free
             <ArrowRight className="h-3.5 w-3.5" />
