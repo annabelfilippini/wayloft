@@ -37,8 +37,55 @@ export default function HomePage() {
       <MarketingHeader />
 
       {/* ── Hero ── */}
-      <section className="mx-auto max-w-[1120px] px-6 md:px-10">
-        <div className="pb-20 pt-24 md:pb-32 md:pt-32">
+      <section className="relative mx-auto max-w-[1120px] overflow-hidden px-6 md:px-10">
+        {/* Contrails — bottom-left to top-right */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <svg
+            viewBox="0 0 1120 480"
+            preserveAspectRatio="none"
+            className="h-full w-full"
+          >
+            <defs>
+              <linearGradient id="trail-fade" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0" />
+                <stop offset="30%" stopColor="var(--color-primary)" stopOpacity="0.04" />
+                <stop offset="60%" stopColor="var(--color-primary)" stopOpacity="0.08" />
+                <stop offset="85%" stopColor="var(--color-primary)" stopOpacity="0.14" />
+                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.18" />
+              </linearGradient>
+              <linearGradient id="trail-glow" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0" />
+                <stop offset="40%" stopColor="var(--color-primary)" stopOpacity="0.02" />
+                <stop offset="70%" stopColor="var(--color-primary)" stopOpacity="0.04" />
+                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.07" />
+              </linearGradient>
+              <filter id="wispy" x="-20%" y="-40%" width="140%" height="180%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015 0.003" numOctaves={4} seed={2} result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale={8} xChannelSelector="R" yChannelSelector="G" />
+              </filter>
+              <filter id="wispy-soft" x="-20%" y="-60%" width="140%" height="220%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.002" numOctaves={3} seed={5} result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale={12} xChannelSelector="R" yChannelSelector="G" />
+                <feGaussianBlur stdDeviation={3} />
+              </filter>
+              <g id="plane">
+                <ellipse cx="0" cy="0" rx="10" ry="2" fill="var(--color-primary)" opacity="0.35" />
+                <line x1="-2" y1="-8" x2="3" y2="8" stroke="var(--color-primary)" strokeWidth="1.5" opacity="0.3" />
+                <line x1="-8" y1="-4" x2="-5" y2="4" stroke="var(--color-primary)" strokeWidth="1" opacity="0.25" />
+              </g>
+            </defs>
+            {/* Upper trail */}
+            <path d="M -40,210 C 200,205 500,165 1080,143" stroke="url(#trail-glow)" strokeWidth="14" fill="none" strokeLinecap="round" filter="url(#wispy-soft)" />
+            <path d="M -40,210 C 200,205 500,165 1080,143" stroke="url(#trail-fade)" strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#wispy)" />
+            {/* Lower trail */}
+            <path d="M -40,224 C 200,219 500,179 1080,157" stroke="url(#trail-glow)" strokeWidth="14" fill="none" strokeLinecap="round" filter="url(#wispy-soft)" />
+            <path d="M -40,224 C 200,219 500,179 1080,157" stroke="url(#trail-fade)" strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#wispy)" />
+            {/* Plane silhouette */}
+            <use href="#plane" x="1100" y="148" transform="rotate(-5, 1100, 148)" />
+          </svg>
+        </div>
+
+        <div className="relative z-10 pb-20 pt-24 md:pb-32 md:pt-32">
           <h1 className="text-[clamp(3rem,7vw,5rem)] font-medium leading-[1.05] tracking-[-0.02em]">
             Your points,
             <br />
