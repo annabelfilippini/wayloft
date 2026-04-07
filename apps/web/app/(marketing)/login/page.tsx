@@ -16,7 +16,7 @@ export default async function LoginPage({
     <div className="flex min-h-screen">
       {/* Left — Brand panel */}
       <div
-        className="relative hidden w-1/2 flex-col justify-between overflow-hidden border-r bg-background p-10 lg:flex xl:p-14"
+        className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-background p-10 lg:flex xl:p-14"
       >
         {/* Contrail SVG */}
         <div className="pointer-events-none absolute inset-0">
@@ -41,11 +41,18 @@ export default async function LoginPage({
                 <feTurbulence type="fractalNoise" baseFrequency="0.012 0.003" numOctaves={4} seed={7} result="noise" />
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale={10} xChannelSelector="R" yChannelSelector="G" />
               </filter>
+              <g id="login-plane">
+                <ellipse cx="0" cy="0" rx="10" ry="2" fill="#D4A020" opacity="0.35" />
+                <line x1="-2" y1="-8" x2="3" y2="8" stroke="#D4A020" strokeWidth="1.5" opacity="0.3" />
+                <line x1="-8" y1="-4" x2="-5" y2="4" stroke="#D4A020" strokeWidth="1" opacity="0.25" />
+              </g>
             </defs>
-            <path d="M -20,750 C 150,680 350,500 780,180" stroke="url(#login-glow)" strokeWidth="18" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
-            <path d="M -20,750 C 150,680 350,500 780,180" stroke="url(#login-trail)" strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
-            <path d="M -20,770 C 150,700 350,520 780,200" stroke="url(#login-glow)" strokeWidth="18" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
-            <path d="M -20,770 C 150,700 350,520 780,200" stroke="url(#login-trail)" strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
+            <path d="M -20,750 C 150,680 350,500 750,195" stroke="url(#login-glow)" strokeWidth="18" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
+            <path d="M -20,750 C 150,680 350,500 750,195" stroke="url(#login-trail)" strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
+            <path d="M -20,770 C 150,700 350,520 750,210" stroke="url(#login-glow)" strokeWidth="18" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
+            <path d="M -20,770 C 150,700 350,520 750,210" stroke="url(#login-trail)" strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#login-wispy)" />
+            {/* Plane silhouette — centered between trails, slightly ahead */}
+            <use href="#login-plane" x="770" y="190" transform="rotate(-15, 770, 190)" />
           </svg>
         </div>
 
