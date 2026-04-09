@@ -1,0 +1,10 @@
+[Unit]
+Description=Wayloft check-in alert scan
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/wayloft/scripts/checkin-alert.py
+EnvironmentFile=/opt/wayloft/.env
+WorkingDirectory=/opt/wayloft

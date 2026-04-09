@@ -356,6 +356,61 @@ export interface BonusPattern {
 // Legacy alias — keep for backward compat
 export type CreditCard = CatalogCard;
 
+// ── Flights ──
+
+export type AirlineKey = "southwest" | "united" | "delta" | "frontier";
+
+export type BookingType = "miles" | "cash";
+
+export type CabinClass = "economy" | "premium_economy" | "business" | "first";
+
+export type SeatPreference = "window" | "aisle" | "middle" | "exit_row";
+
+export type FlightStatus =
+  | "upcoming"
+  | "checkin_soon"
+  | "checkin_open"
+  | "checked_in"
+  | "departed";
+
+export interface UserFlight {
+  id: string;
+  user_id: string;
+  airline: AirlineKey;
+  confirmation_number: string;
+  origin: string;
+  destination: string;
+  departure_at: string;
+  arrival_at: string | null;
+  return_departure_at: string | null;
+  return_arrival_at: string | null;
+  passenger_name: string;
+  booking_type: BookingType;
+  miles_paid: number | null;
+  cash_paid_cents: number | null;
+  points_program: string | null;
+  cabin_class: CabinClass;
+  seat_preference: SeatPreference | null;
+  preferred_seat_number: string | null;
+  checkin_opens_at: string | null;
+  checkin_completed_at: string | null;
+  boarding_position: string | null;
+  current_award_price: number | null;
+  lowest_seen_price: number | null;
+  price_last_checked_at: string | null;
+  notes: string | null;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpcomingFlight extends UserFlight {
+  checkin_opens_at_computed: string;
+  hours_until_checkin: number;
+  hours_until_departure: number;
+  flight_status: FlightStatus;
+}
+
 // ── Spending Optimizer ──
 
 export type SpendingCategory =
