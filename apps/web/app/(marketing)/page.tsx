@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Wayloft — Your Points, Properly Spent",
     description:
-      "Credit card rewards optimization. Track your portfolio, find the best value, and travel smarter.",
+      "Credit card rewards optimization. Track your portfolio, find the best value, and maximize every point.",
     url: "https://wayloft.app",
   },
 };
@@ -288,9 +288,9 @@ export default function HomePage() {
       <section className="border-t">
         <div className="mx-auto max-w-[1120px] px-6 py-24 text-center md:px-10 md:py-32">
           <h2 className="text-[clamp(1.75rem,4vw,2.75rem)] font-medium leading-[1.1] tracking-[-0.015em]">
-            Your next first-class seat
+            Your points are worth
             <br />
-            is already paid for.
+            more than you think.
           </h2>
           <p className="mx-auto mt-5 max-w-[400px] text-[15px] leading-[1.7] text-muted-foreground">
             Stop leaving value on the table. Wayloft shows you what your cards
