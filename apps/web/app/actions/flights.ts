@@ -46,8 +46,8 @@ export async function addFlight(
   const milesPaid = formData.get("miles_paid")
     ? Number(formData.get("miles_paid"))
     : null;
-  const cashPaidCents = formData.get("cash_paid_cents")
-    ? Number(formData.get("cash_paid_cents"))
+  const cashPaidCents = formData.get("cash_paid")
+    ? Math.round(parseFloat(formData.get("cash_paid") as string) * 100)
     : null;
   const cabinClass = (formData.get("cabin_class") as string) || "economy";
   const seatPreference =

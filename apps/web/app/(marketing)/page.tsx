@@ -8,7 +8,7 @@ import { MarketingFooter } from "@/components/marketing/marketing-footer";
 export const metadata: Metadata = {
   title: "Wayloft — Your Points, Properly Spent",
   description:
-    "Wayloft connects your credit cards, points, and flights into one view. See what your rewards are worth — and where to spend them.",
+    "Wayloft connects your credit cards, points, and bonuses into one view. See what your rewards are worth — and where to spend them.",
   openGraph: {
     title: "Wayloft — Your Points, Properly Spent",
     description:
@@ -85,7 +85,7 @@ export default function HomePage() {
             properly spent.
           </h1>
           <p className="mt-8 max-w-[480px] text-[17px] leading-[1.7] text-muted-foreground">
-            Wayloft connects your credit cards, points, and travel into one
+            Wayloft connects your credit cards, points, and bonuses into one
             view. See exactly what your rewards are worth&mdash;and where to
             spend them.
           </p>
@@ -116,7 +116,7 @@ export default function HomePage() {
             THE PLATFORM
           </span>
           <h2 className="mt-3 max-w-[520px] text-[clamp(1.5rem,3vw,2rem)] font-medium tracking-[-0.01em]">
-            Cards, points, and flights.{" "}
+            Cards, points, and bonuses.{" "}
             <span className="text-muted-foreground">Connected.</span>
           </h2>
 

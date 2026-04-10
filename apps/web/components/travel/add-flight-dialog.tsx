@@ -190,9 +190,10 @@ export function AddFlightDialog() {
               ) : (
                 <Input
                   id="amount"
-                  name="cash_paid_cents"
+                  name="cash_paid"
                   type="number"
-                  placeholder="15900"
+                  step="0.01"
+                  placeholder="159.00"
                   className="mono"
                   required
                 />
