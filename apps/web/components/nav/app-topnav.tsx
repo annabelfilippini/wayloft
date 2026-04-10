@@ -24,11 +24,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
+
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/cards", label: "Cards" },
   { href: "/recommend", label: "Find a Card" },
-  { href: "/travel", label: "Travel" },
+  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Travel" }] : []),
   { href: "/about", label: "About" },
 ];
 
@@ -36,7 +38,7 @@ const mobileLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/cards", label: "Cards", icon: CreditCard },
   { href: "/recommend", label: "Find Card", icon: Compass },
-  { href: "/travel", label: "Travel", icon: Plane },
+  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Travel", icon: Plane }] : []),
 ];
 
 export function AppTopNav({ user }: { user: SupabaseUser }) {

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
@@ -8,6 +9,8 @@ import { getUserCurrencies } from "@/lib/bonuses/utils";
 import { getTravelGuide } from "@/lib/cards/sweet-spots";
 import type { TransferBonus, LoyaltyBalance, UpcomingFlight } from "@wayloft/shared";
 import type { CurrencyTravelGuide } from "@/lib/cards/sweet-spots";
+
+const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
 
 async function TravelContent({
   initialDestination,
@@ -89,6 +92,7 @@ export default async function TravelPage({
 }: {
   searchParams: Promise<{ to?: string }>;
 }) {
+  if (!TRAVEL_ENABLED) redirect("/dashboard");
   const { to } = await searchParams;
 
   return (

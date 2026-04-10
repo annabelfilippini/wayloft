@@ -17,11 +17,13 @@ import { useTheme } from "next-themes";
 import { signOut } from "@/app/actions/auth";
 import type { User } from "@supabase/supabase-js";
 
+const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
+
 const navLinks = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/cards", label: "My Cards", icon: CreditCard },
   { href: "/recommend", label: "Find a Card", icon: Compass },
-  { href: "/travel", label: "Travel", icon: Plane },
+  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Travel", icon: Plane }] : []),
   { href: "/credit-cards", label: "Reviews", icon: Newspaper },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

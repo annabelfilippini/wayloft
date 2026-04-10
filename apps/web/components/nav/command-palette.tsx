@@ -29,12 +29,14 @@ interface CommandPaletteProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
+
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "My Cards", href: "/cards", icon: CreditCard },
   { label: "Optimizer", href: "/cards?view=optimizer", icon: Wallet },
   { label: "Find a Card", href: "/recommend", icon: Compass },
-  { label: "Travel", href: "/travel", icon: Plane },
+  ...(TRAVEL_ENABLED ? [{ label: "Travel", href: "/travel", icon: Plane }] : []),
   { label: "Reviews", href: "/credit-cards", icon: Newspaper },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
