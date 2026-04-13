@@ -2,12 +2,17 @@
 
 import { useState, useMemo } from "react";
 import { AlertCircle } from "lucide-react";
-import { SearchForm } from "@/components/flights/search-form";
+import {
+  SearchForm,
+  type SearchFormSubmission,
+} from "@/components/flights/search-form";
 import { FlightCard } from "@/components/flights/flight-card";
 import { PriceToggle, type PriceView } from "@/components/flights/price-toggle";
 import { BonusSidebar } from "./bonus-sidebar";
 import { SweetSpotsPanel } from "./sweet-spots-panel";
-import type { EnrichedFlight } from "@/lib/flights/types";
+import { ComparisonView } from "./comparison-view";
+import type { AwardSearchResult, EnrichedFlight } from "@/lib/flights/types";
+import { computeCashVsPoints } from "@/lib/flights/compare";
 import type { TransferBonus, LoyaltyBalance } from "@wayloft/shared";
 import type { CurrencyTravelGuide } from "@/lib/cards/sweet-spots";
 
@@ -29,6 +34,12 @@ export function TravelClient({
   initialDestination,
 }: TravelClientProps) {
   const [flights, setFlights] = useState<EnrichedFlight[]>([]);
+  const [awardResult, setAwardResult] = useState<AwardSearchResult | null>(
+    null
+  );
+  const [submission, setSubmission] = useState<SearchFormSubmission | null>(
+    null
+  );
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -38,6 +49,21 @@ export function TravelClient({
   );
 
   const hasPortalOptions = flights.some((f) => f.bestPortalOption !== null);
+
+  const comparison = useMemo(() => {
+    if (!submission) return null;
+    return computeCashVsPoints({
+      origin: submission.origin,
+      destination: submission.destination,
+      date: submission.departureDate,
+      passengers: submission.passengers,
+      cabinClass: submission.cabinClass,
+      flights,
+      awardResult,
+      balances,
+      bonuses: myBonuses,
+    });
+  }, [submission, flights, awardResult, balances, myBonuses]);
 
   // Extract currencies from flight card recommendations to highlight relevant bonuses
   const highlightCurrencies = useMemo(() => {
@@ -70,6 +96,8 @@ export function TravelClient({
           onResults={handleResults}
           onError={setError}
           onLoading={setIsLoading}
+          onAwardResults={setAwardResult}
+          onSubmission={setSubmission}
           initialDestination={selectedDestination}
         />
       </div>
@@ -95,6 +123,13 @@ export function TravelClient({
               {[1, 2, 3].map((i) => (
                 <div key={i} className="h-24 animate-pulse border bg-muted/50" />
               ))}
+            </div>
+          )}
+
+          {/* Comparison card (cash vs points) */}
+          {!isLoading && hasSearched && comparison && (
+            <div className="mb-6">
+              <ComparisonView result={comparison} />
             </div>
           )}
 

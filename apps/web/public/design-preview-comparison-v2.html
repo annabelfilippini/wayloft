@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comparison Card — v2.1 (beginner-first, iter 2)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FAFAF6;
+      --elevated: #FFFFFF;
+      --hover: #F0EFE9;
+      --text: #1C1C1C;
+      --muted: #666660;
+      --faint: #9A9A94;
+      --border: #E5E5E0;
+      --wire: #D8D7D0;
+      --amber: #D4A020;
+      --amber-soft: rgba(212, 160, 32, 0.08);
+      --amber-edge: rgba(212, 160, 32, 0.35);
+      --green: #158A4C;
+      --green-soft: rgba(21, 138, 76, 0.08);
+      --red: #C43B3B;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      /* Match Wayloft: next/font/google Geist, no ss01 stylistic set.
+         The live site does not set font-feature-settings on body. */
+      font-family: 'Geist', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+    .mono {
+      font-family: 'Geist Mono', ui-monospace, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 24px 96px;
+    }
+    .intro {
+      margin-bottom: 40px;
+    }
+    .intro h1 {
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin: 0 0 10px;
+    }
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 60ch;
+      line-height: 1.55;
+    }
+    .section-label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* ============ CARD ============ */
+    .card {
+      background: var(--elevated);
+      border: 1px solid var(--border);
+      border-radius: 0;
+    }
+    .card + .card { margin-top: 24px; }
+
+    /* ---- Header strip ---- */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .route {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .route-pair {
+      font-family: 'Geist Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .route-cities {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .route-meta {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ---- Verdict hero (v2.1: single column, action-first) ---- */
+    .verdict {
+      padding: 36px 28px 32px;
+      background: var(--amber-soft);
+      border-bottom: 1px solid var(--amber-edge);
+    }
+    .verdict-eyebrow {
+      display: block;
+      margin-bottom: 16px;
+      color: var(--amber);
+    }
+    .verdict-action {
+      font-size: 44px;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.02;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
+    .verdict-dollar {
+      font-family: 'Geist Mono', monospace;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin: 0 0 14px;
+      display: block;
+    }
+    .verdict-dollar .amount { color: var(--amber); }
+    .verdict-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 58ch;
+      margin: 0;
+    }
+
+    /* Verdict tone variants */
+    .verdict--cash {
+      background: var(--bg);
+      border-bottom-color: var(--border);
+    }
+    .verdict--cash .verdict-eyebrow { color: var(--muted); }
+    .verdict--cash .verdict-dollar .amount { color: var(--text); }
+
+    .verdict--close {
+      background: var(--bg);
+      border-bottom-color: var(--border);
+    }
+    .verdict--close .verdict-eyebrow { color: var(--muted); }
+
+    /* ---- Side-by-side row ---- */
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-col {
+      padding: 22px 24px;
+    }
+    .compare-col + .compare-col {
+      border-left: 1px solid var(--border);
+    }
+    .compare-col.recommended {
+      background: #FEFDF8;
+    }
+    .compare-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .compare-col-title {
+      font-size: 11px;
+      font-family: 'Geist Mono', monospace;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .recommended-pill {
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      border: 1px solid var(--amber-edge);
+      background: #FFFFFF;
+      padding: 3px 7px;
+      border-radius: 0;
+    }
+    .price {
+      font-family: 'Geist Mono', monospace;
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--text);
+      display: block;
+    }
+    .price-sub {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .price-sub .mono { color: var(--text); }
+
+    /* Tight balance row (v2.1: replaces full sentence block) */
+    .balance-row {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .balance-row .mono { color: var(--text); }
+    .balance-row .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      flex-shrink: 0;
+      background: var(--muted);
+    }
+    .balance-row--ok .dot { background: var(--green); }
+    .balance-row--short .dot { background: var(--amber); }
+    .balance-row--zero .dot { background: var(--faint); }
+
+    /* ---- Disclosure base (shared by why / how / alt-paths / inline) ---- */
+    details.disclose {
+      border-top: 1px solid var(--border);
+    }
+    details.disclose summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 13px 24px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Geist Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+    details.disclose summary::-webkit-details-marker { display: none; }
+    details.disclose summary:hover { background: var(--bg); }
+    details.disclose summary::after {
+      content: '＋';
+      margin-left: auto;
+      font-family: 'Geist Mono', monospace;
+      color: var(--faint);
+      font-size: 13px;
+    }
+    details.disclose[open] summary::after { content: '−'; }
+    .disclose-body {
+      padding: 4px 24px 20px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .disclose-body p { margin: 0 0 10px; }
+    .disclose-body p:last-child { margin-bottom: 0; }
+    .disclose-body strong { color: var(--text); font-weight: 500; }
+    .disclose-body .mono { color: var(--text); }
+
+    /* Numbered steps inside a disclosure */
+    .steps {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .steps li {
+      display: flex;
+      gap: 10px;
+      padding: 6px 0;
+    }
+    .steps li + li { border-top: 1px dashed var(--border); }
+    .steps-num {
+      font-family: 'Geist Mono', monospace;
+      color: var(--faint);
+      flex-shrink: 0;
+      width: 18px;
+    }
+    .steps li strong { color: var(--text); font-weight: 500; }
+
+    /* ---- Alt paths (inside disclose) ---- */
+    .alt-path {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .alt-path:first-child { border-top: none; padding-top: 0; }
+    .alt-path-airline {
+      font-weight: 500;
+      color: var(--text);
+    }
+    .alt-path-detail {
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+    .alt-path-detail .mono { color: var(--text); }
+    .alt-path-cost {
+      text-align: right;
+      font-family: 'Geist Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .alt-path-cost small {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ---- Business upsell ---- */
+    .upsell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .upsell strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .upsell .mono { color: var(--text); }
+    .upsell-icon {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--amber-edge);
+      color: var(--amber);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ---- Annotations ---- */
+    .annotate {
+      margin-top: 48px;
+      padding: 28px;
+      border: 1px dashed var(--wire);
+      background: #FFFFFF;
+    }
+    .annotate h2 {
+      font-family: 'Geist Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+    .annotate ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text);
+    }
+    .annotate li {
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+    }
+    .annotate li:first-child { border-top: none; padding-top: 0; }
+    .annotate li strong {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+    .annotate li span {
+      color: var(--muted);
+    }
+
+    /* ---- Variant dividers ---- */
+    .variant-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 48px 0 12px;
+      display: block;
+    }
+    .variant-label:first-of-type { margin-top: 0; }
+
+    @media (max-width: 640px) {
+      .compare-row { grid-template-columns: 1fr; }
+      .compare-col + .compare-col {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .verdict { padding: 28px 20px 26px; }
+      .verdict-action { font-size: 34px; }
+      .intro h1 { font-size: 26px; }
+      .price { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="intro">
+      <h1>Cash vs points — iter 2</h1>
+      <p>Verdict split from savings number (no more double-$1,260 echo). Action-first headline at display size. Numbered booking steps moved behind a disclosure so the first glance is just route + verdict + prices.</p>
+    </div>
+
+    <span class="label section-label">VARIANT A · Verdict = USE POINTS</span>
+
+    <!-- =================== VARIANT A: POINTS WIN =================== -->
+    <section class="card">
+      <header class="card-header">
+        <div class="route">
+          <span class="route-pair">JFK → LHR</span>
+          <span class="route-cities">New York → London</span>
+        </div>
+        <span class="route-meta">JUN 14 · 1 TRAVELER</span>
+      </header>
+
+      <!-- VERDICT HERO (v2.1: single column, action-first) -->
+      <div class="verdict">
+        <span class="label verdict-eyebrow">OUR RECOMMENDATION</span>
+        <h2 class="verdict-action">Use points.</h2>
+        <span class="verdict-dollar">You'd save <span class="amount">$1,260</span> vs paying cash.</span>
+      </div>
+
+      <!-- SIDE BY SIDE -->
+      <div class="compare-row">
+        <div class="compare-col">
+          <div class="compare-col-header">
+            <span class="compare-col-title">PAY WITH CASH</span>
+          </div>
+          <span class="price mono">$1,560</span>
+          <span class="price-sub">Round trip, economy · United Airlines · 1 stop</span>
+        </div>
+
+        <div class="compare-col recommended">
+          <div class="compare-col-header">
+            <span class="compare-col-title">PAY WITH POINTS</span>
+            <span class="recommended-pill">RECOMMENDED</span>
+          </div>
+          <span class="price mono">60,000 pts</span>
+          <span class="price-sub">From Chase Ultimate Rewards · United economy</span>
+          <div class="balance-row balance-row--ok">
+            <span class="dot"></span>
+            <span>You have <span class="mono">72,500</span> Chase — enough for this trip.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUSINESS UPSELL (moved above disclosures — important, don't bury) -->
+      <div class="upsell">
+        <span class="upsell-icon">★</span>
+        <span>
+          <strong>Business class is also open on this date.</strong>
+          It costs <span class="mono">75,000</span> points — only 15,000 more than economy, for a lie-flat seat.
+        </span>
+      </div>
+
+      <!-- DISCLOSURE 1: Why points win -->
+      <details class="disclose">
+        <summary>Why points win here</summary>
+        <div class="disclose-body">
+          <p>
+            Each Chase point is worth about <strong>2.6¢ on this trip</strong> — a strong redemption.
+            Anything over <strong>2¢ per point</strong> typically beats cashing them out, and this
+            one's well above the line.
+          </p>
+          <p>
+            For reference: the same <span class="mono">60,000</span> points cashed out at Chase's
+            base rate would only be worth <span class="mono">$600</span>. Using them for this
+            flight gets you <span class="mono">$1,560</span> of value.
+          </p>
+        </div>
+      </details>
+
+      <!-- DISCLOSURE 2: How to book (numbered steps now hidden by default) -->
+      <details class="disclose">
+        <summary>How to book this</summary>
+        <div class="disclose-body">
+          <ol class="steps">
+            <li>
+              <span class="steps-num">1.</span>
+              <span>Transfer <span class="mono">60,000</span> Chase points to United <strong>(instant, 1:1)</strong>. Chase Ultimate Rewards is your bank points currency; "transfer" means moving them to United.</span>
+            </li>
+            <li>
+              <span class="steps-num">2.</span>
+              <span>Book the flight on <strong>united.com</strong> using your United miles. Search by date, look for "Saver" award availability.</span>
+            </li>
+            <li>
+              <span class="steps-num">3.</span>
+              <span>Pay the ~<span class="mono">$80</span> in taxes &amp; fees at checkout. Those aren't coverable by points on any US carrier.</span>
+            </li>
+          </ol>
+        </div>
+      </details>
+
+      <!-- DISCLOSURE 3: What's a transfer partner -->
+      <details class="disclose">
+        <summary>What's a "transfer partner"?</summary>
+        <div class="disclose-body">
+          <p>
+            Banks like Chase, Amex, and Citi let you move their points to partner airlines and hotels.
+            Chase Ultimate Rewards transfers to United at a <strong>1-to-1 ratio</strong>, instantly,
+            so <span class="mono">60,000</span> Chase points becomes <span class="mono">60,000</span>
+            United miles.
+          </p>
+          <p>
+            This is why banks issue their own points — they're more flexible than being locked into
+            one airline.
+          </p>
+        </div>
+      </details>
+
+      <!-- DISCLOSURE 4: How much cash -->
+      <details class="disclose">
+        <summary>How much cash is 60,000 points worth?</summary>
+        <div class="disclose-body">
+          <p>
+            It depends how you use them. Cashed out directly from Chase, <span class="mono">60,000</span>
+            points = <span class="mono">$600</span>. Redeemed through the Chase travel portal, they're
+            worth <span class="mono">$750</span>–<span class="mono">$900</span>. Transferred to United
+            for this flight, they're getting you <span class="mono">$1,560</span> of value.
+          </p>
+          <p>
+            <strong>That's why this is a good use.</strong> Same points, but the transfer gets you
+            2–3× what cashing out would.
+          </p>
+        </div>
+      </details>
+
+      <!-- DISCLOSURE 5: Alt paths -->
+      <details class="disclose">
+        <summary>2 other ways to book this</summary>
+        <div class="disclose-body">
+          <div class="alt-path">
+            <div>
+              <div class="alt-path-airline">Air Canada Aeroplan</div>
+              <div class="alt-path-detail">
+                Transfer Amex Membership Rewards · <span class="mono">70,000</span> Amex → 70,000 Aeroplan (instant)
+              </div>
+            </div>
+            <div class="alt-path-cost">
+              70,000 pts
+              <small>You have 0 Amex pts</small>
+            </div>
+          </div>
+          <div class="alt-path">
+            <div>
+              <div class="alt-path-airline">Virgin Atlantic Flying Club</div>
+              <div class="alt-path-detail">
+                Transfer Chase Ultimate Rewards · <span class="mono">67,500</span> Chase → 67,500 Virgin (instant)
+              </div>
+            </div>
+            <div class="alt-path-cost">
+              67,500 pts
+              <small>More than option 1</small>
+            </div>
+          </div>
+        </div>
+      </details>
+
+    </section>
+
+    <span class="variant-label">VARIANT B · Verdict = PAY CASH (points are a bad deal)</span>
+
+    <!-- =================== VARIANT B: CASH WINS =================== -->
+    <section class="card">
+      <header class="card-header">
+        <div class="route">
+          <span class="route-pair">JFK → MIA</span>
+          <span class="route-cities">New York → Miami</span>
+        </div>
+        <span class="route-meta">MAY 3 · 2 TRAVELERS</span>
+      </header>
+
+      <div class="verdict verdict--cash">
+        <span class="label verdict-eyebrow">OUR RECOMMENDATION</span>
+        <h2 class="verdict-action">Pay cash.</h2>
+        <span class="verdict-dollar"><span class="amount">$318</span> beats burning points here.</span>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-col recommended">
+          <div class="compare-col-header">
+            <span class="compare-col-title">PAY WITH CASH</span>
+            <span class="recommended-pill">RECOMMENDED</span>
+          </div>
+          <span class="price mono">$318</span>
+          <span class="price-sub">Round trip, 2 travelers · Delta · direct · <span class="mono">$159</span>/person</span>
+        </div>
+
+        <div class="compare-col">
+          <div class="compare-col-header">
+            <span class="compare-col-title">PAY WITH POINTS</span>
+          </div>
+          <span class="price mono">28,000 pts</span>
+          <span class="price-sub">From Chase Ultimate Rewards · Delta economy</span>
+          <div class="balance-row balance-row--ok">
+            <span class="dot"></span>
+            <span>You have enough — but they're worth more on longer trips.</span>
+          </div>
+        </div>
+      </div>
+
+      <details class="disclose">
+        <summary>Why cash wins here</summary>
+        <div class="disclose-body">
+          <p>
+            Using <span class="mono">28,000</span> points to avoid a <span class="mono">$318</span>
+            fare means each point is only working for you at about <strong>1.1¢ of value</strong>.
+            Most point enthusiasts aim for <strong>2¢ or higher</strong> — below 1.5¢ is considered
+            a waste.
+          </p>
+          <p>
+            Rule of thumb: points give the most value on <strong>long-haul, premium cabin, or peak-date</strong>
+            trips. Short domestic flights like this are almost always better in cash.
+          </p>
+        </div>
+      </details>
+
+      <details class="disclose">
+        <summary>When would points be worth it on this route?</summary>
+        <div class="disclose-body">
+          <p>
+            Points start making sense on JFK–MIA when cash fares spike above <strong>~$500 round trip</strong>
+            — typically spring break, Thanksgiving week, or Christmas. At those prices,
+            <span class="mono">28,000</span> points would be worth roughly <strong>1.8¢ each</strong>,
+            closer to a reasonable trade.
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <span class="variant-label">VARIANT C · Verdict = POINTS, but user has 0 balance (hypothetical)</span>
+
+    <!-- =================== VARIANT C: HYPOTHETICAL =================== -->
+    <section class="card">
+      <header class="card-header">
+        <div class="route">
+          <span class="route-pair">LAX → NRT</span>
+          <span class="route-cities">Los Angeles → Tokyo</span>
+        </div>
+        <span class="route-meta">OCT 8 · 1 TRAVELER</span>
+      </header>
+
+      <div class="verdict verdict--close">
+        <span class="label verdict-eyebrow">HEADS UP</span>
+        <h2 class="verdict-action">You'd need points first.</h2>
+        <span class="verdict-dollar">Points could save <span class="amount">$2,110</span> — if you had them.</span>
+        <p class="verdict-sub">
+          The cheapest points path is <span class="mono">90,000</span> Amex Membership Rewards,
+          which you don't have yet. Opening the Amex Gold card
+          (<span class="mono">60,000</span>-point welcome bonus) would get you most of the way there.
+        </p>
+      </div>
+
+      <div class="compare-row">
+        <div class="compare-col">
+          <div class="compare-col-header">
+            <span class="compare-col-title">PAY WITH CASH</span>
+          </div>
+          <span class="price mono">$2,460</span>
+          <span class="price-sub">Round trip, economy · ANA · 1 stop</span>
+        </div>
+
+        <div class="compare-col recommended">
+          <div class="compare-col-header">
+            <span class="compare-col-title">PAY WITH POINTS</span>
+            <span class="recommended-pill">IF YOU HAD THEM</span>
+          </div>
+          <span class="price mono">90,000 pts</span>
+          <span class="price-sub">From Amex Membership Rewards · ANA economy</span>
+          <div class="balance-row balance-row--zero">
+            <span class="dot"></span>
+            <span>You have <span class="mono">0</span> Amex points today.</span>
+          </div>
+        </div>
+      </div>
+
+      <details class="disclose">
+        <summary>What this means for you</summary>
+        <div class="disclose-body">
+          <p>
+            <strong>You don't need to cancel the trip.</strong> You have two real options:
+          </p>
+          <p>
+            1. Pay cash now — <span class="mono">$2,460</span>.<br />
+            2. Or apply for a card that earns Amex points. The Amex Gold welcome bonus alone
+            (<span class="mono">60,000</span> points) covers two-thirds of the trip, and you'd earn
+            the rest from normal spending over a few months.
+          </p>
+          <p>
+            We're showing the points option so you can see what's possible — not because you can
+            book it today.
+          </p>
+        </div>
+      </details>
+
+      <details class="disclose">
+        <summary>Which card should I open?</summary>
+        <div class="disclose-body">
+          <p>
+            <strong>Amex Gold</strong> is the cleanest path for this trip. $325 annual fee,
+            <span class="mono">60,000</span>-point welcome bonus after $6,000 spend in 6 months,
+            4× points on restaurants and US supermarkets.
+          </p>
+          <p>
+            Combined with ~3 months of normal spending (<span class="mono">$2,000</span>–<span class="mono">$2,500</span>/mo),
+            you'd clear the <span class="mono">90,000</span> Amex threshold for this flight.
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <!-- =================== ANNOTATIONS =================== -->
+    <section class="annotate">
+      <h2>CHANGELOG · V2 → V2.1</h2>
+      <ul>
+        <li>
+          <strong>Verdict stack</strong>
+          <span>Killed the right-side savings tile that duplicated the $1,260. Verdict is now a single column: eyebrow → action ("Use points.") at 44px → dollar line at 17px mono → context sentence. One number, one place, one reading order.</span>
+        </li>
+        <li>
+          <strong>Action gets the size</strong>
+          <span>"Use points." / "Pay cash." / "You'd need points first." are now the largest thing on the card. The verb is the answer — the dollars support it. Matches the "large use points section" Annabel asked for.</span>
+        </li>
+        <li>
+          <strong>Page title bumped</strong>
+          <span>.intro h1 went from 22px → 32px. Compare-col price went 28px → 32px. Headline hierarchy now reads as titles, not body.</span>
+        </li>
+        <li>
+          <strong>Booking steps hidden</strong>
+          <span>The numbered "1. Transfer... 2. Book..." list moved from the points column into a new "How to book this" disclosure. User hasn't decided yet — premature to show implementation steps.</span>
+        </li>
+        <li>
+          <strong>New disclosures added</strong>
+          <span>"What's a transfer partner?", "How much cash is 60k points worth?", "When would points be worth it on this route?", "Which card should I open?" — all tap-to-reveal. First glance is now route + verdict + two prices + one balance line. Everything else is a click away.</span>
+        </li>
+        <li>
+          <strong>Balance status tightened</strong>
+          <span>The full-sentence green status block became a single-line dot + text row ("You have 72,500 Chase — enough for this trip."). Takes 1 line instead of a bordered box.</span>
+        </li>
+        <li>
+          <strong>Font: ss01 removed</strong>
+          <span>Body CSS dropped `font-feature-settings: 'ss01'`. That stylistic set was swapping the `a`, `g`, `l` glyphs, which is why the mockup looked different from the live Wayloft site — Wayloft loads Geist via next/font/google with default features only. Now matches.</span>
+        </li>
+        <li>
+          <strong>Disclosure component unified</strong>
+          <span>Merged .why and .alt-paths into a single .disclose component with shared open/close behavior. Makes it easier to add more disclosures (we went from 2 to 5 on the points variant) without CSS duplication.</span>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+</body>
+</html>

@@ -3,16 +3,33 @@
 import { useState, useEffect } from "react";
 import { Search, Loader2, ArrowRightLeft } from "lucide-react";
 import { AirportInput } from "./airport-input";
-import type { EnrichedFlight } from "@/lib/flights/types";
+import type { AwardSearchResult, EnrichedFlight } from "@/lib/flights/types";
+
+export interface SearchFormSubmission {
+  origin: string;
+  destination: string;
+  departureDate: string;
+  passengers: number;
+  cabinClass: string;
+}
 
 interface SearchFormProps {
   onResults: (flights: EnrichedFlight[]) => void;
   onError: (message: string) => void;
   onLoading: (loading: boolean) => void;
+  onAwardResults?: (result: AwardSearchResult | null) => void;
+  onSubmission?: (submission: SearchFormSubmission) => void;
   initialDestination?: string;
 }
 
-export function SearchForm({ onResults, onError, onLoading, initialDestination }: SearchFormProps) {
+export function SearchForm({
+  onResults,
+  onError,
+  onLoading,
+  onAwardResults,
+  onSubmission,
+  initialDestination,
+}: SearchFormProps) {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState(initialDestination ?? "");
   const [departureDate, setDepartureDate] = useState("");
@@ -43,37 +60,69 @@ export function SearchForm({ onResults, onError, onLoading, initialDestination }
     setIsSearching(true);
     onLoading(true);
     onError("");
+    onSubmission?.({
+      origin,
+      destination,
+      departureDate,
+      passengers,
+      cabinClass,
+    });
 
-    try {
-      const res = await fetch("/api/flights/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          origin,
-          destination,
-          departureDate,
-          returnDate: returnDate || undefined,
-          passengers,
-          cabinClass,
-        }),
-      });
-
+    const cashPromise = fetch("/api/flights/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        origin,
+        destination,
+        departureDate,
+        returnDate: returnDate || undefined,
+        passengers,
+        cabinClass,
+      }),
+    }).then(async (res) => {
       if (!res.ok) {
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || `Search failed (${res.status})`);
       }
+      return res.json();
+    });
 
-      const data = await res.json();
-      onResults(data.offers);
-    } catch (error) {
-      const msg =
-        error instanceof Error ? error.message : "Search failed";
-      onError(msg);
+    const awardsUrl = new URL("/api/flights/awards", window.location.origin);
+    awardsUrl.searchParams.set("origin", origin.toUpperCase());
+    awardsUrl.searchParams.set("destination", destination.toUpperCase());
+    awardsUrl.searchParams.set("start_date", departureDate);
+    awardsUrl.searchParams.set("end_date", departureDate);
+    const awardsPromise = fetch(awardsUrl.toString()).then(async (res) => {
+      if (!res.ok) return null;
+      const body = await res.json().catch(() => null);
+      if (!body?.success) return null;
+      return body.data as AwardSearchResult;
+    });
+
+    const [cashResult, awardsResult] = await Promise.allSettled([
+      cashPromise,
+      awardsPromise,
+    ]);
+
+    if (cashResult.status === "fulfilled") {
+      onResults(cashResult.value.offers ?? []);
+    } else {
       onResults([]);
-    } finally {
-      setIsSearching(false);
-      onLoading(false);
+      onError(
+        cashResult.reason instanceof Error
+          ? cashResult.reason.message
+          : "Search failed"
+      );
     }
+
+    if (onAwardResults) {
+      onAwardResults(
+        awardsResult.status === "fulfilled" ? awardsResult.value : null
+      );
+    }
+
+    setIsSearching(false);
+    onLoading(false);
   }
 
   // Min date is today
@@ -145,7 +194,7 @@ export function SearchForm({ onResults, onError, onLoading, initialDestination }
             onChange={(e) => setPassengers(Number(e.target.value))}
             className="w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
           >
-            {[1, 2, 3, 4, 5, 6].map((n) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
               <option key={n} value={n}>
                 {n} {n === 1 ? "passenger" : "passengers"}
               </option>
