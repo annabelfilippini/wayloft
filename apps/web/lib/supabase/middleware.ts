@@ -52,8 +52,12 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Authenticated user hitting an auth route → redirect to dashboard
-  if (user && authRoutes.some((route) => pathname.startsWith(route))) {
+  // Authenticated user hitting home or an auth route → redirect to dashboard
+  if (
+    user &&
+    (pathname === "/" ||
+      authRoutes.some((route) => pathname.startsWith(route)))
+  ) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
