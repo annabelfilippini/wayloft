@@ -13,8 +13,8 @@
     },
     "earning_rates": {
       "brand_portal": 8,
-      "flights": 3,
-      "hotels": 3,
+      "flights": 4,
+      "hotels": 4,
       "dining": 3,
       "travel": 1,
       "streaming": 1,
@@ -28,14 +28,19 @@
     "key_perks": [
       "$300 annual travel credit",
       "8x on flights, hotels, car rentals via Chase Travel",
+      "4x on flights and hotels booked directly",
       "Points Boost: redeem at 2cpp on select flights/hotels",
       "Priority Pass lounge access",
-      "Global Entry / TSA PreCheck credit",
+      "Global Entry / TSA PreCheck / NEXUS credit ($120)",
+      "$500 annual The Edit hotel credit",
+      "$300 annual dining credit (Sapphire Reserve Tables)",
       "$300 annual StubHub credit",
-      "$150 biannual Sapphire Reserve Exclusive Tables credit",
-      "Apple TV+ and Apple Music ($250/yr value)",
+      "$300 annual DoorDash credits ($25/mo)",
+      "Apple TV+ and Apple Music ($288/yr value)",
+      "$250 annual Chase Travel Hotels credit",
       "$120 annual Lyft credits",
       "$120 annual Peloton credit",
+      "IHG One Rewards Platinum Elite Status",
       "Trip delay/cancellation insurance"
     ],
     "best_for": [
@@ -90,7 +95,52 @@
         "merchants": [
           "Peloton"
         ],
-        "gotchas": "Covers Peloton membership. Annual credit."
+        "gotchas": "Covers Peloton membership. Annual credit. Through 12/31/2027."
+      },
+      {
+        "name": "The Edit Hotel Credit",
+        "type": "hotel_edit",
+        "amount_cents": 50000,
+        "period": "annual",
+        "enrollment_required": false,
+        "merchants": [
+          "The Edit by Chase Travel"
+        ],
+        "gotchas": "Must book through The Edit collection on Chase Travel."
+      },
+      {
+        "name": "Chase Travel Hotels Credit",
+        "type": "hotel_chase_travel",
+        "amount_cents": 25000,
+        "period": "annual",
+        "enrollment_required": false,
+        "merchants": [
+          "Chase Travel Hotels"
+        ],
+        "gotchas": "Select Chase Travel hotel bookings. Through 12/31/2026."
+      },
+      {
+        "name": "Sapphire Reserve Tables Dining Credit",
+        "type": "dining",
+        "amount_cents": 15000,
+        "period": "semi_annual",
+        "enrollment_required": false,
+        "merchants": [
+          "Sapphire Reserve Exclusive Tables via OpenTable"
+        ],
+        "gotchas": "$150 per half-year. Must book through Sapphire Reserve Exclusive Tables."
+      },
+      {
+        "name": "DoorDash Credits",
+        "type": "doordash",
+        "amount_cents": 2500,
+        "period": "monthly",
+        "monthly_cap_cents": 2500,
+        "enrollment_required": false,
+        "merchants": [
+          "DoorDash"
+        ],
+        "gotchas": "$25/mo in DoorDash credits, separate from DashPass membership."
       }
     ],
     "perks": [
@@ -107,12 +157,12 @@
       },
       {
         "id": "csr_global_entry",
-        "name": "Global Entry / TSA PreCheck Credit",
+        "name": "Global Entry / TSA PreCheck / NEXUS Credit",
         "category": "travel",
         "type": "one_time_setup",
-        "description": "Up to $100 statement credit for Global Entry ($100) or TSA PreCheck ($78) application fee.",
+        "description": "Up to $120 statement credit for Global Entry ($120), TSA PreCheck ($85), or NEXUS application fee.",
         "setup_instructions": "Apply at ttp.cbp.dhs.gov. Pay the fee with your CSR and the credit posts automatically within 1-2 statements.",
-        "estimated_annual_value_cents": 2500,
+        "estimated_annual_value_cents": 3000,
         "enrollment_required": false,
         "renewal": "every_4_years"
       },
@@ -181,6 +231,17 @@
         "estimated_annual_value_cents": 25000,
         "enrollment_required": false,
         "renewal": null
+      },
+      {
+        "id": "csr_ihg_platinum",
+        "name": "IHG One Rewards Platinum Elite Status",
+        "category": "status",
+        "type": "enrollment_required",
+        "description": "Complimentary IHG Platinum Elite: 60% bonus points, room upgrades, welcome amenity, late checkout.",
+        "setup_instructions": "Link your IHG One Rewards account through Chase. Status appears within a few days.",
+        "estimated_annual_value_cents": 20000,
+        "enrollment_required": true,
+        "renewal": "annual"
       }
     ],
     "downgrade_options": [
@@ -192,11 +253,12 @@
         "preserves_credit_line": true,
         "what_you_lose": [
           "Priority Pass lounges",
+          "4x on flights & hotels (drops to 2x/2x)",
           "3x on dining (drops to 2x)",
           "$300 travel credit",
-          "DoorDash & Instacart credits",
+          "The Edit, DoorDash, StubHub, dining credits",
           "TSA PreCheck/Global Entry credit",
-          "1.5cpp portal redemption"
+          "Points Boost 2cpp redemption"
         ],
         "what_you_keep": [
           "Transfer partners (UR)",
@@ -273,7 +335,8 @@
     "editorial": {
       "tagline": "The premium travel card that actually pays for itself \u2014 if you use the credits.",
       "pros": [
-        "8x earning through Chase Travel and Points Boost at 2cpp make portal bookings genuinely valuable",
+        "8x via Chase Travel, 4x direct flights & hotels, and Points Boost at 2cpp make this the strongest travel earning card",
+        "Over $3,000 in annual credits (travel, dining, hotels, DoorDash, StubHub, entertainment) can dwarf the fee",
         "Priority Pass lounge access for you and 2 guests eliminates airport food spending",
         "$300 travel credit applies automatically with zero effort",
         "Primary rental car insurance saves $15-30/day on every rental",
@@ -282,12 +345,12 @@
       "cons": [
         "$795 annual fee is steep \u2014 you need to actively use credits to come out ahead",
         "Earning rates outside travel and dining are a flat 1x, which is mediocre for everyday spending",
-        "StubHub and Peloton credits are niche \u2014 worthless if you don't use those services",
+        "Many credits are niche (StubHub, Peloton) or have expiration dates \u2014 value is only real if you'd spend there anyway",
         "Chase One Sapphire rule means you can't hold this and the Sapphire Preferred simultaneously"
       ],
-      "verdict": "The CSR is the best premium travel card for people who actually travel. The $795 fee sounds intimidating, but between the $300 travel credit, lounge access, and Points Boost redemptions, most frequent travelers come out well ahead. Pair it with a Freedom Unlimited for everyday spending and you have a top-tier setup. If you travel fewer than 5 times a year, the Sapphire Preferred is the smarter pick.",
+      "verdict": "The CSR is the best premium travel card for people who actually travel. The $795 fee sounds intimidating, but between $3,000+ in credits (travel, dining, hotels, DoorDash, entertainment), lounge access, and Points Boost redemptions, most frequent travelers come out well ahead. The 4x on direct flights and hotels is best-in-class for a Visa. Pair it with a Freedom Unlimited for everyday spending and you have a top-tier setup. If you travel fewer than 5 times a year, the Sapphire Preferred is the smarter pick.",
       "rating": 5,
-      "updated_at": "2026-03-11"
+      "updated_at": "2026-04-12"
     }
   },
   {
@@ -575,30 +638,44 @@
     "key_perks": [
       "$600 hotel credit (FHR/THC)",
       "$400 annual Resy dining credit ($100/qtr)",
-      "$300 digital entertainment credit",
+      "$300 digital entertainment credit ($25/mo)",
+      "$155 Walmart+ membership credit",
       "$200 airline fee credit",
       "$200 Oura Ring credit",
-      "$120 Uber One credit ($10/mo)",
+      "$200 Uber Cash ($15/mo + $20 Dec bonus)",
+      "$120 Uber One membership credit",
       "Lululemon credit ($75/qtr)",
       "Centurion Lounge access",
       "Priority Pass (no guests)",
-      "Global Entry / TSA PreCheck",
+      "Global Entry / TSA PreCheck ($120)",
+      "Walmart+ membership credit",
       "Hilton Gold, Marriott Gold",
       "5x on flights booked directly"
     ],
     "credits": [
       {
-        "name": "Uber Credit",
+        "name": "Uber Cash",
         "type": "uber",
-        "amount_cents": 1000,
+        "amount_cents": 1500,
         "period": "monthly",
-        "monthly_cap_cents": 1000,
+        "monthly_cap_cents": 1500,
         "enrollment_required": false,
         "merchants": [
           "Uber",
           "Uber Eats"
         ],
-        "gotchas": "Monthly cap of $10/mo. Use it or lose it each month."
+        "gotchas": "$15/mo ($20 in December = $200/yr total). Use it or lose it each month."
+      },
+      {
+        "name": "Uber One Membership Credit",
+        "type": "uber_one",
+        "amount_cents": 12000,
+        "period": "annual",
+        "enrollment_required": true,
+        "merchants": [
+          "Uber One"
+        ],
+        "gotchas": "Covers Uber One membership fee. Must enroll through Amex benefits."
       },
       {
         "name": "Resy Dining Credit",
@@ -637,8 +714,9 @@
       {
         "name": "Digital Entertainment Credit",
         "type": "digital_entertainment",
-        "amount_cents": 30000,
-        "period": "annual",
+        "amount_cents": 2500,
+        "period": "monthly",
+        "monthly_cap_cents": 2500,
         "enrollment_required": true,
         "merchants": [
           "Disney+",
@@ -646,9 +724,35 @@
           "ESPN+",
           "The New York Times",
           "The Wall Street Journal",
-          "Peacock"
+          "Peacock",
+          "Paramount+",
+          "YouTube Premium",
+          "YouTube TV"
         ],
-        "gotchas": "Must enroll each merchant. Covers select streaming and news subscriptions."
+        "gotchas": "$25/mo ($300/yr). Must enroll each merchant. Covers select streaming and news subscriptions."
+      },
+      {
+        "name": "Walmart+ Membership Credit",
+        "type": "walmart_plus",
+        "amount_cents": 1295,
+        "period": "monthly",
+        "monthly_cap_cents": 1295,
+        "enrollment_required": true,
+        "merchants": [
+          "Walmart+"
+        ],
+        "gotchas": "Covers Walmart+ membership fee (up to $12.95/mo + tax). Must enroll through Amex benefits."
+      },
+      {
+        "name": "Saks Fifth Avenue Credit",
+        "type": "saks",
+        "amount_cents": 5000,
+        "period": "semi_annual",
+        "enrollment_required": true,
+        "merchants": [
+          "Saks Fifth Avenue"
+        ],
+        "gotchas": "$50 semi-annually ($100/yr). Enroll at saksfifthavenue.com/platinum. Expiring after June 30, 2026."
       },
       {
         "name": "Oura Ring Credit",
@@ -701,9 +805,9 @@
         "name": "Global Entry / TSA PreCheck Credit",
         "category": "travel",
         "type": "one_time_setup",
-        "description": "Up to $100 statement credit for Global Entry ($100) or TSA PreCheck ($78) application fee.",
+        "description": "Up to $120 statement credit for Global Entry ($120) or TSA PreCheck ($85) application fee.",
         "setup_instructions": "Apply at ttp.cbp.dhs.gov. Pay with your Platinum Card and the credit posts automatically.",
-        "estimated_annual_value_cents": 2500,
+        "estimated_annual_value_cents": 3000,
         "enrollment_required": false,
         "renewal": "every_4_years"
       },
@@ -886,20 +990,20 @@
       "pros": [
         "Centurion Lounges are genuinely excellent \u2014 better food, drinks, and atmosphere than Priority Pass",
         "5x on flights booked directly is the highest airline earning rate from any general-purpose card",
-        "Over $1,500 in annual credits (hotel, dining, airline, Uber, entertainment, Lululemon) can dwarf the fee",
+        "Over $2,500 in annual credits (hotel, dining, airline, Uber, entertainment, Lululemon, Walmart+) can dwarf the fee",
         "Hilton Gold + Marriott Gold status provides free breakfast and room upgrades at two hotel chains",
         "Transfer partners include ANA, Singapore, Virgin Atlantic \u2014 some of the best sweet spots in award travel"
       ],
       "cons": [
         "$895 annual fee is the highest of any personal card \u2014 you need to actively manage credits to justify it",
         "1x on everything outside flights makes it a terrible everyday spending card",
-        "Many credits are use-it-or-lose-it with specific merchants (Resy, Saks, Oura) \u2014 value is only real if you'd spend there anyway",
+        "Many credits are use-it-or-lose-it with specific merchants (Resy, Oura, Lululemon) \u2014 value is only real if you'd spend there anyway",
         "Amex acceptance is still weaker than Visa/Mastercard, especially internationally and at small businesses",
         "Once-per-lifetime signup bonus rule means you get one shot at the welcome offer"
       ],
       "verdict": "The Platinum is the gold standard for frequent travelers who fly 10+ times a year and stay at hotels regularly. The Centurion Lounges alone are worth the card if you connect through hubs like DFW, JFK, or SFO. But be honest with yourself: if you won't use the Resy credits, don't care about Oura, and rarely fly \u2014 the Venture X gives you 80% of the experience for less than half the fee.",
       "rating": 4,
-      "updated_at": "2026-03-11"
+      "updated_at": "2026-04-12"
     }
   },
   {
@@ -910,7 +1014,7 @@
     "network": "amex",
     "annual_fee_cents": 32500,
     "signup_bonus": {
-      "points": 60000,
+      "points": 75000,
       "spend_requirement_cents": 600000,
       "timeframe_months": 6
     },
@@ -1132,7 +1236,7 @@
       ],
       "verdict": "The Amex Gold is the best card for people whose biggest spending categories are restaurants and groceries \u2014 and that's most people. The 4x earning rate is unmatched, and unlike the Platinum's niche credits, the Gold's credits (Uber, dining, Dunkin') align with how people actually spend. At $325/year it's not cheap, but if you spend $500+/month on food, the math works easily. The ideal Amex setup is Gold for everyday + Platinum for travel.",
       "rating": 5,
-      "updated_at": "2026-03-11"
+      "updated_at": "2026-04-12"
     }
   },
   {
