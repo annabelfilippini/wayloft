@@ -13,7 +13,7 @@ export function FlightDashboard({ flights }: FlightDashboardProps) {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="label-signal text-muted-foreground">MY FLIGHTS</span>
+        <span className="label-signal text-muted-foreground">TRIPS</span>
         <AddFlightDialog />
       </div>
 
@@ -22,8 +22,8 @@ export function FlightDashboard({ flights }: FlightDashboardProps) {
           <Plane className="h-8 w-8 text-muted-foreground/50" />
           <h3 className="mt-3 text-sm font-semibold">No flights tracked</h3>
           <p className="mt-1 max-w-[240px] text-xs text-muted-foreground">
-            Add a booked flight to get check-in alerts and track award price
-            drops.
+            Add a booked flight when you want Wayloft to remind you about
+            check-in.
           </p>
         </div>
       ) : (

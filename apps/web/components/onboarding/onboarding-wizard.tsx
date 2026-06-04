@@ -7,6 +7,7 @@ import { StepExperience } from "./step-experience";
 import { StepCards } from "./step-cards";
 import { StepGoals } from "./step-goals";
 import { completeOnboarding } from "@/app/actions/onboarding";
+import { getDefaultAppRoute } from "@/lib/routes";
 
 interface OnboardingWizardProps {
   catalog: CatalogCard[];
@@ -22,7 +23,7 @@ export function OnboardingWizard({ catalog }: OnboardingWizardProps) {
   const [error, setError] = useState<string | null>(null);
 
   function handleSkip() {
-    router.push("/dashboard");
+    router.push(getDefaultAppRoute());
   }
 
   function handleSubmit(goal: string, airport: string) {

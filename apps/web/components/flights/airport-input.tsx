@@ -32,14 +32,6 @@ export function AirportInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Set label from initial value
-  useEffect(() => {
-    if (value && !selectedLabel) {
-      const match = airportList.find((a) => a.iata === value);
-      if (match) setSelectedLabel(`${match.iata} — ${match.city}`);
-    }
-  }, [value, selectedLabel]);
-
   // Close dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -86,24 +78,31 @@ export function AirportInput({
     setIsOpen(false);
   }
 
+  const valueLabel = value
+    ? airportList.find((a) => a.iata === value)?.city
+    : null;
+  const displayValue =
+    selectedLabel || query || (valueLabel ? `${value} — ${valueLabel}` : "");
+
   return (
     <div ref={containerRef} className="relative">
-      <label className="mb-1 block text-xs font-medium text-muted-foreground">
+      <label className="mb-2 block text-base font-semibold text-foreground">
         {label}
       </label>
       <input
         ref={inputRef}
         type="text"
-        value={selectedLabel || query}
+        value={displayValue}
         onChange={(e) => handleInputChange(e.target.value)}
         onFocus={() => {
-          if (selectedLabel) {
+          if (selectedLabel || value) {
             setSelectedLabel("");
             setQuery("");
+            onChange("");
           }
         }}
         placeholder={placeholder}
-        className="w-full rounded-md border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+        className="h-[58px] w-full rounded-xl border border-input bg-card px-4 text-2xl font-medium placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
       />
       {isOpen && (
         <div className="absolute z-50 mt-1 w-full border bg-popover">

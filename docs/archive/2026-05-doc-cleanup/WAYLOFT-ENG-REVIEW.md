@@ -1,7 +1,7 @@
 # Engineering Review: Wayloft Three-Layer Funnel Distribution Strategy
 
 **Date:** 2026-04-01
-**Branch:** main (MO folder: /Users/annabelfilippini/Documents/Claude/MO)
+**Branch:** main (MO folder: /Users/annabelfilippini/Documents/AI-OS/MO)
 **Input:** Office Hours design doc + CEO Plan (Three-Layer Funnel)
 **Scope:** Full architecture, code quality, test, and performance review of the planned 4-week sprint
 

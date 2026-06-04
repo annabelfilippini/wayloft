@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Search, Loader2, ArrowRightLeft } from "lucide-react";
 import { AirportInput } from "./airport-input";
 import type { AwardSearchResult, EnrichedFlight } from "@/lib/flights/types";
@@ -9,6 +9,8 @@ export interface SearchFormSubmission {
   origin: string;
   destination: string;
   departureDate: string;
+  returnDate?: string;
+  tripType: "round_trip" | "one_way";
   passengers: number;
   cabinClass: string;
 }
@@ -32,21 +34,24 @@ export function SearchForm({
 }: SearchFormProps) {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState(initialDestination ?? "");
+  const [tripType, setTripType] = useState<"round_trip" | "one_way">(
+    "round_trip"
+  );
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
   const [cabinClass, setCabinClass] = useState<string>("economy");
   const [isSearching, setIsSearching] = useState(false);
 
-  // Sync destination when initialDestination changes (e.g. sweet spot click)
-  useEffect(() => {
-    if (initialDestination) setDestination(initialDestination);
-  }, [initialDestination]);
-
   function swapAirports() {
     const temp = origin;
     setOrigin(destination);
     setDestination(temp);
+  }
+
+  function handleTripTypeChange(nextTripType: "round_trip" | "one_way") {
+    setTripType(nextTripType);
+    if (nextTripType === "one_way") setReturnDate("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -57,6 +62,11 @@ export function SearchForm({
       return;
     }
 
+    if (tripType === "round_trip" && !returnDate) {
+      onError("Please add a return date or choose one-way.");
+      return;
+    }
+
     setIsSearching(true);
     onLoading(true);
     onError("");
@@ -64,6 +74,8 @@ export function SearchForm({
       origin,
       destination,
       departureDate,
+      returnDate: tripType === "round_trip" ? returnDate : undefined,
+      tripType,
       passengers,
       cabinClass,
     });
@@ -75,7 +87,7 @@ export function SearchForm({
         origin,
         destination,
         departureDate,
-        returnDate: returnDate || undefined,
+        returnDate: tripType === "round_trip" ? returnDate : undefined,
         passengers,
         cabinClass,
       }),
@@ -127,115 +139,174 @@ export function SearchForm({
 
   // Min date is today
   const today = new Date().toISOString().split("T")[0];
+  const inputClass =
+    "h-[58px] w-full rounded-xl border border-input bg-card px-4 text-xl font-medium focus:outline-none focus:ring-2 focus:ring-ring";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Airports row */}
-      <div className="flex items-end gap-2">
-        <div className="flex-1">
+    <form
+      onSubmit={handleSubmit}
+      className="[font-family:Arial,Helvetica,sans-serif]"
+    >
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        {[
+          { value: "round_trip", label: "Round trip" },
+          { value: "one_way", label: "One-way" },
+        ].map((option) => {
+          const active = tripType === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() =>
+                handleTripTypeChange(option.value as "round_trip" | "one_way")
+              }
+              className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+                active
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card text-foreground hover:border-primary/70"
+              }`}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="grid items-end gap-4 lg:grid-cols-[minmax(0,1.15fr)_32px_minmax(0,1.15fr)_minmax(150px,0.9fr)_minmax(150px,0.9fr)_minmax(160px,0.9fr)_minmax(150px,0.9fr)_200px]">
+        <div>
           <AirportInput
             value={origin}
             onChange={setOrigin}
-            placeholder="e.g. JFK"
+            placeholder="SJC"
             label="From"
           />
         </div>
         <button
           type="button"
           onClick={swapAirports}
-          className="mb-0.5 rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted"
+          className="mb-[14px] flex h-8 w-8 items-center justify-center rounded-full text-primary transition-colors hover:bg-card"
           title="Swap airports"
         >
-          <ArrowRightLeft className="h-4 w-4" />
+          <ArrowRightLeft className="h-6 w-6" />
         </button>
-        <div className="flex-1">
+        <div>
           <AirportInput
             value={destination}
             onChange={setDestination}
-            placeholder="e.g. LAX"
+            placeholder="DEN"
             label="To"
           />
         </div>
-      </div>
-
-      {/* Dates + options row */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">
+          <label className="mb-2 block text-base font-semibold text-foreground">
             Depart
           </label>
           <input
             type="date"
             value={departureDate}
-            onChange={(e) => setDepartureDate(e.target.value)}
+            onChange={(e) => {
+              setDepartureDate(e.target.value);
+              if (returnDate && returnDate < e.target.value) {
+                setReturnDate("");
+              }
+            }}
             min={today}
             required
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            className={inputClass}
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">
-            Return (optional)
+          <label className="mb-2 block text-base font-semibold text-foreground">
+            Return
           </label>
           <input
             type="date"
             value={returnDate}
             onChange={(e) => setReturnDate(e.target.value)}
             min={departureDate || today}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            required={tripType === "round_trip"}
+            disabled={tripType === "one_way"}
+            className={`${inputClass} disabled:cursor-not-allowed disabled:opacity-45`}
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">
-            Passengers
+          <label className="mb-2 block text-base font-semibold text-foreground">
+            Travelers
           </label>
           <select
             value={passengers}
             onChange={(e) => setPassengers(Number(e.target.value))}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            className={inputClass}
           >
             {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
               <option key={n} value={n}>
-                {n} {n === 1 ? "passenger" : "passengers"}
+                {n} {n === 1 ? "Adult" : "Adults"}
               </option>
             ))}
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-muted-foreground">
-            Cabin
+          <label className="mb-2 block text-base font-semibold text-foreground">
+            Show price in
           </label>
           <select
-            value={cabinClass}
-            onChange={(e) => setCabinClass(e.target.value)}
-            className="w-full rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            className={inputClass}
+            defaultValue="best"
           >
-            <option value="economy">Economy</option>
-            <option value="premium_economy">Premium Economy</option>
-            <option value="business">Business</option>
-            <option value="first">First</option>
+            <option value="best">Best option</option>
+            <option value="cash">Money</option>
+            <option value="points">Points</option>
           </select>
+        </div>
+        <div className="flex flex-col gap-3">
+          <button
+            type="submit"
+            disabled={
+              isSearching ||
+              !origin ||
+              !destination ||
+              !departureDate ||
+              (tripType === "round_trip" && !returnDate)
+            }
+            className="h-[58px] rounded-full border-2 border-primary bg-primary px-8 text-xl font-bold text-primary-foreground transition-[filter,opacity] hover:brightness-110 disabled:opacity-50"
+          >
+            {isSearching ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Checking
+              </span>
+            ) : (
+              <span className="flex items-center justify-center gap-2">
+                <Search className="h-5 w-5" />
+                Update
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Search button */}
-      <button
-        type="submit"
-        disabled={isSearching || !origin || !destination || !departureDate}
-        className="flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isSearching ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Searching flights...
-          </>
-        ) : (
-          <>
-            <Search className="h-4 w-4" />
-            Search Flights
-          </>
-        )}
-      </button>
+      <details className="mt-4 text-right">
+        <summary className="cursor-pointer text-sm font-medium text-primary underline">
+          Advanced Search
+        </summary>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm font-semibold text-foreground">
+              Cabin
+            </label>
+            <select
+              value={cabinClass}
+              onChange={(e) => setCabinClass(e.target.value)}
+              className="h-12 w-full rounded-xl border border-input bg-card px-4 text-base focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="economy">Economy</option>
+              <option value="premium_economy">Premium Economy</option>
+              <option value="business">Business</option>
+              <option value="first">First</option>
+            </select>
+          </div>
+        </div>
+      </details>
     </form>
   );
 }

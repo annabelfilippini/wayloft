@@ -55,7 +55,7 @@ function CardsTabViewInner({
       <div className="flex items-center justify-between">
         <TabsList>
           <TabsTrigger value="cards">My Cards</TabsTrigger>
-          <TabsTrigger value="optimizer">Optimizer</TabsTrigger>
+          <TabsTrigger value="optimizer">Cash Spend</TabsTrigger>
         </TabsList>
         {currentTab === "optimizer" && guide && (
           <CopyCheatSheet guide={guide} />

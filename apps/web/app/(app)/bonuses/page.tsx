@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-
-const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
+import { getDefaultAppRoute } from "@/lib/routes";
 
 export default function BonusesPage() {
-  redirect(TRAVEL_ENABLED ? "/travel" : "/dashboard");
+  redirect(getDefaultAppRoute());
 }

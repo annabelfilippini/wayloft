@@ -3,13 +3,6 @@
     "supabase": {
       "type": "http",
       "url": "https://mcp.supabase.com/mcp?project_ref=wjloligimlldiljeyelh"
-    },
-    "stitch": {
-      "command": "npx",
-      "args": ["-y", "stitch-mcp"],
-      "env": {
-        "GOOGLE_CLOUD_PROJECT": "aj-bot-489823"
-      }
     }
   }
 }

@@ -6,13 +6,13 @@ import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 
 export const metadata: Metadata = {
-  title: "Wayloft — Your Points, Properly Spent",
+  title: "Wayloft — Book Trips With Cash or Points",
   description:
-    "Wayloft connects your credit cards, points, and bonuses into one view. See what your rewards are worth — and where to spend them.",
+    "Wayloft compares cash fares, award space, transfer paths, and your balances so you know how to book your next trip.",
   openGraph: {
-    title: "Wayloft — Your Points, Properly Spent",
+    title: "Wayloft — Book Trips With Cash or Points",
     description:
-      "Credit card rewards optimization. Track your portfolio, find the best value, and maximize every point.",
+      "Compare cash fares, points prices, and transfer paths before you book.",
     url: "https://wayloft.app",
   },
 };
@@ -80,14 +80,13 @@ export default function HomePage() {
 
         <div className="relative z-10 pb-20 pt-24 md:pb-32 md:pt-32">
           <h1 className="text-[clamp(3rem,7vw,5rem)] font-medium leading-[1.05] tracking-[-0.02em]">
-            Your points,
+            Know when to pay cash,
             <br />
-            properly spent.
+            use points, or wait.
           </h1>
           <p className="mt-8 max-w-[480px] text-[17px] leading-[1.7] text-muted-foreground">
-            Wayloft connects your credit cards, points, and bonuses into one
-            view. See exactly what your rewards are worth&mdash;and where to
-            spend them.
+            Wayloft compares cash fares, award space, transfer bonuses, and
+            your balances so each trip has a clear booking decision.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
@@ -95,7 +94,7 @@ export default function HomePage() {
               className="flex items-center gap-2 bg-primary px-8 py-3.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
               style={{ fontFamily: "var(--font-sans)" }}
             >
-              Get Started Free
+              Plan a Trip
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
@@ -116,8 +115,8 @@ export default function HomePage() {
             THE PLATFORM
           </span>
           <h2 className="mt-3 max-w-[520px] text-[clamp(1.5rem,3vw,2rem)] font-medium tracking-[-0.01em]">
-            Cards, points, and bonuses.{" "}
-            <span className="text-muted-foreground">Connected.</span>
+            Cash fares, points, and bonuses.{" "}
+            <span className="text-muted-foreground">One decision.</span>
           </h2>
 
           <div className="mt-14 grid gap-6 md:grid-cols-3">

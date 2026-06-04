@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
   CreditCard,
   Wallet,
   Compass,
@@ -12,6 +11,7 @@ import {
   Plus,
   FlaskConical,
   PiggyBank,
+  CircleDollarSign,
 } from "lucide-react";
 import {
   CommandDialog,
@@ -22,6 +22,7 @@ import {
   CommandItem,
   CommandSeparator,
 } from "@/components/ui/command";
+import { getTripsRoute, TRAVEL_ENABLED } from "@/lib/routes";
 
 interface CommandPaletteProps {
   cards: { slug: string; name: string; issuer: string }[];
@@ -29,21 +30,22 @@ interface CommandPaletteProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
-
 const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "My Cards", href: "/cards", icon: CreditCard },
-  { label: "Optimizer", href: "/cards?view=optimizer", icon: Wallet },
-  { label: "Find a Card", href: "/recommend", icon: Compass },
-  ...(TRAVEL_ENABLED ? [{ label: "Travel", href: "/travel", icon: Plane }] : []),
+  ...(TRAVEL_ENABLED ? [{ label: "Plan Trip", href: "/travel", icon: Plane }] : []),
+  { label: "My Points", href: "/dashboard", icon: CircleDollarSign },
+  ...(TRAVEL_ENABLED
+    ? [{ label: "My Trips", href: getTripsRoute(), icon: Compass }]
+    : []),
+  { label: "Cards", href: "/cards", icon: CreditCard },
+  { label: "Earn for a Trip", href: "/recommend", icon: Compass },
+  { label: "Spending Optimizer", href: "/cards?view=optimizer", icon: Wallet },
   { label: "Reviews", href: "/credit-cards", icon: Newspaper },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 
 const quickActions = [
   { label: "Add a card", href: "/cards", icon: Plus },
-  { label: "Take quiz", href: "/recommend", icon: FlaskConical },
+  { label: "Find points for a trip", href: "/recommend", icon: FlaskConical },
   { label: "Add balance", href: "/dashboard", icon: PiggyBank },
 ];
 

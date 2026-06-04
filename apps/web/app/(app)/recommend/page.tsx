@@ -32,6 +32,18 @@ export default async function RecommendPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-8 py-12">
+      <div className="mb-8">
+        <span className="label-signal text-muted-foreground">
+          EARN FOR A TRIP
+        </span>
+        <h1 className="mt-1 text-2xl font-semibold tracking-[-0.01em]">
+          Build the points your next trip needs
+        </h1>
+        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+          Find cards that help close a travel goal, not just inflate a
+          portfolio.
+        </p>
+      </div>
       <QuizWizard
         catalog={catalog}
         existingResponse={(existingQuiz as QuizResponse) ?? null}

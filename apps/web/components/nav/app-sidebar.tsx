@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
   CreditCard,
   Compass,
+  CircleDollarSign,
   Newspaper,
   Plane,
   Settings,
@@ -16,15 +16,17 @@ import {
 import { useTheme } from "next-themes";
 import { signOut } from "@/app/actions/auth";
 import type { User } from "@supabase/supabase-js";
-
-const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
+import { getDefaultAppRoute, getTripsRoute, TRAVEL_ENABLED } from "@/lib/routes";
 
 const navLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/cards", label: "My Cards", icon: CreditCard },
-  { href: "/recommend", label: "Find a Card", icon: Compass },
   ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Travel", icon: Plane }] : []),
+  ...(TRAVEL_ENABLED
+    ? [{ href: getTripsRoute(), label: "Trips", icon: Compass }]
+    : []),
+  { href: "/dashboard", label: "Points", icon: CircleDollarSign },
+  { href: "/cards", label: "Cards", icon: CreditCard },
   { href: "/credit-cards", label: "Reviews", icon: Newspaper },
+  { href: "/recommend", label: "Earn for a Trip", icon: Compass },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -38,7 +40,7 @@ export function AppSidebar({ user }: { user: User }) {
     <aside className="hidden md:flex w-60 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
       {/* Logo */}
       <div className="flex h-16 items-center px-5">
-        <Link href="/dashboard" className="text-2xl font-bold tracking-tight">
+        <Link href={getDefaultAppRoute()} className="text-2xl font-bold tracking-tight">
           Wayloft
         </Link>
       </div>

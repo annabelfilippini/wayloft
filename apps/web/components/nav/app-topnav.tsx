@@ -3,19 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  CreditCard,
   Compass,
   Plane,
   Settings,
   LogOut,
-  Bell,
   User,
-  LayoutDashboard,
+  CircleDollarSign,
+  Newspaper,
+  CreditCard,
+  Wallet,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { signOut } from "@/app/actions/auth";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,37 +22,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
+import { getDefaultAppRoute, getTripsRoute, TRAVEL_ENABLED } from "@/lib/routes";
 
 const navLinks = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/cards", label: "Cards" },
-  { href: "/recommend", label: "Find a Card" },
-  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Travel" }] : []),
-  { href: "/about", label: "About" },
+  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Plan Trip" }] : []),
+  { href: "/dashboard", label: "My Points" },
+  ...(TRAVEL_ENABLED
+    ? [{ href: getTripsRoute(), label: "My Trips" }]
+    : []),
 ];
 
 const mobileLinks = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/cards", label: "Cards", icon: CreditCard },
-  { href: "/recommend", label: "Find Card", icon: Compass },
-  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Travel", icon: Plane }] : []),
+  ...(TRAVEL_ENABLED ? [{ href: "/travel", label: "Plan", icon: Plane }] : []),
+  { href: "/dashboard", label: "Points", icon: CircleDollarSign },
+  ...(TRAVEL_ENABLED
+    ? [{ href: getTripsRoute(), label: "Trips", icon: Compass }]
+    : []),
 ];
 
 export function AppTopNav({ user }: { user: SupabaseUser }) {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   return (
     <>
       {/* Desktop top nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[52px] bg-background flex items-center justify-between px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex h-[52px] items-center justify-between border-b border-border bg-background px-5 text-foreground sm:px-8">
         <div className="flex items-center gap-8">
-          <Link href="/dashboard" className="mono text-[15px] font-bold tracking-[-0.04em] text-primary">
+          <Link
+            href={getDefaultAppRoute()}
+            className="mono text-[15px] font-bold tracking-[-0.04em] text-primary"
+          >
             WAYLOFT
           </Link>
           <div className="hidden md:flex items-center gap-6">
@@ -75,15 +73,6 @@ export function AppTopNav({ user }: { user: SupabaseUser }) {
         </div>
 
         <div className="flex items-center gap-4">
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="mono text-[10px] tracking-[0.02em] text-muted-foreground bg-card px-2.5 py-1 hover:text-foreground transition-colors"
-            >
-              {theme === "dark" ? "LIGHT" : "DARK"}
-            </button>
-          )}
-          <Bell className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer transition-colors" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="w-7 h-7 rounded-full bg-border flex items-center justify-center">
@@ -99,10 +88,25 @@ export function AppTopNav({ user }: { user: SupabaseUser }) {
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/cards?view=optimizer" className="cursor-pointer">Optimizer</Link>
+                <Link href="/cards" className="cursor-pointer">
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Cards
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/credit-cards" className="cursor-pointer">Reviews</Link>
+                <Link href="/recommend" className="cursor-pointer">Earn for a Trip</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/cards?view=optimizer" className="cursor-pointer">
+                  <Wallet className="h-4 w-4 mr-2" />
+                  Spending Optimizer
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/credit-cards" className="cursor-pointer">
+                  <Newspaper className="h-4 w-4 mr-2" />
+                  Reviews
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="cursor-pointer">

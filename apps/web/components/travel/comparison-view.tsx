@@ -14,7 +14,7 @@ export function ComparisonView({ result }: ComparisonViewProps) {
   return (
     <div className="space-y-2">
       <span className="label-signal text-muted-foreground">
-        CASH VS POINTS FOR YOUR WALLET
+        BOOKING DECISION
       </span>
       <ComparisonCard result={result} />
     </div>

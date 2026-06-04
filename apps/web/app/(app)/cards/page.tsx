@@ -75,8 +75,9 @@ export default async function CardsPage({
         <div>
           <h1 className="text-lg font-semibold tracking-[-0.01em]">My Cards</h1>
           <p className="text-sm text-muted-foreground">
-            <span className="mono">{cards.length}</span> card
-            {cards.length !== 1 ? "s" : ""} in your portfolio
+            The cards and earning paths that can help fund your next trip.
+            <span className="mono ml-1">{cards.length}</span> active card
+            {cards.length !== 1 ? "s" : ""}
           </p>
           {summary && (
             <p className="text-xs text-muted-foreground">

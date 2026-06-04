@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCardBySlug } from "@/lib/cards/catalog";
-import type { ActionResult } from "@wayloft/shared";
+import { getDefaultAppRoute } from "@/lib/routes";
 
 export async function completeOnboarding(formData: FormData) {
   const supabase = await createClient();
@@ -81,8 +81,9 @@ export async function completeOnboarding(formData: FormData) {
   }
 
   revalidatePath("/dashboard");
+  revalidatePath("/travel");
   revalidatePath("/cards");
-  redirect("/dashboard");
+  redirect(getDefaultAppRoute());
 }
 
 export async function skipOnboarding() {

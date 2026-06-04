@@ -90,9 +90,9 @@ export function TravelClient({
 
   return (
     <div>
-      {/* Search form — full width */}
-      <div className="border bg-card p-4">
+      <div>
         <SearchForm
+          key={selectedDestination || "blank-destination"}
           onResults={handleResults}
           onError={setError}
           onLoading={setIsLoading}
@@ -101,9 +101,6 @@ export function TravelClient({
           initialDestination={selectedDestination}
         />
       </div>
-      <p className="mt-2 text-center text-xs text-muted-foreground">
-        Powered by Duffel. Southwest, Allegiant, and Breeze not available.
-      </p>
 
       {/* Error */}
       {error && (
@@ -113,8 +110,8 @@ export function TravelClient({
         </div>
       )}
 
-      {/* Main content: results/sweet spots + bonus sidebar */}
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[3fr_2fr]">
+      {/* Main content: results/sweet spots + advanced context */}
+      <div className="mt-8">
         {/* Left column */}
         <div>
           {/* Loading skeleton */}
@@ -135,24 +132,26 @@ export function TravelClient({
 
           {/* Flight results */}
           {!isLoading && flights.length > 0 && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  <span className="mono">{flights.length}</span> flight
-                  {flights.length !== 1 ? "s" : ""} found
-                </p>
+            <details className="space-y-3 border-t pt-4">
+              <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+                Show cash fare details{" "}
+                <span className="mono">({flights.length})</span>
+              </summary>
+              <div className="mt-3 space-y-3">
                 {hasPortalOptions && (
-                  <PriceToggle value={priceView} onChange={setPriceView} />
+                  <div className="flex justify-end">
+                    <PriceToggle value={priceView} onChange={setPriceView} />
+                  </div>
                 )}
+                {flights.map((flight) => (
+                  <FlightCard
+                    key={flight.id}
+                    flight={flight}
+                    priceView={priceView}
+                  />
+                ))}
               </div>
-              {flights.map((flight) => (
-                <FlightCard
-                  key={flight.id}
-                  flight={flight}
-                  priceView={priceView}
-                />
-              ))}
-            </div>
+            </details>
           )}
 
           {/* No results */}
@@ -171,11 +170,11 @@ export function TravelClient({
           {!isLoading && !hasSearched && (
             <div>
               <span className="label-signal text-muted-foreground">
-                WHERE TO GO
+                NOT SURE WHERE TO GO?
               </span>
               <p className="mt-1 mb-4 text-sm text-muted-foreground">
-                Popular redemptions for your points. Tap a destination to search
-                flights.
+                Start with popular points-friendly trips. Tap one to fill in
+                the destination.
               </p>
               <SweetSpotsPanel
                 sweetSpots={sweetSpots}
@@ -186,15 +185,20 @@ export function TravelClient({
           )}
         </div>
 
-        {/* Right column: bonus sidebar */}
-        <div>
+        {/* Advanced context */}
+        <details className="mt-8 border-t pt-4">
+          <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
+            Show transfer bonuses and advanced points details
+          </summary>
+          <div className="mt-4">
           <BonusSidebar
             myBonuses={myBonuses}
             allBonuses={allBonuses}
             balances={balances}
             highlightCurrencies={highlightCurrencies}
           />
-        </div>
+          </div>
+        </details>
       </div>
     </div>
   );

@@ -7,15 +7,16 @@ import { FlightDashboard } from "@/components/travel/flight-dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getUserCurrencies } from "@/lib/bonuses/utils";
 import { getTravelGuide } from "@/lib/cards/sweet-spots";
+import { getDefaultAppRoute, TRAVEL_ENABLED } from "@/lib/routes";
 import type { TransferBonus, LoyaltyBalance, UpcomingFlight } from "@wayloft/shared";
 import type { CurrencyTravelGuide } from "@/lib/cards/sweet-spots";
 
-const TRAVEL_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRAVEL === "true";
-
 async function TravelContent({
   initialDestination,
+  mode = "decision",
 }: {
   initialDestination?: string;
+  mode?: "decision" | "trips";
 }) {
   const user = await requireUser();
   const supabase = await createClient();
@@ -69,21 +70,23 @@ async function TravelContent({
     userCurrencies.includes(b.currency)
   );
 
-  return (
-    <>
-      <FlightDashboard flights={flights} />
-
-      <div className="mt-8">
-        <TravelClient
-          sweetSpots={sweetSpots}
-          userCurrencies={userCurrencies}
-          myBonuses={myBonuses}
-          allBonuses={allBonuses}
-          balances={balances}
-          initialDestination={initialDestination}
-        />
+  if (mode === "trips") {
+    return (
+      <div id="trips" className="scroll-mt-20">
+        <FlightDashboard flights={flights} />
       </div>
-    </>
+    );
+  }
+
+  return (
+    <TravelClient
+      sweetSpots={sweetSpots}
+      userCurrencies={userCurrencies}
+      myBonuses={myBonuses}
+      allBonuses={allBonuses}
+      balances={balances}
+      initialDestination={initialDestination}
+    />
   );
 }
 
@@ -92,19 +95,22 @@ export default async function TravelPage({
 }: {
   searchParams: Promise<{ to?: string }>;
 }) {
-  if (!TRAVEL_ENABLED) redirect("/dashboard");
+  if (!TRAVEL_ENABLED) redirect(getDefaultAppRoute());
   const { to } = await searchParams;
 
   return (
-    <div className="mx-auto max-w-[1200px] px-8 py-8">
-      <h1 className="text-lg font-semibold tracking-[-0.01em]">Travel</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Search flights and maximize your transfer bonuses.
-      </p>
+    <div className="bg-background">
+      <div className="border-b bg-muted">
+        <div className="mx-auto max-w-[1440px] px-4 py-8 sm:px-8">
+          <Suspense fallback={<Skeleton className="h-44 w-full" />}>
+            <TravelContent initialDestination={to} />
+          </Suspense>
+        </div>
+      </div>
 
-      <div className="mt-6">
+      <div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-8">
         <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-          <TravelContent initialDestination={to} />
+          <TravelContent initialDestination={to} mode="trips" />
         </Suspense>
       </div>
     </div>

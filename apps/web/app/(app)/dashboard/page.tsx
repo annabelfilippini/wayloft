@@ -52,6 +52,17 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      <div className="mx-auto max-w-[1200px] px-8 pt-8">
+        <span className="label-signal text-muted-foreground">POINTS</span>
+        <h1 className="mt-1 text-2xl font-semibold tracking-[-0.01em]">
+          Points Command Center
+        </h1>
+        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+          Balances, bonuses, and urgent actions that support better trip
+          decisions.
+        </p>
+      </div>
+
       {/* Hero — greeting left, portfolio value right */}
       <Suspense fallback={<Skeleton className="h-56 mx-8 mt-16" />}>
         <PortfolioHero userId={user.id} displayName={displayName} />

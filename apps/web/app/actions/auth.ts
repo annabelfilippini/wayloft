@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { getDefaultAppRoute } from "@/lib/routes";
 
 export async function signUp(formData: FormData) {
   const supabase = await createClient();
@@ -25,7 +26,7 @@ export async function signUp(formData: FormData) {
     redirect(`/signup?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect("/dashboard");
+  redirect(getDefaultAppRoute());
 }
 
 export async function signIn(formData: FormData) {
@@ -44,7 +45,7 @@ export async function signIn(formData: FormData) {
     redirect(`/login?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(redirectTo || "/dashboard");
+  redirect(redirectTo || getDefaultAppRoute());
 }
 
 export async function signOut() {

@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/auth/require-user";
 import { createClient } from "@/lib/supabase/server";
 import { getAllCards } from "@/lib/cards/catalog";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { getDefaultAppRoute } from "@/lib/routes";
 
 export default async function OnboardingPage() {
   const user = await requireUser();
@@ -15,7 +16,7 @@ export default async function OnboardingPage() {
     .single();
 
   if (profile?.onboarding_completed) {
-    redirect("/dashboard");
+    redirect(getDefaultAppRoute());
   }
 
   const catalog = getAllCards();

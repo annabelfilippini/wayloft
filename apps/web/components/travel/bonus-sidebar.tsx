@@ -106,7 +106,9 @@ export function BonusSidebar({
     <div>
       {myBonuses.length > 0 && (
         <div>
-          <span className="label-signal text-muted-foreground">YOUR BONUSES</span>
+          <span className="label-signal text-muted-foreground">
+            BONUSES THAT MAY CHANGE THE MATH
+          </span>
           <div className="mt-2 divide-y divide-border">
             {myBonuses.map((bonus) => (
               <BonusRow
@@ -123,7 +125,7 @@ export function BonusSidebar({
       {otherBonuses.length > 0 && (
         <div className={myBonuses.length > 0 ? "mt-6" : ""}>
           <span className="label-signal text-muted-foreground">
-            {myBonuses.length > 0 ? "OTHER BONUSES" : "ACTIVE BONUSES"}
+            {myBonuses.length > 0 ? "OTHER ACTIVE BONUSES" : "ACTIVE BONUSES"}
           </span>
           <div className="mt-2 divide-y divide-border">
             {otherBonuses.map((bonus) => (

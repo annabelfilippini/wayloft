@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # --- Config ---
-PROJECT_DIR="/Users/annabelfilippini/Documents/MO"
+PROJECT_DIR="/Users/annabelfilippini/Documents/AI-OS/projects/wayloft"
 LOG_DIR="${PROJECT_DIR}/logs/community-scan"
 CLAUDE_BIN="/Users/annabelfilippini/.local/bin/claude"
 DATE=$(date +%Y-%m-%d)
